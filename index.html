@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>FilamentHub v1.20 – 3D-Filament Manager</title>
+  <title>FilamentHub v1.21 – 3D-Filament Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -172,7 +172,8 @@
   </aside>
 
   <!-- ================= 2. SEITLICH AUSFAHRENDES WERKZEUG-PANEL (SLIDE-OUT DRAWER) ================= -->
-  <div id="drawerBackdrop" onclick="closeSideDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+  <!-- Klick irgendwo rechts neben das Menü schließt das Menü sofort (auf Desktop & Handy) -->
+  <div id="drawerBackdrop" onclick="closeSideDrawer()" class="fixed inset-0 bg-black/40 lg:bg-black/15 backdrop-blur-[1px] z-30 hidden cursor-pointer" title="Klicken zum Schließen des Menüs"></div>
 
   <aside
     id="sideDrawer"
@@ -612,9 +613,9 @@
   </aside>
 
   <!-- ================= 3. HAUPT-BEREICH RECHTS (VOLLE BREITE) ================= -->
-  <div class="flex-1 flex flex-col min-w-0 pl-16 sm:pl-20 pb-20 lg:pb-12">
+  <div id="mainContentArea" onclick="if(activeDrawerTab){ closeSideDrawer(); }" class="flex-1 flex flex-col min-w-0 pl-16 sm:pl-20 pb-20 lg:pb-12">
 
-    <header class="sticky top-0 z-30 w-full t-panel border-b px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
+    <header class="sticky top-0 z-20 w-full t-panel border-b px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
       <div class="flex items-center gap-2.5">
         <h1 class="text-base sm:text-lg font-extrabold tracking-tight">Filament<span class="text-sky-400">Hub</span></h1>
         <span class="text-[10px] font-mono-num px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold">Cloud-Sync</span>
@@ -624,7 +625,7 @@
         <button
           id="minimalModeToggleBtn"
           type="button"
-          onclick="toggleMinimalMode()"
+          onclick="event.stopPropagation(); toggleMinimalMode()"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-sub text-xs font-bold transition cursor-pointer"
         >
           <i data-lucide="eye" class="w-3.5 h-3.5 text-sky-400"></i>
@@ -632,20 +633,20 @@
         </button>
 
         <div class="inline-flex items-center rounded-xl t-sub overflow-hidden">
-          <button id="undoBtn" type="button" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:opacity-75 transition disabled:opacity-30 cursor-pointer">
+          <button id="undoBtn" type="button" onclick="event.stopPropagation(); undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:opacity-75 transition disabled:opacity-30 cursor-pointer">
             <i data-lucide="undo-2" class="w-3.5 h-3.5"></i>
           </button>
-          <button id="redoBtn" type="button" onclick="redoAction()" title="Vorwärts (Strg+Y)" class="p-2 hover:opacity-75 border-l border-slate-500/15 transition disabled:opacity-30 cursor-pointer">
+          <button id="redoBtn" type="button" onclick="event.stopPropagation(); redoAction()" title="Vorwärts (Strg+Y)" class="p-2 hover:opacity-75 border-l border-slate-500/15 transition disabled:opacity-30 cursor-pointer">
             <i data-lucide="redo-2" class="w-3.5 h-3.5"></i>
           </button>
         </div>
 
-        <button type="button" onclick="openDrawerTab('vault')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-sub text-xs font-bold hover:border-sky-500/40 transition cursor-pointer">
+        <button type="button" onclick="event.stopPropagation(); openDrawerTab('vault')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-sub text-xs font-bold hover:border-sky-500/40 transition cursor-pointer">
           <i data-lucide="archive-restore" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span>Speicher & Import</span>
         </button>
 
-        <button type="button" onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-extrabold transition shadow-sm cursor-pointer">
+        <button type="button" onclick="event.stopPropagation(); openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-extrabold transition shadow-sm cursor-pointer">
           <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
           <span>Neue Spule</span>
         </button>
@@ -937,12 +938,12 @@
   <!-- TOAST MELDUNGEN -->
   <div id="toastContainer" class="fixed bottom-14 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS (FORMAT 1.20) -->
+  <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS (FORMAT 1.21) -->
   <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full t-panel shadow-xl text-[11px] backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-sky-400">v1.20</span>
+    <span class="font-mono-num font-bold text-sky-400">v1.21</span>
     <span class="t-muted">|</span>
-    <span class="font-mono-num">19.10.2026, 20:43 Uhr</span>
+    <span class="font-mono-num">19.10.2026, 21:02 Uhr</span>
     <span class="t-muted">|</span>
     <span id="syncStatusLabel" class="text-emerald-400 font-semibold">Synchron</span>
   </div>
@@ -972,7 +973,6 @@
       appSettings = { ...appSettings, ...saved };
     } catch (e) {}
 
-    // Bereinigte Hersteller-Liste (Ohne Eibos, BQ, Das Filament, Jayo, Anycubic, Extrudr, 3DJake)
     let BRAND_DATABASE = [
       { keys: ['bambulab', 'bambu lab', 'bambu'], name: 'Bambu Lab', tara: 250, basePrice: 19.99 },
       { keys: ['sunlu', 'sunluu'], name: 'SUNLU', tara: 195, basePrice: 14.99 },
@@ -1106,7 +1106,7 @@
     }
 
     // =========================================================================
-    // 2. SEITLICHES DRAWER-MENÜ & OPTIONEN-AKKORDEONS
+    // 2. SEITLICHES DRAWER-MENÜ (SCHLIESST SICH BEI KLICK NACH RECHTS)
     // =========================================================================
     let activeDrawerTab = null;
 
@@ -1122,7 +1122,8 @@
 
       activeDrawerTab = tabName;
       drawer.classList.remove('-translate-x-[420px]');
-      if (window.innerWidth < 1024) backdrop.classList.remove('hidden');
+      // Aktiviert den Klick-Bereich rechts auf allen Bildschirmgrößen (PC & Handy)
+      backdrop.classList.remove('hidden');
       if (chevron) chevron.setAttribute('data-lucide', 'chevrons-left');
 
       const titles = {
@@ -1281,8 +1282,8 @@
           <div class="flex items-center gap-2 min-w-0">
             <span class="w-3 h-3 rounded-full shrink-0 border border-white/20" style="background-color: ${s.colorHex || '#38bdf8'}"></span>
             <div class="min-w-0">
-              <p class="font-bold truncate">${idx + 1}. ${s.brand} – ${s.name}</p>
-              <p class="text-[10px] t-muted">${s.material} • ${s.colorName || 'Standard'} • Tara: ${s.emptySpoolWeight ?? 200}g</p>
+              <p class="font-bold truncate">${idx + 1}. ${s.brand} –${s.name}</p>
+              <p class="text-[10px] t-muted">${s.material} • ${s.colorName \vert{}\vert{} 'Standard'} • Tara: ${s.emptySpoolWeight ?? 200}g</p>
             </div>
           </div>
           <span class="font-mono-num font-bold text-emerald-400 shrink-0">${s.remainingWeight}g</span>
@@ -1319,7 +1320,7 @@
 
       const addUnique = (item) => {
         if (!item || !item.name || isUnwantedDefaultCharcoal(item)) return;
-        const sig = `${(item.brand || '').toLowerCase()}|${(item.name || '').toLowerCase()}|${item.remainingWeight}`;
+        const sig = `${(item.brand || '').toLowerCase()}|${(item.name \vert{}\vert{} '').toLowerCase()}\vert{}${item.remainingWeight}`;
         if (!seenKeys.has(sig)) {
           seenKeys.add(sig);
           rescued.push(item);
@@ -1370,7 +1371,7 @@
     function isUnwantedDefaultCharcoal(spool) {
       if (!spool) return true;
       if (deletedIds.includes(spool.id)) return true;
-      const full = `${spool.brand || ''} ${spool.name || ''}`.toLowerCase();
+      const full = `${spool.brand \vert{}\vert{} ''}${spool.name || ''}`.toLowerCase();
       return full.includes('matte charcoal') || full.includes('made charcoal');
     }
 
@@ -1548,7 +1549,6 @@
       const modalSel = document.getElementById('fBrandSelect');
       const setSel = document.getElementById('settingBrandSelect');
 
-      // Nur reine Herstellernamen ohne Gramm und ohne Preis dahinter
       const optsHtml = BRAND_DATABASE.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
       if (modalSel) {
         const cur = modalSel.value;
@@ -1700,7 +1700,7 @@
         bg = 'linear-gradient(90deg, #10b981 0%, #059669 100%)';
       }
 
-      return `width: ${pct}%; background: ${bg};`;
+      return `width: ${pct}\%; background:${bg};`;
     }
 
     // =========================================================================
@@ -1959,7 +1959,7 @@
     }
 
     // =========================================================================
-    // 8. SMART SCANNER, LINK-FARBERKENNUNG (OHNE GEWICHT-ÜBERSCHREIBUNG) & KI
+    // 8. SMART SCANNER, LINK-FARBERKENNUNG & KI
     // =========================================================================
     function extractEuroPriceFromText(rawText) {
       if (!rawText) return null;
@@ -2088,7 +2088,6 @@
       }, 80);
     }
 
-    // Zieht im geöffneten Formular NUR Farbe & Link – lässt das Gewicht komplett unberührt!
     async function extractUrlInModalKeepWeight() {
       const urlInput = document.getElementById('fProductUrl');
       const statusEl = document.getElementById('modalUrlStatus');
@@ -2359,15 +2358,18 @@
     }
 
     // =========================================================================
-    // 9. KARTEN-RENDERING (INKL. ZULETZT GETROCKNET, SOFORT TROCKNEN & SCHLICHT-MODUS)
+    // 9. KARTEN-RENDERING (INKL. ROTEM TROCKNUNGS-BALKEN & SCHLICHT-MODUS)
     // =========================================================================
     function getDryingStatus(spool) {
       const lastDriedMs = new Date(spool.lastDried || Date.now()).getTime();
       const intervalDays = Number(spool.dryIntervalDays) || getRecommendedDays(spool.material, spool.storageMode || 'open');
-      const intervalMs = intervalDays * 86400000;
+      const intervalMs = Math.max(1, intervalDays * 86400000);
       const diffMs = (lastDriedMs + intervalMs) - Date.now();
       const isOverdue = !!spool.forceDryNow || diffMs <= 0;
       const absMs = Math.abs(diffMs);
+
+      // Berechnet wie viel Prozent der Trocknungszeit noch übrig sind (z.B. 15 von 30 Tagen = 50%)
+      const dryPct = isOverdue ? 0 : Math.max(0, Math.min(100, Math.round((diffMs / intervalMs) * 100)));
 
       let statusLevel = 'ok';
       if (isOverdue) statusLevel = 'overdue';
@@ -2383,6 +2385,8 @@
         diffMs: spool.forceDryNow ? -999999999 : diffMs,
         isOverdue,
         statusLevel,
+        dryPct,
+        intervalDays,
         lastDriedDateStr,
         days: Math.floor(absMs / 86400000),
         hours: Math.floor((absMs % 86400000) / 3600000)
@@ -2486,7 +2490,7 @@
         const barInline = getBarInlineStyle(pct);
         const isScaleOpen = !!openScaleCards[spool.id];
 
-        // SCHLICHT-MODUS
+        // SCHLICHT-MODUS (Trocknungs-Balken klappt sich hier automatisch weg)
         if (isMin) {
           return `
             <div class="t-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 flex flex-col justify-between gap-3">
@@ -2535,7 +2539,7 @@
           `;
         }
 
-        // KOMPLETTE ANSICHT
+        // KOMPLETTE ANSICHT (MIT ROTEM TROCKNUNGS-BALKEN)
         return `
           <div class="t-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 sm:p-5 flex flex-col justify-between gap-3.5">
             
@@ -2606,14 +2610,20 @@
               <button type="button" onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg t-sub hover:opacity-80 text-[10px] font-mono-num cursor-pointer">-50g</button>
             </div>
 
-            <div class="pt-2 border-t border-slate-500/15 space-y-1.5 text-[11px]">
+            <!-- TROCKNUNGS-BEREICH MIT ROTEM TROCKNUNGS-BALKEN -->
+            <div class="pt-2.5 border-t border-slate-500/15 space-y-2 text-[11px]">
               <div class="flex items-center justify-between">
-                <span class="font-mono-num ${dry.isOverdue ? 'text-rose-500 font-extrabold' : (mode !== 'open' ? 'text-sky-500' : 't-muted')}">
+                <span class="font-mono-num ${dry.isOverdue ? 'text-rose-500 font-extrabold' : 'text-rose-400 font-semibold'}">
                   ${dry.isOverdue
                     ? `⚠️ Muss getrocknet werden!`
-                    : `🔥 Trocknen in: ${dry.days}d${dry.hours}h`}
+                    : `🔥 Trocknen in: ${dry.days}d ${dry.hours}h (${dry.dryPct}%)`}
                 </span>
                 <span class="text-[10px] t-muted">Zuletzt: <strong>${dry.lastDriedDateStr}</strong></span>
+              </div>
+
+              <!-- ROTER TROCKNUNGS-BALKEN (z.B. bei 15 von 30 Tagen zur Hälfte weg) -->
+              <div class="w-full h-2 rounded-full bg-rose-950/40 border border-rose-500/20 overflow-hidden" title="Trocknungs-Timer: ${dry.dryPct}% von ${dry.intervalDays} Tagen übrig">
+                <div class="h-full rounded-full transition-all duration-300" style="width: ${dry.dryPct}%; background: linear-gradient(90deg, #be123c 0%, #fb7185 100%);"></div>
               </div>
 
               <div class="flex items-center justify-between gap-1.5">
