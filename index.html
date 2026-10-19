@@ -39,7 +39,7 @@
               Cloud-Sync Aktiv
             </span>
           </div>
-          <p class="text-xs text-slate-400">Bestand, Kopieren/Bearbeiten, Sortierung & Trocknungs-Countdown</p>
+          <p class="text-xs text-slate-400">Bestand, Waage, Shop-Links, Sortierung & Trocknungs-Countdown</p>
         </div>
       </div>
 
@@ -76,7 +76,7 @@
             <span>Automatischer Produkt-Link Scanner</span>
           </div>
           <h2 class="text-base sm:text-lg font-bold text-white">Link einfügen → Hersteller, Material & Farbe automatisch auslesen</h2>
-          <p class="text-xs text-slate-400">Unterstützt Amazon (z. B. B0CM6C7W84), Bambu Lab, 3DJake, Prusa, ELEGOO, eSUN, SUNLU, Extrudr u.v.m.</p>
+          <p class="text-xs text-slate-400">Unterstützt Amazon (z. B. B0CM6C7W84), Bambu Lab, 3DJake, Prusa, ELEGOO, eSUN, SUNLU, Extrudr u.v.m. Ohne Link wird automatisch ein Shop-Link erzeugt.</p>
         </div>
 
         <div class="flex-1 max-w-2xl">
@@ -215,9 +215,9 @@
 
       <!-- Produkt-Link Scanner im Modal -->
       <div class="rounded-xl bg-slate-950/90 border border-orange-500/30 p-3 space-y-2">
-        <label class="block text-xs font-bold text-orange-400 uppercase">Produkt-Link automatisch auslesen</label>
+        <label class="block text-xs font-bold text-orange-400 uppercase">Produkt-Link (optional – sonst automatisch)</label>
         <div class="flex gap-2">
-          <input id="fProductUrl" type="url" placeholder="https://www.amazon.de/dp/..." class="flex-1 px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white outline-none" />
+          <input id="fProductUrl" type="url" placeholder="Leer lassen = Auto-Link (Bambu Lab/SUNLU Shop, sonst Amazon.de)" class="flex-1 px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white outline-none" />
           <button id="modalScanBtn" type="button" onclick="fetchFromModalUrl()" class="px-3.5 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold whitespace-nowrap">Auslesen</button>
         </div>
         <p id="modalDetectedInfo" class="text-[11px] text-emerald-400 hidden"></p>
@@ -300,8 +300,15 @@
             </div>
             <div>
               <label class="block text-[11px] text-slate-400 mb-1">Leerspule Tara (g)</label>
-              <input id="fEmptySpoolWeight" type="number" min="0" max="1000" value="200" class="w-full px-2.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm font-mono-num text-slate-300 outline-none" />
+              <input id="fEmptySpoolWeight" type="number" min="0" max="1000" value="200" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm font-mono-num text-slate-300 outline-none" />
             </div>
+          </div>
+
+          <!-- Waage: Gesamtgewicht eingeben, Tara wird automatisch abgezogen -->
+          <div class="pt-2 border-t border-slate-800/80 space-y-1.5">
+            <label class="block text-[11px] text-emerald-400 font-semibold">⚖️ Auf der Waage gewogen (Spule + Filament, g)</label>
+            <input id="fScaleGross" type="number" min="0" max="12000" placeholder="Gesamtgewicht eintragen → Restgewicht wird berechnet" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg bg-slate-900 border border-emerald-500/40 text-sm font-mono-num text-white outline-none focus:border-emerald-400" />
+            <p id="fScaleHint" class="text-[11px] text-slate-400"></p>
           </div>
         </div>
 
@@ -360,9 +367,9 @@
   <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS -->
   <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/95 border border-slate-700/80 shadow-lg text-[11px] text-slate-300 backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-orange-400">v11.0</span>
+    <span class="font-mono-num font-bold text-orange-400">v12.0</span>
     <span class="text-slate-500">|</span>
-    <span>19.10.2026, 11:25 Uhr</span>
+    <span>19.10.2026</span>
     <span class="text-slate-500">|</span>
     <span id="syncStatusLabel" class="text-emerald-400">Gespeichert</span>
   </div>
@@ -385,6 +392,7 @@
       'B0CM6C7W84': { brand: 'ELEGOO', material: 'PLA', colorName: 'Marmor', colorHex: '#e2e8f0', name: 'PLA Filament 1.75mm Marmor 1kg', emptySpoolWeight: 160 }
     };
 
+    // Tara = Gewicht der leeren Spule in Gramm (Richtwerte – bitte mit eigener Waage abgleichen!)
     const BRAND_DATABASE = [
       { keys: ['elegoo'], name: 'ELEGOO', tara: 160 },
       { keys: ['bambulab', 'bambu lab', 'bambu'], name: 'Bambu Lab', tara: 250 },
@@ -422,6 +430,44 @@
       { keys: ['braun', 'brown', 'wood', 'holz', 'coffee', 'kaffee', 'beige', 'sand', 'khaki', 'walnuss'], name: 'Braun / Holz', hex: '#a16207' },
       { keys: ['transparent', 'clear', 'translucent', 'natur', 'natural', 'durchsichtig'], name: 'Transparent / Natur', hex: '#cbd5e1' }
     ];
+
+    // 1b. SHOP-LINK-AUTOMATIK
+    // Ist bei einer Spule kein Link eingetragen, wird automatisch einer erzeugt:
+    //  - Bambu Lab  -> Bambu-Lab-Shop (Suche)
+    //  - SUNLU      -> SUNLU-Shop (Suche)
+    //  - alle anderen -> Amazon.de (Suche)
+    // Die URLs kannst du hier zentral anpassen.
+    const SHOP_CONFIG = [
+      {
+        match: b => b.includes('bambu'),
+        label: 'Bambu Lab Shop',
+        url: q => `https://eu.store.bambulab.com/de/search?q=${q}`
+      },
+      {
+        match: b => b.includes('sunlu'),
+        label: 'SUNLU Shop',
+        url: q => `https://store.sunlu.com/search?q=${q}`
+      }
+    ];
+    const AMAZON_SEARCH_URL = q => `https://www.amazon.de/s?k=${q}`;
+
+    function getSpoolLink(spool) {
+      const own = (spool.productUrl || '').trim();
+      if (own) return { url: own, label: 'Eigener Link', auto: false };
+
+      const brand = (spool.brand || '').trim();
+      const brandKey = brand.toLowerCase().replace(/[\s\-_.]/g, '');
+      const color = spool.colorName && spool.colorName !== 'Standard' ? spool.colorName : '';
+
+      const shop = SHOP_CONFIG.find(s => s.match(brandKey));
+      if (shop) {
+        const q = encodeURIComponent([spool.material, color, 'Filament'].filter(Boolean).join(' '));
+        return { url: shop.url(q), label: shop.label, auto: true };
+      }
+
+      const q = encodeURIComponent([brand, spool.material, 'Filament 1.75mm', color, '1kg'].filter(Boolean).join(' '));
+      return { url: AMAZON_SEARCH_URL(q), label: 'Amazon.de', auto: true };
+    }
 
     // 2. DAUERHAFTE SPEICHER-LOGIK (CLOUD + MULTI-KEY LOCALSTORAGE + WINDOW.NAME)
     const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_permanent';
@@ -747,6 +793,13 @@
     }
 
     function renderSpools() {
+      // Eingaben (Abziehen / Waage) merken, damit der Auto-Sync sie nicht löscht
+      const keptInputs = {};
+      document.querySelectorAll('#spoolGrid input[id^="deduct-"], #spoolGrid input[id^="scale-"]').forEach(i => {
+        if (i.value) keptInputs[i.id] = i.value;
+      });
+      const activeInputId = document.activeElement && document.activeElement.tagName === 'INPUT' ? document.activeElement.id : null;
+
       // KPIs aktualisieren
       document.getElementById('statTotalSpools').textContent = spools.length;
       const totalGrams = spools.reduce((sum, s) => sum + (Number(s.remainingWeight) || 0), 0);
@@ -800,12 +853,15 @@
       grid.innerHTML = filtered.map(spool => {
         const initW = Number(spool.initialWeight) || 1000;
         const remW = Number(spool.remainingWeight) || 0;
+        const tara = Number(spool.emptySpoolWeight) || 0;
+        const scaleNow = remW + tara; // So viel zeigt die Waage aktuell (Spule + Filament)
         const pct = Math.max(0, Math.min(100, Math.round((remW / initW) * 100)));
         const dry = getDryingStatus(spool);
         const hex = spool.colorHex || '#f97316';
         const preset = MATERIAL_PRESETS[spool.material] || MATERIAL_PRESETS['PLA'];
         const dryTemp = spool.dryTemp || preset.temp;
         const dryHours = spool.dryHours || preset.hours;
+        const link = getSpoolLink(spool);
 
         let barColor = 'bg-emerald-500';
         if (pct <= 15) barColor = 'bg-rose-500';
@@ -813,7 +869,7 @@
 
         return `
           <div class="rounded-2xl bg-slate-900/95 border ${dry.isOverdue ? 'overdue-card border-rose-500/70' : 'border-slate-800 hover:border-slate-700'} p-5 flex flex-col justify-between gap-3.5 shadow-lg transition">
-            <!-- Header mit Farbvorschau & Aktions-Buttons (Kopieren, Bearbeiten, Löschen) -->
+            <!-- Header mit Farbvorschau & Aktions-Buttons (Shop, Kopieren, Bearbeiten, Löschen) -->
             <div class="flex justify-between items-start gap-2">
               <div class="flex items-center gap-3 min-w-0">
                 <div class="w-11 h-11 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
@@ -830,11 +886,9 @@
 
               <!-- Aktionsleiste oben rechts -->
               <div class="flex items-center gap-1 shrink-0">
-                ${spool.productUrl ? `
-                  <a href="${spool.productUrl}" target="_blank" rel="noopener" title="Shop-Link öffnen" class="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-orange-400 transition">
-                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                  </a>
-                ` : ''}
+                <a href="${link.url}" target="_blank" rel="noopener" title="${link.auto ? 'Auto-Link: ' : ''}${link.label} öffnen" class="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-orange-400 transition">
+                  <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
                 <button onclick="duplicateSpool('${spool.id}')" title="Spule kopieren / duplizieren" class="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-sky-400 transition">
                   <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                 </button>
@@ -847,8 +901,14 @@
               </div>
             </div>
 
+            <!-- Shop-Link (immer vorhanden: eigener Link oder Auto-Link) -->
+            <a href="${link.url}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 self-start px-2.5 py-1 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] font-semibold text-orange-300 transition">
+              <i data-lucide="shopping-cart" class="w-3 h-3"></i>
+              <span>${link.label}${link.auto ? ' (Auto-Link)' : ''}</span>
+            </a>
+
             <!-- Schnell-Aktionsleiste (Kopieren / Bearbeiten / Löschen als sichtbare Buttons) -->
-            <div class="grid grid-cols-3 gap-1.5 pt-1">
+            <div class="grid grid-cols-3 gap-1.5">
               <button onclick="duplicateSpool('${spool.id}')" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] font-semibold text-sky-400 transition">
                 <i data-lucide="copy" class="w-3 h-3"></i>
                 <span>Kopieren</span>
@@ -872,6 +932,19 @@
               <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
                 <div class="h-full ${barColor} transition-all" style="width: ${pct}%"></div>
               </div>
+            </div>
+
+            <!-- WAAGE: Spulengewicht anzeigen, Gesamtgewicht eingeben, Tara wird automatisch abgezogen -->
+            <div class="rounded-xl bg-slate-950/80 border border-emerald-500/30 p-3 space-y-2">
+              <div class="flex justify-between items-center text-[11px]">
+                <span class="text-slate-400">🧵 Leerspule: <strong class="font-mono-num text-white text-xs">${tara} g</strong></span>
+                <span class="text-slate-400">⚖️ Waage zeigt jetzt: <strong class="font-mono-num text-emerald-400 text-xs">≈ ${scaleNow} g</strong></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <input id="scale-${spool.id}" type="number" min="0" placeholder="Gewicht auf Waage (g)" oninput="updateScalePreview('${spool.id}')" onkeydown="if(event.key==='Enter'){applyScaleWeight('${spool.id}');}" class="flex-1 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white font-mono-num outline-none focus:border-emerald-400" />
+                <button onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-xs font-bold text-white transition whitespace-nowrap">Übernehmen</button>
+              </div>
+              <p id="scale-preview-${spool.id}" class="text-[11px] text-slate-500">Spule + Filament wiegen → Spule (${tara} g) wird automatisch abgezogen.</p>
             </div>
 
             <!-- Verbrauch abziehen -->
@@ -907,9 +980,22 @@
         `;
       }).join('');
       lucide.createIcons();
+
+      // Eingaben wiederherstellen (Waage-/Abzieh-Felder) + Fokus
+      Object.entries(keptInputs).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.value = val;
+          if (id.startsWith('scale-')) updateScalePreview(id.slice('scale-'.length));
+        }
+      });
+      if (activeInputId) {
+        const a = document.getElementById(activeInputId);
+        if (a) a.focus();
+      }
     }
 
-    // 6. AKTIONEN: KOPIEREN, BEARBEITEN, LÖSCHEN, GEWICHT ABZIEHEN
+    // 6. AKTIONEN: KOPIEREN, BEARBEITEN, LÖSCHEN, GEWICHT ABZIEHEN, WAAGE
     function duplicateSpool(id) {
       const orig = spools.find(s => s.id === id);
       if (!orig) return;
@@ -952,6 +1038,65 @@
       showToast(`${g}g abgezogen (${spool.remainingWeight}g übrig).`);
     }
 
+    // Live-Vorschau beim Tippen des Waagen-Gewichts (ohne Neu-Rendern)
+    function updateScalePreview(id) {
+      const spool = spools.find(s => s.id === id);
+      const input = document.getElementById(`scale-${id}`);
+      const out = document.getElementById(`scale-preview-${id}`);
+      if (!spool || !input || !out) return;
+      const tara = Number(spool.emptySpoolWeight) || 0;
+      const gross = parseFloat(input.value);
+      if (!input.value || isNaN(gross)) {
+        out.className = 'text-[11px] text-slate-500';
+        out.textContent = `Spule + Filament wiegen → Spule (${tara} g) wird automatisch abgezogen.`;
+        return;
+      }
+      const net = Math.round(gross - tara);
+      if (net < 0) {
+        out.className = 'text-[11px] text-rose-400';
+        out.textContent = `⚠️ ${gross} g ist weniger als die Leerspule (${tara} g).`;
+      } else {
+        out.className = 'text-[11px] text-emerald-400';
+        out.textContent = `${gross} g − ${tara} g Spule = ${net} g Filament`;
+      }
+    }
+
+    // Gesamtgewicht von der Waage übernehmen: Tara abziehen, Restgewicht setzen
+    function applyScaleWeight(id) {
+      const input = document.getElementById(`scale-${id}`);
+      const gross = parseFloat(input?.value);
+      if (!input || isNaN(gross) || gross <= 0) return;
+      const spool = spools.find(s => s.id === id);
+      if (!spool) return;
+
+      const tara = Number(spool.emptySpoolWeight) || 0;
+      if (gross < tara) {
+        showToast(`⚠️ ${gross} g ist weniger als die Leerspule (${tara} g).`);
+        return;
+      }
+
+      const newRemaining = Math.round(gross - tara);
+      const oldRemaining = Number(spool.remainingWeight) || 0;
+      const used = oldRemaining - newRemaining;
+
+      spool.remainingWeight = newRemaining;
+
+      // Weniger als vorher = verbraucht -> im Verlauf protokollieren (mit Rückgängig)
+      if (used > 0) {
+        printHistory.unshift({
+          id: 'log-' + Date.now(),
+          spoolId: spool.id,
+          spoolLabel: `${spool.brand} ${spool.name} (Waage)`,
+          grams: used,
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      input.value = '';
+      saveState();
+      showToast(`Waage: ${gross} g − ${tara} g Spule = ${newRemaining} g Filament.`);
+    }
+
     function markDried(id) {
       const spool = spools.find(s => s.id === id);
       if (!spool) return;
@@ -981,6 +1126,28 @@
       }
     }
 
+    // Waage im Modal: Gesamtgewicht eintragen -> Restgewicht = Gesamt − Tara
+    function applyModalScale() {
+      const grossVal = document.getElementById('fScaleGross').value;
+      const hint = document.getElementById('fScaleHint');
+      const tara = parseInt(document.getElementById('fEmptySpoolWeight').value) || 0;
+      if (grossVal === '' || isNaN(parseFloat(grossVal))) {
+        hint.className = 'text-[11px] text-slate-400';
+        hint.textContent = `Leerspule: ${tara} g – wird automatisch abgezogen.`;
+        return;
+      }
+      const gross = parseFloat(grossVal);
+      const net = Math.round(gross - tara);
+      if (net < 0) {
+        hint.className = 'text-[11px] text-rose-400';
+        hint.textContent = `⚠️ ${gross} g ist weniger als die Leerspule (${tara} g).`;
+        return;
+      }
+      document.getElementById('fRemainingWeight').value = net;
+      hint.className = 'text-[11px] text-emerald-400';
+      hint.textContent = `${gross} g − ${tara} g Spule = ${net} g Filament → als Restgewicht gesetzt.`;
+    }
+
     function handleBrandDropdownChange() {
       const select = document.getElementById('fBrandSelect');
       const customInput = document.getElementById('fBrandCustom');
@@ -989,6 +1156,14 @@
         customInput.focus();
       } else {
         customInput.classList.add('hidden');
+        // Bei neuer Spule: Spulengewicht passend zur Marke vorschlagen
+        if (!document.getElementById('fId').value) {
+          const b = BRAND_DATABASE.find(x => x.name === select.value);
+          if (b) {
+            document.getElementById('fEmptySpoolWeight').value = b.tara;
+            applyModalScale();
+          }
+        }
       }
     }
 
@@ -1022,6 +1197,7 @@
 
     function openSpoolModal(spoolId = null, prefill = null) {
       document.getElementById('modalDetectedInfo').classList.add('hidden');
+      document.getElementById('fScaleGross').value = '';
 
       if (spoolId) {
         // Bestehende Spule bearbeiten
@@ -1043,7 +1219,7 @@
           colorName: '',
           initialWeight: 1000,
           remainingWeight: 1000,
-          emptySpoolWeight: 200,
+          emptySpoolWeight: 160,
           dryIntervalDays: 30,
           dryTemp: 50,
           dryHours: 5,
@@ -1057,6 +1233,7 @@
         }
       }
 
+      applyModalScale();
       document.getElementById('spoolModal').classList.replace('hidden', 'flex');
     }
 
@@ -1083,7 +1260,8 @@
         colorName: document.getElementById('fColorName').value.trim() || 'Standard',
         initialWeight: parseInt(document.getElementById('fInitialWeight').value) || 1000,
         remainingWeight: parseInt(document.getElementById('fRemainingWeight').value) || 0,
-        emptySpoolWeight: parseInt(document.getElementById('fEmptySpoolWeight').value) || 200,
+        emptySpoolWeight: parseInt(document.getElementById('fEmptySpoolWeight').value) || 0,
+        // Leer = kein eigener Link -> Auto-Link wird automatisch erzeugt (siehe getSpoolLink)
         productUrl: document.getElementById('fProductUrl').value.trim(),
         lastDried: lastDriedInput ? new Date(lastDriedInput).toISOString() : new Date().toISOString(),
         dryIntervalDays: parseInt(document.getElementById('fDryIntervalDays').value) || preset.intervalDays,
