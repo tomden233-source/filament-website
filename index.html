@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FilamentHub – 3D-Druck Filament-Manager & Intelligenter Link-Scanner</title>
+  <title>FilamentHub – 3D-Druck Filament-Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
@@ -29,7 +29,7 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-xl font-extrabold tracking-tight text-white">FilamentHub</h1>
-            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Pro Farb-Scanner</span>
+            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Cloud Storage Aktiv</span>
           </div>
           <p class="text-xs text-slate-400">Bestand, Druckverbrauch & fester Cloud-Speicher</p>
         </div>
@@ -59,7 +59,7 @@
             <i data-lucide="wand-2" class="w-4 h-4"></i>
             <span>Intelligenter Produkt-Link Scanner</span>
           </div>
-          <h2 class="text-base sm:text-lg font-bold text-white">Filament-Link einfügen & Farbe / Daten automatisch ziehen</h2>
+          <h2 class="text-base sm:text-lg font-bold text-white">Filament-Link einfügen & Daten vorbefüllen</h2>
         </div>
 
         <div class="flex-1 max-w-2xl">
@@ -69,12 +69,12 @@
               <input
                 id="quickLinkInput"
                 type="url"
-                placeholder="https://eu.store.bambulab.com/products/pla-matte-filament..."
+                placeholder="https://eu.store.bambulab.com/products/..."
                 class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700 focus:border-orange-500 text-sm text-white outline-none"
                 onkeydown="if(event.key==='Enter'){ handleQuickLinkImport(); }"
               />
             </div>
-            <button onclick="handleQuickLinkImport()" class="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm transition">Daten ziehen</button>
+            <button onclick="handleQuickLinkImport()" class="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm transition">Daten laden</button>
           </div>
         </div>
       </div>
@@ -118,7 +118,6 @@
 
       <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-3">
         <input type="hidden" id="fId" />
-        
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Hersteller / Marke *</label>
           <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none mb-2">
@@ -172,7 +171,7 @@
 
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-xs text-slate-300">Abbrechen</button>
-          <button type="submit" class="px-4 py-2 rounded-xl bg-orange-500 text-xs font-bold text-white">Speichern</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-orange-500 text-xs font-bold text-white">Spule speichern</button>
         </div>
       </form>
     </div>
@@ -220,8 +219,8 @@
       { keys: ['transparent', 'clear', 'translucent', 'natur'], name: 'Transparent / Natur', hex: '#cbd5e1' }
     ];
 
-    const STORAGE_KEY_SPOOLS = 'filamenthub_spools_v6';
-    const STORAGE_KEY_HISTORY = 'filamenthub_history_v6';
+    const STORAGE_KEY_SPOOLS = 'filamenthub_spools_v7';
+    const STORAGE_KEY_HISTORY = 'filamenthub_history_v7';
 
     let spools = [];
     let printHistory = [];
@@ -271,9 +270,9 @@
       }
     }
 
-    // Intelligenter Link- & Farb-Parser
+    // Verbesserter Intelligenter Link- & Farb-Parser
     function parseFilamentData(urlStr, title = '') {
-      const lower = `${urlStr} ${title}`.toLowerCase();
+      const lower = `${urlStr}${title}`.toLowerCase();
       
       let detectedBrand = 'Bambu Lab';
       for (const b of BRAND_DATABASE) {
@@ -297,10 +296,12 @@
         }
       }
 
+      let cleanName = title ? title.split('|')[0].replace(/-/g, ' ').trim() : `${detectedMaterial}${detectedColorName}`;
+
       return {
         brand: detectedBrand,
         material: detectedMaterial,
-        name: title ? title.split('|')[0].trim() : `${detectedMaterial} ${detectedColorName}`,
+        name: cleanName,
         colorName: detectedColorName,
         colorHex: detectedColorHex,
         productUrl: urlStr
@@ -369,139 +370,3 @@
           <div class="rounded-2xl bg-slate-900/95 border ${dry.isOverdue ? 'overdue-card border-rose-500/70' : 'border-slate-800'} p-5 space-y-3">
             <div class="flex justify-between items-start">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                  <span class="w-4 h-4 rounded-full border border-white/20 shadow" style="background-color: ${hex}"></span>
-                </div>
-                <div>
-                  <span class="text-[10px] uppercase font-bold text-slate-400">${spool.brand}</span>
-                  <h3 class="text-sm font-bold text-white">${spool.name}</h3>
-                </div>
-              </div>
-              <button onclick="deleteSpool('${spool.id}')" class="text-slate-500 hover:text-rose-400 text-xs">✕</button>
-            </div>
-            <div class="space-y-1">
-              <div class="flex justify-between text-xs text-slate-400"><span>Restgewicht (${spool.colorName || 'Farbe'})</span><span class="font-mono-num text-white font-bold">${spool.remainingWeight}g / ${spool.initialWeight}g</span></div>
-              <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden"><div class="h-full bg-emerald-500" style="width: ${pct}%"></div></div>
-            </div>
-            <div class="flex items-center gap-2">
-              <input id="deduct-${spool.id}" type="number" placeholder="Gramm" class="w-24 px-2 py-1 rounded-lg bg-slate-950 border border-slate-800 text-xs text-white font-mono-num" />
-              <button onclick="deductWeight('${spool.id}')" class="px-3 py-1 rounded-lg bg-orange-500 text-xs font-bold text-white">Abziehen</button>
-            </div>
-            <div class="rounded-lg bg-slate-950/80 p-2 text-xs flex justify-between items-center border border-slate-800/60">
-              <span class="${dry.isOverdue ? 'text-rose-400 font-bold' : 'text-slate-300'}">Trocknung: ${dry.days}d ${dry.hours}h</span>
-              <button onclick="markDried('${spool.id}')" class="px-2 py-1 rounded bg-slate-800 text-[10px] text-orange-400 font-semibold">Getrocknet</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-      lucide.createIcons();
-    }
-
-    function deductWeight(id) {
-      const input = document.getElementById(`deduct-${id}`);
-      const g = parseInt(input.value);
-      if (!g || g <= 0) return;
-      const spool = spools.find(s => s.id === id);
-      spool.remainingWeight = Math.max(0, spool.remainingWeight - g);
-      printHistory.unshift({ id: 'log-' + Date.now(), spoolLabel: `${spool.brand} ${spool.name}`, grams: g, timestamp: new Date().toISOString() });
-      input.value = '';
-      saveState();
-      renderSpools();
-    }
-
-    function markDried(id) {
-      const spool = spools.find(s => s.id === id);
-      spool.lastDried = new Date().toISOString();
-      saveState();
-      renderSpools();
-    }
-
-    function deleteSpool(id) {
-      spools = spools.filter(s => s.id !== id);
-      saveState();
-      renderSpools();
-    }
-
-    function handleBrandDropdownChange() {
-      const select = document.getElementById('fBrandSelect');
-      const customInput = document.getElementById('fBrandCustom');
-      if (select.value === 'OTHER') {
-        customInput.classList.remove('hidden');
-        customInput.focus();
-      } else {
-        customInput.classList.add('hidden');
-      }
-    }
-
-    function populateModalFields(data) {
-      if (data.productUrl) document.getElementById('fProductUrl').value = data.productUrl;
-      if (data.name) document.getElementById('fName').value = data.name;
-      if (data.material) document.getElementById('fMaterial').value = data.material;
-      if (data.colorHex) document.getElementById('fColorHex').value = data.colorHex;
-      if (data.colorName) document.getElementById('fColorName').value = data.colorName;
-      if (data.brand) {
-        const select = document.getElementById('fBrandSelect');
-        const match = Array.from(select.options).some(o => o.value === data.brand);
-        if (match) {
-          select.value = data.brand;
-          document.getElementById('fBrandCustom').classList.add('hidden');
-        } else {
-          select.value = 'OTHER';
-          document.getElementById('fBrandCustom').classList.remove('hidden');
-          document.getElementById('fBrandCustom').value = data.brand;
-        }
-      }
-    }
-
-    function openSpoolModal(spoolId = null, prefill = null) {
-      document.getElementById('fId').value = '';
-      document.getElementById('fProductUrl').value = '';
-      document.getElementById('fName').value = '';
-      document.getElementById('fBrandSelect').value = 'Bambu Lab';
-      document.getElementById('fBrandCustom').classList.add('hidden');
-      document.getElementById('fBrandCustom').value = '';
-      document.getElementById('fColorHex').value = '#f97316';
-      document.getElementById('fColorName').value = 'Orange';
-      
-      if (prefill) populateModalFields(prefill);
-      document.getElementById('spoolModal').classList.replace('hidden', 'flex');
-    }
-
-    function closeSpoolModal() { document.getElementById('spoolModal').classList.replace('flex', 'hidden'); }
-
-    function saveSpool(e) {
-      e.preventDefault();
-      const selectVal = document.getElementById('fBrandSelect').value;
-      const customVal = document.getElementById('fBrandCustom').value.trim();
-      const brand = selectVal === 'OTHER' ? (customVal || 'Unbekannt') : selectVal;
-
-      spools.unshift({
-        id: 'sp-' + Date.now(),
-        brand: brand,
-        name: document.getElementById('fName').value,
-        material: document.getElementById('fMaterial').value,
-        colorHex: document.getElementById('fColorHex').value,
-        colorName: document.getElementById('fColorName').value,
-        initialWeight: parseInt(document.getElementById('fInitialWeight').value),
-        remainingWeight: parseInt(document.getElementById('fRemainingWeight').value),
-        lastDried: new Date().toISOString(),
-        dryIntervalDays: 30
-      });
-      saveState();
-      closeSpoolModal();
-      renderSpools();
-    }
-
-    function openHistoryModal() {
-      document.getElementById('historyList').innerHTML = printHistory.map(h => `<div class="p-2 bg-slate-950 rounded text-xs flex justify-between"><span>${h.spoolLabel}</span><span class="text-orange-400 font-bold">-${h.grams}g</span></div>`).join('') || '<p class="text-xs text-slate-500">Keine Einträge</p>';
-      document.getElementById('historyModal').classList.replace('hidden', 'flex');
-    }
-    function closeHistoryModal() { document.getElementById('historyModal').classList.replace('flex', 'hidden'); }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      loadStateFromCloud();
-      setInterval(loadStateFromCloud, 15000);
-    });
-  </script>
-</body>
-</html>
