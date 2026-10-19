@@ -367,7 +367,7 @@
   <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS -->
   <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/95 border border-slate-700/80 shadow-lg text-[11px] text-slate-300 backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-orange-400">v12.0</span>
+    <span class="font-mono-num font-bold text-orange-400">v12.1</span>
     <span class="text-slate-500">|</span>
     <span>19.10.2026</span>
     <span class="text-slate-500">|</span>
@@ -433,23 +433,39 @@
 
     // 1b. SHOP-LINK-AUTOMATIK
     // Ist bei einer Spule kein Link eingetragen, wird automatisch einer erzeugt:
-    //  - Bambu Lab  -> Bambu-Lab-Shop (Suche)
-    //  - SUNLU      -> SUNLU-Shop (Suche)
+    //  - Bambu Lab  -> direkt die Produktseite des Materials im Bambu-Lab-Store (EU/DE)
+    //  - SUNLU      -> Produktseite im SUNLU-Store (sonst Store-Suche)
     //  - alle anderen -> Amazon.de (Suche)
-    // Die URLs kannst du hier zentral anpassen.
-    const SHOP_CONFIG = [
-      {
-        match: b => b.includes('bambu'),
-        label: 'Bambu Lab Shop',
-        url: q => `https://eu.store.bambulab.com/de/search?q=${q}`
-      },
-      {
-        match: b => b.includes('sunlu'),
-        label: 'SUNLU Shop',
-        url: q => `https://store.sunlu.com/search?q=${q}`
-      }
-    ];
+    // Ein eigener Link bei der Spule hat immer Vorrang.
+
+    // Bambu Lab: Material -> Produktseite (eu.store.bambulab.com/de/products/<name>)
+    const BAMBU_PRODUCT_BASE = 'https://eu.store.bambulab.com/de/products/';
+    const BAMBU_PRODUCTS = {
+      'PLA': 'pla-basic-filament',
+      'PLA+': 'pla-basic-filament',
+      'PETG': 'petg-hf',
+      'ABS': 'abs-filament',
+      'ASA': 'asa-filament',
+      'TPU': 'tpu-95a-hf'
+    };
+    const BAMBU_FILAMENT_OVERVIEW = 'https://eu.store.bambulab.com/de/collections/bambu-lab-3d-printer-filament';
+
+    // SUNLU: Material -> Produktseite. Weitere Materialien kannst du hier einfach ergänzen,
+    // z. B. 'PETG': 'https://store.sunlu.com/products/...'
+    const SUNLU_PRODUCTS = {
+      'PLA': 'https://store.sunlu.com/products/over-6kg-bundle-sale-pla-and-pla-plus-pla-meta-macaron-filament1kg-roll',
+      'PLA+': 'https://store.sunlu.com/products/over-6kg-bundle-sale-pla-and-pla-plus-pla-meta-macaron-filament1kg-roll'
+    };
+    const SUNLU_SEARCH_URL = q => `https://store.sunlu.com/search?q=${q}`;
+
     const AMAZON_SEARCH_URL = q => `https://www.amazon.de/s?k=${q}`;
+
+    function getBambuProductUrl(spool) {
+      const text = `${spool.name || ''} ${spool.colorName || ''}`.toLowerCase();
+      let handle = BAMBU_PRODUCTS[spool.material];
+      if (spool.material === 'PLA' && (text.includes('matte') || text.includes('matt'))) handle = 'pla-matte';
+      return handle ? BAMBU_PRODUCT_BASE + handle : null;
+    }
 
     function getSpoolLink(spool) {
       const own = (spool.productUrl || '').trim();
@@ -459,10 +475,18 @@
       const brandKey = brand.toLowerCase().replace(/[\s\-_.]/g, '');
       const color = spool.colorName && spool.colorName !== 'Standard' ? spool.colorName : '';
 
-      const shop = SHOP_CONFIG.find(s => s.match(brandKey));
-      if (shop) {
-        const q = encodeURIComponent([spool.material, color, 'Filament'].filter(Boolean).join(' '));
-        return { url: shop.url(q), label: shop.label, auto: true };
+      if (brandKey.includes('bambu')) {
+        const direct = getBambuProductUrl(spool);
+        return direct
+          ? { url: direct, label: 'Bambu Lab Shop (Produktseite)', auto: true }
+          : { url: BAMBU_FILAMENT_OVERVIEW, label: 'Bambu Lab Shop (Filament-Übersicht)', auto: true };
+      }
+
+      if (brandKey.includes('sunlu')) {
+        const direct = SUNLU_PRODUCTS[spool.material];
+        if (direct) return { url: direct, label: 'SUNLU Shop (Produktseite)', auto: true };
+        const q = encodeURIComponent([spool.material, 'Filament'].filter(Boolean).join(' '));
+        return { url: SUNLU_SEARCH_URL(q), label: 'SUNLU Shop (Suche)', auto: true };
       }
 
       const q = encodeURIComponent([brand, spool.material, 'Filament 1.75mm', color, '1kg'].filter(Boolean).join(' '));
@@ -899,28 +923,6 @@
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
-            </div>
-
-            <!-- Shop-Link (immer vorhanden: eigener Link oder Auto-Link) -->
-            <a href="${link.url}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 self-start px-2.5 py-1 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] font-semibold text-orange-300 transition">
-              <i data-lucide="shopping-cart" class="w-3 h-3"></i>
-              <span>${link.label}${link.auto ? ' (Auto-Link)' : ''}</span>
-            </a>
-
-            <!-- Schnell-Aktionsleiste (Kopieren / Bearbeiten / Löschen als sichtbare Buttons) -->
-            <div class="grid grid-cols-3 gap-1.5">
-              <button onclick="duplicateSpool('${spool.id}')" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] font-semibold text-sky-400 transition">
-                <i data-lucide="copy" class="w-3 h-3"></i>
-                <span>Kopieren</span>
-              </button>
-              <button onclick="openSpoolModal('${spool.id}')" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] font-semibold text-amber-400 transition">
-                <i data-lucide="pencil" class="w-3 h-3"></i>
-                <span>Bearbeiten</span>
-              </button>
-              <button onclick="deleteSpool('${spool.id}')" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-slate-950 hover:bg-rose-950/60 border border-slate-800 text-[11px] font-semibold text-rose-400 transition">
-                <i data-lucide="trash-2" class="w-3 h-3"></i>
-                <span>Löschen</span>
-              </button>
             </div>
 
             <!-- Gewicht & Fortschrittsbalken -->
