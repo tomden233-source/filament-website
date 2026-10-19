@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>FilamentHub v20.1 – 3D-Filament Manager</title>
+  <title>FilamentHub v20.2 – 3D-Filament Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -48,39 +48,39 @@
   <!-- 1. VERTIKALE LEISTE LINKS (VON OBEN NACH UNTEN) -->
   <aside class="fixed top-0 left-0 bottom-0 z-50 w-16 sm:w-20 t-panel border-r flex flex-col items-center justify-between py-3 select-none shadow-xl">
     <div class="flex flex-col items-center gap-2.5 w-full px-1.5">
-      <button type="button" onclick="toggleSideDrawer()" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-400 flex items-center justify-center text-slate-950 shadow-md hover:scale-105 transition cursor-pointer">
-        <i data-lucide="disc-3" class="w-6 h-6 stroke-[2.3]"></i>
+      <button type="button" onclick="toggleSideDrawer()" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-400 flex items-center justify-center text-slate-950 font-extrabold shadow-md hover:scale-105 transition cursor-pointer">
+        FH
       </button>
       <div class="w-8 h-[1px] bg-slate-500/20"></div>
       <nav class="flex flex-col items-center gap-1.5 w-full">
         <button id="railBtn-ai" type="button" onclick="openDrawerTab('ai')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
-          <i data-lucide="bot" class="w-5 h-5"></i><span>KI-Agent</span>
+          <span class="text-base">🤖</span><span>KI-Agent</span>
         </button>
         <button id="railBtn-gcode" type="button" onclick="openDrawerTab('gcode')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
-          <i data-lucide="file-code-2" class="w-5 h-5"></i><span>G-Code</span>
+          <span class="text-base">📂</span><span>G-Code</span>
         </button>
         <button id="railBtn-calc" type="button" onclick="openDrawerTab('calc')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
-          <i data-lucide="calculator" class="w-5 h-5"></i><span>Rechner</span>
+          <span class="text-base">🧮</span><span>Rechner</span>
         </button>
         <button id="railBtn-vault" type="button" onclick="openDrawerTab('vault')" class="relative w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
-          <i data-lucide="archive-restore" class="w-5 h-5"></i><span>Speicher</span>
+          <span class="text-base">🛡️</span><span>Speicher</span>
           <span id="railSnapshotBadge" class="absolute top-1 right-1.5 px-1.5 text-[9px] font-mono-num font-extrabold rounded-full bg-emerald-500 text-slate-950">0</span>
         </button>
         <button id="railBtn-sync" type="button" onclick="openDrawerTab('sync')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
-          <i data-lucide="smartphone" class="w-5 h-5"></i><span>Handy</span>
+          <span class="text-base">📱</span><span>Handy</span>
         </button>
         <button id="railBtn-settings" type="button" onclick="openDrawerTab('settings')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
-          <i data-lucide="sliders-horizontal" class="w-5 h-5"></i><span>Optionen</span>
+          <span class="text-base">⚙️</span><span>Optionen</span>
         </button>
       </nav>
     </div>
     <div class="flex flex-col items-center gap-2 w-full px-1.5">
       <button type="button" onclick="openHistoryModal()" class="w-full py-2 rounded-xl t-sub hover:opacity-80 flex flex-col items-center gap-0.5 text-[10px] font-semibold cursor-pointer">
-        <i data-lucide="history" class="w-4 h-4 text-sky-400"></i>
+        <span>🕒</span>
         <span id="historyBadge" class="font-mono-num text-[10px]">0</span>
       </button>
-      <button type="button" onclick="toggleSideDrawer()" class="w-full py-2 rounded-xl t-sub hover:opacity-80 flex items-center justify-center cursor-pointer">
-        <i id="drawerChevronIcon" data-lucide="chevrons-right" class="w-4 h-4 t-muted"></i>
+      <button type="button" onclick="toggleSideDrawer()" class="w-full py-2 rounded-xl t-sub hover:opacity-80 flex items-center justify-center text-xs font-bold cursor-pointer">
+        ⇔
       </button>
     </div>
   </aside>
@@ -93,8 +93,8 @@
         <span class="w-2 h-2 rounded-full bg-sky-400"></span>
         <h2 id="drawerTitle" class="text-sm font-extrabold uppercase tracking-wider">Menü</h2>
       </div>
-      <button type="button" onclick="closeSideDrawer()" class="p-1.5 rounded-lg t-sub hover:opacity-80 text-xs font-bold flex items-center gap-1 cursor-pointer">
-        <i data-lucide="chevrons-left" class="w-4 h-4"></i><span>Zuklappen</span>
+      <button type="button" onclick="closeSideDrawer()" class="px-2.5 py-1 rounded-lg t-sub hover:opacity-80 text-xs font-bold cursor-pointer">
+        ✕ Zuklappen
       </button>
     </div>
 
@@ -106,22 +106,21 @@
             <p class="text-xs font-bold">KI-Agent (Diktat & Direkt-Eintrag)</p>
             <button type="button" onclick="speakText('Sprachausgabe funktioniert.')" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 text-[10px] font-semibold cursor-pointer">🔊 Test</button>
           </div>
-          <p class="text-[11px] t-muted">Diktiere oder tippe z.B. <em>„Bambu Lab PLA Schwarz im eBOS Beutel 800g in 15 Tagen trocknen“</em> oder <em>„Ziehe 45g von Weiß ab“</em>.</p>
+          <p class="text-[11px] t-muted">Diktiere oder tippe z. B. <em>„Bambu Lab PLA Schwarz im eBOS Beutel 800g in 15 Tagen trocknen“</em> oder <em>„Ziehe 45g von Weiß ab“</em>.</p>
         </div>
         <div id="aiChatMessages" class="flex-1 min-h-[260px] max-h-[420px] overflow-y-auto space-y-2 rounded-xl t-sub p-3 text-xs"></div>
         <div class="flex gap-1.5">
-          <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" class="px-3 py-2.5 rounded-xl t-sub text-sky-400 cursor-pointer"><i data-lucide="mic" class="w-4 h-4"></i></button>
+          <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" class="px-3 py-2.5 rounded-xl t-sub text-sky-400 cursor-pointer">🎙️</button>
           <input id="aiUserInput" type="text" placeholder="Diktieren oder tippen..." class="flex-1 px-3 py-2.5 rounded-xl t-input text-xs outline-none" onkeydown="if(event.key==='Enter')sendAiMessage()" />
-          <button type="button" onclick="sendAiMessage()" class="px-3.5 py-2.5 rounded-xl bg-sky-500 text-slate-950 font-bold text-xs cursor-pointer"><i data-lucide="send" class="w-4 h-4"></i></button>
+          <button type="button" onclick="sendAiMessage()" class="px-3.5 py-2.5 rounded-xl bg-sky-500 text-slate-950 font-bold text-xs cursor-pointer">Senden</button>
         </div>
       </div>
 
       <!-- PANEL: G-CODE -->
       <div id="drawerPanel-gcode" class="hidden space-y-4">
         <label for="gcodeFileInput" class="cursor-pointer block rounded-xl border-2 border-dashed border-sky-500/40 hover:border-sky-400 t-sub p-5 text-center transition">
-          <i data-lucide="upload-cloud" class="w-7 h-7 text-sky-400 mx-auto mb-2"></i>
-          <p class="text-xs font-bold">G-Code Datei auswählen (.gcode)</p>
-          <p class="text-[11px] t-muted mt-0.5">Gewicht wird automatisch erkannt → Spule antippen</p>
+          <p class="text-xs font-bold">📂 G-Code Datei auswählen (.gcode)</p>
+          <p class="text-[11px] t-muted mt-1">Gewicht wird automatisch erkannt → Spule antippen</p>
           <input id="gcodeFileInput" type="file" accept=".gcode,.gco,.txt" class="hidden" onchange="handleGcodeUpload(event, 'deduct')" />
         </label>
         <div id="gcodeResultBox" class="hidden rounded-xl t-sub p-3.5 space-y-3">
@@ -192,7 +191,7 @@
           <div class="rounded-xl t-panel p-2.5 space-y-2">
             <button type="button" onclick="toggleBufferPreview()" class="w-full flex items-center justify-between text-xs font-bold cursor-pointer">
               <span id="bufferPreviewTitle">📦 Inhalt ausfahren</span>
-              <i id="bufferChevron" data-lucide="chevron-down" class="w-4 h-4 text-sky-400 transition-transform"></i>
+              <span>▼</span>
             </button>
             <div id="bufferSpoolDetailsList" class="hidden pt-2 border-t border-slate-500/15 space-y-1.5 max-h-52 overflow-y-auto"></div>
           </div>
@@ -254,7 +253,7 @@
         <!-- 1. Darstellung & Design -->
         <div class="rounded-xl t-sub overflow-hidden">
           <button type="button" onclick="toggleSettingsAccordion('accDesign')" class="w-full p-3.5 flex items-center justify-between text-xs font-extrabold uppercase cursor-pointer">
-            <span>🎨 1. Darstellung & Design</span><i data-lucide="chevron-down" class="w-4 h-4"></i>
+            <span>🎨 1. Darstellung & Design</span><span>▼</span>
           </button>
           <div id="accDesign" class="p-3.5 pt-0 border-t border-slate-500/15 space-y-3">
             <div>
@@ -296,7 +295,7 @@
         <!-- 2. Standardwerte (Spulen & Beutel) -->
         <div class="rounded-xl t-sub overflow-hidden">
           <button type="button" onclick="toggleSettingsAccordion('accTara')" class="w-full p-3.5 flex items-center justify-between text-xs font-extrabold uppercase cursor-pointer">
-            <span>⚖️ 2. Standardwerte (Spulen & Beutel)</span><i data-lucide="chevron-down" class="w-4 h-4"></i>
+            <span>⚖️ 2. Standardwerte (Spulen & Beutel)</span><span>▼</span>
           </button>
           <div id="accTara" class="hidden p-3.5 pt-0 border-t border-slate-500/15 space-y-3">
             <div>
@@ -317,7 +316,7 @@
         <!-- 3. Haltbarkeit pro Filament -->
         <div class="rounded-xl t-sub overflow-hidden">
           <button type="button" onclick="toggleSettingsAccordion('accDry')" class="w-full p-3.5 flex items-center justify-between text-xs font-extrabold uppercase cursor-pointer">
-            <span>🔥 3. Haltbarkeit pro Filament</span><i data-lucide="chevron-down" class="w-4 h-4"></i>
+            <span>🔥 3. Haltbarkeit pro Filament</span><span>▼</span>
           </button>
           <div id="accDry" class="hidden p-3.5 pt-0 border-t border-slate-500/15 space-y-3">
             <select id="settingMatSelect" onchange="loadMaterialPresetIntoSettings()" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-bold outline-none">
@@ -352,18 +351,18 @@
       </div>
       <div class="flex flex-wrap items-center gap-2">
         <button id="minimalModeToggleBtn" type="button" onclick="toggleMinimalMode()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-sub text-xs font-bold cursor-pointer">
-          <i data-lucide="eye" class="w-3.5 h-3.5 text-sky-400"></i>
+          <span>👁️</span>
           <span id="minimalModeLabel">Schlicht-Modus: AUS</span>
         </button>
         <div class="inline-flex items-center rounded-xl t-sub overflow-hidden">
-          <button id="undoBtn" type="button" onclick="undoAction()" class="p-2 hover:opacity-75 disabled:opacity-30 cursor-pointer"><i data-lucide="undo-2" class="w-3.5 h-3.5"></i></button>
-          <button id="redoBtn" type="button" onclick="redoAction()" class="p-2 hover:opacity-75 border-l border-slate-500/15 disabled:opacity-30 cursor-pointer"><i data-lucide="redo-2" class="w-3.5 h-3.5"></i></button>
+          <button id="undoBtn" type="button" onclick="undoAction()" class="px-2.5 py-1.5 text-xs font-bold hover:opacity-75 disabled:opacity-30 cursor-pointer" title="Rückgängig">↶</button>
+          <button id="redoBtn" type="button" onclick="redoAction()" class="px-2.5 py-1.5 text-xs font-bold hover:opacity-75 border-l border-slate-500/15 disabled:opacity-30 cursor-pointer" title="Vorwärts">↷</button>
         </div>
         <button type="button" onclick="openDrawerTab('vault')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-sub text-xs font-bold cursor-pointer">
-          <i data-lucide="archive-restore" class="w-3.5 h-3.5 text-emerald-400"></i><span>Speicher & Import</span>
+          <span>🛡️</span><span>Speicher & Import</span>
         </button>
         <button type="button" onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-extrabold cursor-pointer">
-          <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i><span>Neue Spule</span>
+          <span>＋ Neue Spule</span>
         </button>
       </div>
     </header>
@@ -383,7 +382,7 @@
         </div>
         <div class="flex flex-col sm:flex-row gap-2">
           <button id="micBtnQuick" type="button" onclick="startVoiceRecognition('quickLinkInput', 'micBtnQuick', false, false, true)" class="px-3.5 py-2.5 rounded-xl t-sub text-sky-400 flex items-center justify-center gap-1.5 shrink-0 text-xs font-bold cursor-pointer">
-            <i data-lucide="mic" class="w-4 h-4"></i><span>🎙️ Einsprechen</span>
+            <span>🎙️ Einsprechen</span>
           </button>
           <input id="quickLinkInput" type="text" placeholder="z.B. 'Bambu Lab PLA Dunkelgrün im eBOS Beutel 476g in 15 Tagen trocknen' oder Shop-Link..." class="w-full px-3.5 py-2.5 rounded-xl t-input text-xs sm:text-sm outline-none focus:border-sky-500" onkeydown="if(event.key==='Enter')handleQuickLinkImport()" />
           <button id="quickSubmitBtn" type="button" onclick="handleQuickLinkImport()" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs sm:text-sm whitespace-nowrap cursor-pointer">⚡ Sofort eintragen</button>
@@ -394,19 +393,19 @@
       <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div class="t-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div><p class="text-xs t-muted">Spulen im Bestand</p><p id="statTotalSpools" class="text-xl sm:text-2xl font-extrabold font-mono-num mt-0.5">0</p></div>
-          <i data-lucide="disc-3" class="w-5 h-5 text-sky-400"></i>
+          <span class="text-lg">💿</span>
         </div>
         <div class="t-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div><p class="text-xs t-muted">Nettogewicht</p><p id="statTotalWeight" class="text-xl sm:text-2xl font-extrabold text-emerald-500 font-mono-num mt-0.5">0 g</p></div>
-          <i data-lucide="scale" class="w-5 h-5 text-emerald-500"></i>
+          <span class="text-lg">⚖️</span>
         </div>
         <div class="t-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div><p class="text-xs t-muted">Materialwert</p><p id="statTotalValue" class="text-xl sm:text-2xl font-extrabold text-sky-500 font-mono-num mt-0.5">0,00 €</p></div>
-          <i data-lucide="badge-euro" class="w-5 h-5 text-sky-500"></i>
+          <span class="text-lg">💶</span>
         </div>
         <div class="t-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div><p class="text-xs t-muted">Trocknung fällig</p><p id="statDryingDue" class="text-xl sm:text-2xl font-extrabold text-rose-500 font-mono-num mt-0.5">0</p></div>
-          <i data-lucide="flame" class="w-5 h-5 text-rose-500"></i>
+          <span class="text-lg">🔥</span>
         </div>
       </section>
 
@@ -564,14 +563,28 @@
   <!-- VERSIONS-ANZEIGE UNTEN RECHTS -->
   <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full t-panel shadow-xl text-[11px] backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-sky-400">v20.1</span>
+    <span class="font-mono-num font-bold text-sky-400">v20.2</span>
     <span class="t-muted">|</span>
-    <span class="font-mono-num">19.10.2026, 20:20 Uhr</span>
+    <span class="font-mono-num">19.10.2026, 20:32 Uhr</span>
     <span class="t-muted">|</span>
     <span id="syncStatusLabel" class="text-emerald-400 font-semibold">Synchron</span>
   </div>
 
   <script>
+    // SICHERE HILFSFUNKTIONEN FÜR FIREFOX & BROWSER
+    function safeGet(key, fallback = null) {
+      try { const v = localStorage.getItem(key); return v !== null ? v : fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, val) {
+      try { localStorage.setItem(key, val); } catch (e) {}
+    }
+    function safeJson(str, fallback) {
+      try { return str ? JSON.parse(str) : fallback; } catch (e) { return fallback; }
+    }
+    function safeIcons() {
+      try { if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons(); } catch (e) {}
+    }
+
     const SETTINGS_KEY = 'filamenthub_settings_v20';
     const CUSTOM_BRANDS_KEY = 'filamenthub_custom_brands_v20';
     const CUSTOM_MATS_KEY = 'filamenthub_custom_mats_v20';
@@ -579,11 +592,10 @@
     let appSettings = {
       theme: 'obsidian', minimalMode: false, barStyle: 'blue_green',
       gridCols: 'auto', ttsEnabled: true, ebosWeight: 25, ovpWeight: 18,
-      entryMode: 'auto', browserRescueUsed: false
+      entryMode: 'auto', browserRescueUsed: false,
+      ...safeJson(safeGet(SETTINGS_KEY), {})
     };
-    try { appSettings = { ...appSettings, ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}') }; } catch (e) {}
 
-    // Bereinigte Hersteller-Liste (Nur reine Namen im Dropdown, ohne Eibos, BQ, Das Filament, Jayo, Anycubic, Extrudr, 3DJake)
     let BRAND_DATABASE = [
       { keys: ['bambulab', 'bambu lab', 'bambu'], name: 'Bambu Lab', tara: 250, basePrice: 19.99 },
       { keys: ['sunlu', 'sunluu'], name: 'SUNLU', tara: 195, basePrice: 14.99 },
@@ -597,10 +609,8 @@
       { keys: ['geeetech'], name: 'Geeetech', tara: 195, basePrice: 14.99 },
       { keys: ['eono'], name: 'Eono', tara: 150, basePrice: 17.99 }
     ];
-    try {
-      const sb = JSON.parse(localStorage.getItem(CUSTOM_BRANDS_KEY) || 'null');
-      if (Array.isArray(sb) && sb.length) BRAND_DATABASE = sb;
-    } catch (e) {}
+    const savedBrands = safeJson(safeGet(CUSTOM_BRANDS_KEY), null);
+    if (Array.isArray(savedBrands) && savedBrands.length) BRAND_DATABASE = savedBrands;
 
     let MATERIAL_PRESETS = {
       'PLA':            { openDays: 30, ebosBagDays: 180, factorySealedDays: 365, temp: 50, hours: 5, defaultPrice: 17.99 },
@@ -611,12 +621,9 @@
       'ASA':            { openDays: 14, ebosBagDays: 120, factorySealedDays: 365, temp: 70, hours: 6, defaultPrice: 23.99 },
       'PA / Nylon':     { openDays: 2,  ebosBagDays: 45,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 34.99 },
       'PC':             { openDays: 5,  ebosBagDays: 60,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 36.99 },
-      'PET-CF / PA-CF': { openDays: 4,  ebosBagDays: 60,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 39.99 }
+      'PET-CF / PA-CF': { openDays: 4,  ebosBagDays: 60,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 39.99 },
+      ...safeJson(safeGet(CUSTOM_MATS_KEY), {})
     };
-    try {
-      const sm = JSON.parse(localStorage.getItem(CUSTOM_MATS_KEY) || 'null');
-      if (sm && typeof sm === 'object') MATERIAL_PRESETS = { ...MATERIAL_PRESETS, ...sm };
-    } catch (e) {}
 
     const DICTATED_16_SPOOLS = [
       { id: 'sp-d1', brand: 'Bambu Lab', name: 'PETG Basic Weiß', material: 'PETG', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 866, emptySpoolWeight: 250, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 19.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 120, forceDryNow: false },
@@ -712,7 +719,6 @@
     function openDrawerTab(tabName) {
       const drawer = document.getElementById('sideDrawer');
       const backdrop = document.getElementById('drawerBackdrop');
-      const chevron = document.getElementById('drawerChevronIcon');
 
       if (activeDrawerTab === tabName && !drawer.classList.contains('-translate-x-[430px]')) {
         closeSideDrawer();
@@ -721,7 +727,6 @@
       activeDrawerTab = tabName;
       drawer.classList.remove('-translate-x-[430px]');
       if (window.innerWidth < 1024) backdrop.classList.remove('hidden');
-      if (chevron) chevron.setAttribute('data-lucide', 'chevrons-left');
 
       const titles = {
         ai: '🤖 KI-Agent & Diktat', gcode: '📂 G-Code Direkt-Abzug', calc: '🧮 Druck-Kostenrechner',
@@ -744,19 +749,17 @@
       if (tabName === 'calc') { populateCalcSpoolDropdown(); calculatePrintCost(); }
       if (tabName === 'gcode') renderGcodeSpoolSelection();
       if (tabName === 'settings') { populateBrandSelects(); loadBrandPresetIntoSettings(); loadMaterialPresetIntoSettings(); }
-      lucide.createIcons();
+      safeIcons();
     }
 
     function closeSideDrawer() {
       document.getElementById('sideDrawer')?.classList.add('-translate-x-[430px]');
       document.getElementById('drawerBackdrop')?.classList.add('hidden');
       activeDrawerTab = null;
-      document.getElementById('drawerChevronIcon')?.setAttribute('data-lucide', 'chevrons-right');
       ['ai', 'gcode', 'calc', 'vault', 'sync', 'settings'].forEach(t => {
         const btn = document.getElementById(`railBtn-${t}`);
         if (btn) btn.className = 'relative w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition t-muted hover:opacity-100 cursor-pointer';
       });
-      lucide.createIcons();
     }
 
     function toggleSideDrawer() {
@@ -778,28 +781,26 @@
     const CLOUD_ID_STORAGE_KEY = 'filamenthub_cloud_id';
     const ALL_LEGACY_STORAGE_KEYS = ['filamenthub_spools_v19', 'filamenthub_spools_v18', 'filamenthub_spools_v17', 'filamenthub_spools_v16', 'filamenthub_spools_permanent'];
 
-    let currentCloudId = localStorage.getItem(CLOUD_ID_STORAGE_KEY) || '2a75ad089c77e7c35f98';
+    let currentCloudId = safeGet(CLOUD_ID_STORAGE_KEY, '2a75ad089c77e7c35f98');
     function getCloudDbUrl() { return `https://api.npoint.io/${currentCloudId}`; }
 
     let spools = [];
     let bufferSpools = [];
     let printHistory = [];
-    let deletedIds = JSON.parse(localStorage.getItem(DELETED_TOMBSTONES_KEY) || '[]');
-    let localUpdatedAt = Number(localStorage.getItem(LOCAL_UPDATED_AT_KEY) || 0);
+    let deletedIds = safeJson(safeGet(DELETED_TOMBSTONES_KEY), []);
+    let localUpdatedAt = Number(safeGet(LOCAL_UPDATED_AT_KEY, '0'));
     let lastUserInteractionTime = 0;
     let activeMaterialFilter = 'ALL';
     let openScaleCards = {};
     let isSyncing = false;
     let pendingSync = false;
 
-    try {
-      const savedBuf = JSON.parse(localStorage.getItem(BUFFER_STORAGE_KEY) || 'null');
-      bufferSpools = (Array.isArray(savedBuf) && savedBuf.length > 0) ? savedBuf : JSON.parse(JSON.stringify(DICTATED_16_SPOOLS));
-    } catch (e) { bufferSpools = JSON.parse(JSON.stringify(DICTATED_16_SPOOLS)); }
+    const savedBuf = safeJson(safeGet(BUFFER_STORAGE_KEY), null);
+    bufferSpools = (Array.isArray(savedBuf) && savedBuf.length > 0) ? savedBuf : JSON.parse(JSON.stringify(DICTATED_16_SPOOLS));
 
     function saveBufferSpools(newList) {
       bufferSpools = Array.isArray(newList) ? JSON.parse(JSON.stringify(newList)) : [];
-      localStorage.setItem(BUFFER_STORAGE_KEY, JSON.stringify(bufferSpools));
+      safeSet(BUFFER_STORAGE_KEY, JSON.stringify(bufferSpools));
       renderBufferUI();
     }
 
@@ -847,7 +848,7 @@
     function clearBufferNow() {
       saveBufferSpools([]);
       appSettings.browserRescueUsed = false;
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+      safeSet(SETTINGS_KEY, JSON.stringify(appSettings));
       renderBufferUI();
       showToast('🗑️ Zwischenspeicher gelöscht!');
     }
@@ -862,18 +863,13 @@
         if (!seen.has(sig)) { seen.add(sig); rescued.push(item); }
       };
       ALL_LEGACY_STORAGE_KEYS.forEach(k => {
-        const raw = localStorage.getItem(k);
-        if (raw) {
-          try {
-            const p = JSON.parse(raw);
-            (Array.isArray(p) ? p : (p.spools || [])).forEach(addU);
-          } catch (e) {}
-        }
+        const p = safeJson(safeGet(k), null);
+        if (p) (Array.isArray(p) ? p : (p.spools || [])).forEach(addU);
       });
       DICTATED_16_SPOOLS.forEach(addU);
       saveBufferSpools(rescued);
       appSettings.browserRescueUsed = true;
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+      safeSet(SETTINGS_KEY, JSON.stringify(appSettings));
       renderBufferUI();
       document.getElementById('bufferSpoolDetailsList')?.classList.remove('hidden');
       showToast(`✓ ${rescued.length} Spulen im Zwischenspeicher bereit!`);
@@ -939,18 +935,18 @@
     function saveLocalBackup(timestamp = Date.now()) {
       sanitizeSpools();
       localUpdatedAt = timestamp;
-      localStorage.setItem(PERMANENT_SPOOLS_KEY, JSON.stringify(spools));
-      localStorage.setItem(PERMANENT_HISTORY_KEY, JSON.stringify(printHistory));
-      localStorage.setItem(DELETED_TOMBSTONES_KEY, JSON.stringify(deletedIds));
-      localStorage.setItem(LOCAL_UPDATED_AT_KEY, String(localUpdatedAt));
+      safeSet(PERMANENT_SPOOLS_KEY, JSON.stringify(spools));
+      safeSet(PERMANENT_HISTORY_KEY, JSON.stringify(printHistory));
+      safeSet(DELETED_TOMBSTONES_KEY, JSON.stringify(deletedIds));
+      safeSet(LOCAL_UPDATED_AT_KEY, String(localUpdatedAt));
       if (spools.length > 0) saveBufferSpools(spools);
     }
 
     async function loadStateFromCloud(manual = false) {
       if (!manual && isAnyModalOrInputActive()) return;
       if (spools.length === 0) {
-        const rawCurrent = localStorage.getItem(PERMANENT_SPOOLS_KEY);
-        if (rawCurrent) { try { spools = JSON.parse(rawCurrent).filter(s => !isUnwantedDefaultCharcoal(s)); } catch (e) {} }
+        const rawCurrent = safeJson(safeGet(PERMANENT_SPOOLS_KEY), null);
+        if (Array.isArray(rawCurrent)) spools = rawCurrent.filter(s => !isUnwantedDefaultCharcoal(s));
       }
       try {
         const res = await fetch(`${getCloudDbUrl()}?t=${Date.now()}`, { cache: 'no-store' });
@@ -1010,7 +1006,7 @@
       const val = document.getElementById('cloudIdInput').value.trim().replace('https://api.npoint.io/', '');
       if (!val) return;
       currentCloudId = val;
-      localStorage.setItem(CLOUD_ID_STORAGE_KEY, val);
+      safeSet(CLOUD_ID_STORAGE_KEY, val);
       forcePullFromCloud();
       renderSidebarQr();
     }
@@ -1046,7 +1042,7 @@
       if (!b) return;
       b.tara = parseInt(document.getElementById('settingBrandTara').value) || 0;
       b.basePrice = parseFloat(document.getElementById('settingBrandPrice').value) || 17.99;
-      localStorage.setItem(CUSTOM_BRANDS_KEY, JSON.stringify(BRAND_DATABASE));
+      safeSet(CUSTOM_BRANDS_KEY, JSON.stringify(BRAND_DATABASE));
       populateBrandSelects();
     }
 
@@ -1068,27 +1064,27 @@
       MATERIAL_PRESETS[mat].factorySealedDays = parseInt(document.getElementById('settingMatOvpDays').value) || 365;
       MATERIAL_PRESETS[mat].temp = parseInt(document.getElementById('settingMatTemp').value) || 50;
       MATERIAL_PRESETS[mat].hours = parseInt(document.getElementById('settingMatHours').value) || 5;
-      localStorage.setItem(CUSTOM_MATS_KEY, JSON.stringify(MATERIAL_PRESETS));
+      safeSet(CUSTOM_MATS_KEY, JSON.stringify(MATERIAL_PRESETS));
       saveLocalBackup();
       renderSpools(true);
     }
 
     function setEntryMode(mode) {
       appSettings.entryMode = mode;
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+      safeSet(SETTINGS_KEY, JSON.stringify(appSettings));
       applySettingsToUI();
     }
 
     function toggleMinimalMode(forceVal = null) {
       appSettings.minimalMode = typeof forceVal === 'boolean' ? forceVal : !appSettings.minimalMode;
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+      safeSet(SETTINGS_KEY, JSON.stringify(appSettings));
       applySettingsToUI();
       renderSpools(true);
     }
 
     function updateAppSetting(key, val) {
       appSettings[key] = val;
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+      safeSet(SETTINGS_KEY, JSON.stringify(appSettings));
       applySettingsToUI();
       renderSpools(true);
     }
@@ -1189,7 +1185,7 @@
       rec.start();
     }
 
-    // SMART PARSER & LINK-FARBERKENNUNG (OHNE GEWICHT ZU ÜBERSCHREIBEN)
+    // SMART PARSER & LINK-FARBERKENNUNG
     function autoMatchHexFromColorInput(val) {
       const lower = (val || '').toLowerCase();
       for (const c of COLOR_MAP) {
@@ -1272,7 +1268,6 @@
       };
     }
 
-    // Zieht im Modal NUR die Farbe & Link aus der URL – lässt das Gewicht komplett unberührt!
     async function extractUrlInModalKeepWeight() {
       const urlInput = document.getElementById('fProductUrl');
       const statusEl = document.getElementById('modalUrlStatus');
@@ -1327,11 +1322,11 @@
       const trimmed = (rawText || '').trim();
       if (!trimmed) return [];
       if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
-        try {
-          const p = JSON.parse(trimmed);
+        const p = safeJson(trimmed, null);
+        if (p) {
           const list = Array.isArray(p) ? p : (p.spools || []);
           return list.filter(Boolean);
-        } catch (e) {}
+        }
       }
       const result = [];
       const modes = getStorageModes();
@@ -1636,10 +1631,10 @@
                     <h3 class="text-sm font-bold truncate mt-0.5">${spool.name}</h3>
                   </div>
                 </div>
-                <div class="flex items-center gap-1 shrink-0">
-                  <a href="${shopUrl}" target="_blank" rel="noopener" class="p-1.5 rounded-lg t-sub text-sky-500"><i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-                  <button type="button" onclick="openSpoolModal('${spool.id}')" class="p-1.5 rounded-lg t-sub cursor-pointer"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
-                  <button type="button" onclick="deleteSpool('${spool.id}')" class="p-1.5 rounded-lg t-sub text-rose-500 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                <div class="flex items-center gap-1 shrink-0 text-xs">
+                  <a href="${shopUrl}" target="_blank" rel="noopener" class="px-2 py-1 rounded-lg t-sub text-sky-500 font-bold" title="Shop-Link">🔗</a>
+                  <button type="button" onclick="openSpoolModal('${spool.id}')" class="px-2 py-1 rounded-lg t-sub cursor-pointer" title="Bearbeiten">✏️</button>
+                  <button type="button" onclick="deleteSpool('${spool.id}')" class="px-2 py-1 rounded-lg t-sub text-rose-500 cursor-pointer" title="Löschen">🗑️</button>
                 </div>
               </div>
               <div class="space-y-1">
@@ -1673,10 +1668,10 @@
                   <h3 class="text-sm font-bold truncate mt-0.5">${spool.name}</h3>
                 </div>
               </div>
-              <div class="flex items-center gap-1 shrink-0">
-                <a href="${shopUrl}" target="_blank" rel="noopener" class="p-1.5 rounded-lg t-sub text-sky-500"><i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-                <button type="button" onclick="openSpoolModal('${spool.id}')" class="p-1.5 rounded-lg t-sub cursor-pointer"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
-                <button type="button" onclick="deleteSpool('${spool.id}')" class="p-1.5 rounded-lg t-sub text-rose-500 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+              <div class="flex items-center gap-1 shrink-0 text-xs">
+                <a href="${shopUrl}" target="_blank" rel="noopener" class="px-2 py-1 rounded-lg t-sub text-sky-500 font-bold" title="Produkt-Link">🔗</a>
+                <button type="button" onclick="openSpoolModal('${spool.id}')" class="px-2 py-1 rounded-lg t-sub cursor-pointer" title="Bearbeiten">✏️</button>
+                <button type="button" onclick="deleteSpool('${spool.id}')" class="px-2 py-1 rounded-lg t-sub text-rose-500 cursor-pointer" title="Löschen">🗑️</button>
               </div>
             </div>
 
@@ -1732,7 +1727,7 @@
           </div>
         `;
       }).join('');
-      lucide.createIcons();
+      safeIcons();
     }
 
     // UNDO, MODAL & HELFER
@@ -1741,7 +1736,7 @@
     function snapshotState() { return JSON.stringify({ spools, printHistory, deletedIds }); }
     function pushUndo() { undoStack.push(snapshotState()); if (undoStack.length > 50) undoStack.shift(); redoStack = []; updateUndoRedoButtons(); }
     function restoreSnapshot(json) {
-      const d = JSON.parse(json);
+      const d = safeJson(json, {});
       spools = d.spools || []; printHistory = d.printHistory || []; deletedIds = d.deletedIds || [];
       saveState(); updateUndoRedoButtons();
     }
@@ -1817,7 +1812,7 @@
       const input = document.getElementById('qrUrlSidebarInput');
       const box = document.getElementById('qrCanvasSidebar');
       if (!input || !box) return;
-      if (!input.value) input.value = localStorage.getItem(QR_URL_KEY) || (location.protocol.startsWith('http') ? location.href.split('?')[0] : '');
+      if (!input.value) input.value = safeGet(QR_URL_KEY, location.protocol.startsWith('http') ? location.href.split('?')[0] : '');
       const url = input.value.trim();
       box.innerHTML = '';
       if (!url || url.startsWith('file:')) { box.innerHTML = 'Online-URL unten eintragen'; return; }
@@ -1825,7 +1820,7 @@
     }
     function onSidebarQrInput() {
       const url = document.getElementById('qrUrlSidebarInput')?.value.trim();
-      if (url) localStorage.setItem(QR_URL_KEY, url);
+      if (url) safeSet(QR_URL_KEY, url);
       renderSidebarQr();
     }
 
