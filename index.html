@@ -17,7 +17,7 @@
     .overdue-card { animation: pulse-border 2.2s infinite; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
+<body class="min-h-screen flex flex-col selection:bg-orange-500 selection:text-white pb-12">
 
   <!-- TOP NAVBAR -->
   <header class="sticky top-0 z-30 backdrop-blur-xl bg-slate-900/85 border-b border-slate-800">
@@ -99,6 +99,12 @@
     <section id="spoolGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></section>
 
   </main>
+
+  <!-- UNTEN RECHTS: VERSION & TIMESTAMP -->
+  <div class="fixed bottom-3 right-3 z-40 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-xl backdrop-blur-md shadow-lg pointer-events-none flex items-center gap-2 text-[11px] text-slate-400 font-mono-num">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+    <span>v8.0 • 19.10.2026, 09:57 Uhr</span>
+  </div>
 
   <!-- ADD / EDIT SPOOL MODAL -->
   <div id="spoolModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 overflow-y-auto">
@@ -219,8 +225,8 @@
       { keys: ['transparent', 'clear', 'translucent', 'natur'], name: 'Transparent / Natur', hex: '#cbd5e1' }
     ];
 
-    const STORAGE_KEY_SPOOLS = 'filamenthub_spools_v7';
-    const STORAGE_KEY_HISTORY = 'filamenthub_history_v7';
+    const STORAGE_KEY_SPOOLS = 'filamenthub_spools_v8';
+    const STORAGE_KEY_HISTORY = 'filamenthub_history_v8';
 
     let spools = [];
     let printHistory = [];
@@ -270,9 +276,8 @@
       }
     }
 
-    // Verbesserter Intelligenter Link- & Farb-Parser
     function parseFilamentData(urlStr, title = '') {
-      const lower = `${urlStr}${title}`.toLowerCase();
+      const lower = `${urlStr} ${title}`.toLowerCase();
       
       let detectedBrand = 'Bambu Lab';
       for (const b of BRAND_DATABASE) {
@@ -296,7 +301,7 @@
         }
       }
 
-      let cleanName = title ? title.split('|')[0].replace(/-/g, ' ').trim() : `${detectedMaterial}${detectedColorName}`;
+      let cleanName = title ? title.split('|')[0].replace(/-/g, ' ').trim() : `${detectedMaterial} ${detectedColorName}`;
 
       return {
         brand: detectedBrand,
@@ -370,3 +375,139 @@
           <div class="rounded-2xl bg-slate-900/95 border ${dry.isOverdue ? 'overdue-card border-rose-500/70' : 'border-slate-800'} p-5 space-y-3">
             <div class="flex justify-between items-start">
               <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
+                  <span class="w-4 h-4 rounded-full border border-white/20 shadow" style="background-color: ${hex}"></span>
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase font-bold text-slate-400">${spool.brand}</span>
+                  <h3 class="text-sm font-bold text-white">${spool.name}</h3>
+                </div>
+              </div>
+              <button onclick="deleteSpool('${spool.id}')" class="text-slate-500 hover:text-rose-400 text-xs">✕</button>
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs text-slate-400"><span>Restgewicht (${spool.colorName || 'Farbe'})</span><span class="font-mono-num text-white font-bold">${spool.remainingWeight}g / ${spool.initialWeight}g</span></div>
+              <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden"><div class="h-full bg-emerald-500" style="width: ${pct}%"></div></div>
+            </div>
+            <div class="flex items-center gap-2">
+              <input id="deduct-${spool.id}" type="number" placeholder="Gramm" class="w-24 px-2 py-1 rounded-lg bg-slate-950 border border-slate-800 text-xs text-white font-mono-num" />
+              <button onclick="deductWeight('${spool.id}')" class="px-3 py-1 rounded-lg bg-orange-500 text-xs font-bold text-white">Abziehen</button>
+            </div>
+            <div class="rounded-lg bg-slate-950/80 p-2 text-xs flex justify-between items-center border border-slate-800/60">
+              <span class="${dry.isOverdue ? 'text-rose-400 font-bold' : 'text-slate-300'}">Trocknung: ${dry.days}d ${dry.hours}h</span>
+              <button onclick="markDried('${spool.id}')" class="px-2 py-1 rounded bg-slate-800 text-[10px] text-orange-400 font-semibold">Getrocknet</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function deductWeight(id) {
+      const input = document.getElementById(`deduct-${id}`);
+      const g = parseInt(input.value);
+      if (!g || g <= 0) return;
+      const spool = spools.find(s => s.id === id);
+      spool.remainingWeight = Math.max(0, spool.remainingWeight - g);
+      printHistory.unshift({ id: 'log-' + Date.now(), spoolLabel: `${spool.brand} ${spool.name}`, grams: g, timestamp: new Date().toISOString() });
+      input.value = '';
+      saveState();
+      renderSpools();
+    }
+
+    function markDried(id) {
+      const spool = spools.find(s => s.id === id);
+      spool.lastDried = new Date().toISOString();
+      saveState();
+      renderSpools();
+    }
+
+    function deleteSpool(id) {
+      spools = spools.filter(s => s.id !== id);
+      saveState();
+      renderSpools();
+    }
+
+    function handleBrandDropdownChange() {
+      const select = document.getElementById('fBrandSelect');
+      const customInput = document.getElementById('fBrandCustom');
+      if (select.value === 'OTHER') {
+        customInput.classList.remove('hidden');
+        customInput.focus();
+      } else {
+        customInput.classList.add('hidden');
+      }
+    }
+
+    function populateModalFields(data) {
+      if (data.productUrl) document.getElementById('fProductUrl').value = data.productUrl;
+      if (data.name) document.getElementById('fName').value = data.name;
+      if (data.material) document.getElementById('fMaterial').value = data.material;
+      if (data.colorHex) document.getElementById('fColorHex').value = data.colorHex;
+      if (data.colorName) document.getElementById('fColorName').value = data.colorName;
+      if (data.brand) {
+        const select = document.getElementById('fBrandSelect');
+        const match = Array.from(select.options).some(o => o.value === data.brand);
+        if (match) {
+          select.value = data.brand;
+          document.getElementById('fBrandCustom').classList.add('hidden');
+        } else {
+          select.value = 'OTHER';
+          document.getElementById('fBrandCustom').classList.remove('hidden');
+          document.getElementById('fBrandCustom').value = data.brand;
+        }
+      }
+    }
+
+    function openSpoolModal(spoolId = null, prefill = null) {
+      document.getElementById('fId').value = '';
+      document.getElementById('fProductUrl').value = '';
+      document.getElementById('fName').value = '';
+      document.getElementById('fBrandSelect').value = 'Bambu Lab';
+      document.getElementById('fBrandCustom').classList.add('hidden');
+      document.getElementById('fBrandCustom').value = '';
+      document.getElementById('fColorHex').value = '#f97316';
+      document.getElementById('fColorName').value = 'Orange';
+      
+      if (prefill) populateModalFields(prefill);
+      document.getElementById('spoolModal').classList.replace('hidden', 'flex');
+    }
+
+    function closeSpoolModal() { document.getElementById('spoolModal').classList.replace('flex', 'hidden'); }
+
+    function saveSpool(e) {
+      e.preventDefault();
+      const selectVal = document.getElementById('fBrandSelect').value;
+      const customVal = document.getElementById('fBrandCustom').value.trim();
+      const brand = selectVal === 'OTHER' ? (customVal || 'Unbekannt') : selectVal;
+
+      spools.unshift({
+        id: 'sp-' + Date.now(),
+        brand: brand,
+        name: document.getElementById('fName').value,
+        material: document.getElementById('fMaterial').value,
+        colorHex: document.getElementById('fColorHex').value,
+        colorName: document.getElementById('fColorName').value,
+        initialWeight: parseInt(document.getElementById('fInitialWeight').value),
+        remainingWeight: parseInt(document.getElementById('fRemainingWeight').value),
+        lastDried: new Date().toISOString(),
+        dryIntervalDays: 30
+      });
+      saveState();
+      closeSpoolModal();
+      renderSpools();
+    }
+
+    function openHistoryModal() {
+      document.getElementById('historyList').innerHTML = printHistory.map(h => `<div class="p-2 bg-slate-950 rounded text-xs flex justify-between"><span>${h.spoolLabel}</span><span class="text-orange-400 font-bold">-${h.grams}g</span></div>`).join('') || '<p class="text-xs text-slate-500">Keine Einträge</p>';
+      document.getElementById('historyModal').classList.replace('hidden', 'flex');
+    }
+    function closeHistoryModal() { document.getElementById('historyModal').classList.replace('flex', 'hidden'); }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStateFromCloud();
+      setInterval(loadStateFromCloud, 15000);
+    });
+  </script>
+</body>
+</html>
