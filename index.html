@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#080c14" />
-  <title>FilamentHub v18.0 – 3D-Filament Manager</title>
+  <title>FilamentHub v18.1 – 3D-Filament Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -39,7 +39,7 @@
     .clean-card {
       background-color: #0f1623;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
     }
     .clean-card:hover {
       border-color: rgba(56, 189, 248, 0.4);
@@ -72,7 +72,7 @@
       
       <!-- Ganz links: Menü-Toggle & Logo -->
       <div class="flex items-center gap-2.5">
-        <button onclick="toggleSidebar()" class="px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.09] transition flex items-center gap-2 text-xs font-bold">
+        <button type="button" onclick="toggleSidebar()" class="px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.09] transition flex items-center gap-2 text-xs font-bold cursor-pointer">
           <i data-lucide="panel-left" class="w-4 h-4 text-sky-400"></i>
           <span>Menü</span>
         </button>
@@ -88,12 +88,12 @@
       <!-- Rechts: Schlicht-Schalter, Zwischenspeicher, Import & Neue Spule -->
       <div class="flex flex-wrap items-center gap-2">
         
-        <!-- SCHALTER: SCHLICHT-MODUS (MINIMAL-ANSICHT) -->
+        <!-- SCHALTER: SCHLICHT-MODUS -->
         <button
           id="minimalModeToggleBtn"
+          type="button"
           onclick="toggleMinimalMode()"
-          class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold transition"
-          title="Schaltet zwischen kompletter Ansicht und ultra-schlichter Ansicht um"
+          class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.08] text-xs font-bold transition cursor-pointer"
         >
           <i data-lucide="eye" class="w-3.5 h-3.5"></i>
           <span id="minimalModeLabel">Schlicht-Modus: AUS</span>
@@ -101,29 +101,29 @@
 
         <!-- Undo / Redo -->
         <div class="inline-flex items-center rounded-xl bg-surface-900 border border-white/[0.08]">
-          <button id="undoBtn" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:bg-surface-850 text-slate-300 transition disabled:opacity-30">
+          <button id="undoBtn" type="button" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:bg-surface-850 text-slate-300 transition disabled:opacity-30 cursor-pointer">
             <i data-lucide="undo-2" class="w-3.5 h-3.5"></i>
           </button>
-          <button id="redoBtn" onclick="redoAction()" title="Vorwärts (Strg+Y)" class="p-2 hover:bg-surface-850 text-slate-300 border-l border-white/[0.08] transition disabled:opacity-30">
+          <button id="redoBtn" type="button" onclick="redoAction()" title="Vorwärts (Strg+Y)" class="p-2 hover:bg-surface-850 text-slate-300 border-l border-white/[0.08] transition disabled:opacity-30 cursor-pointer">
             <i data-lucide="redo-2" class="w-3.5 h-3.5"></i>
           </button>
         </div>
 
         <!-- ZWISCHENSPEICHER / NOTFALL-TRESOR -->
-        <button onclick="openSidebarTab('settings')" title="Zwischenspeicher & Einstellungen öffnen" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-emerald-400 text-xs font-semibold border border-emerald-500/25 transition">
+        <button type="button" onclick="openSidebarTab('settings')" title="Zwischenspeicher & Einstellungen öffnen" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-emerald-400 text-xs font-semibold border border-emerald-500/25 transition cursor-pointer">
           <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
           <span class="hidden md:inline">Zwischenspeicher</span>
           <span id="snapshotBadge" class="px-1.5 py-0.2 text-[10px] font-mono-num rounded-full bg-emerald-500/15 text-emerald-300">0</span>
         </button>
 
         <!-- Datei / JSON / Text Import & Export -->
-        <button onclick="openDataVaultModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 text-xs font-semibold border border-white/[0.08] transition">
+        <button type="button" onclick="openDataVaultModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 text-xs font-semibold border border-white/[0.08] transition cursor-pointer">
           <i data-lucide="folder-sync" class="w-3.5 h-3.5 text-sky-400"></i>
           <span>Import / Export</span>
         </button>
 
         <!-- Neue Spule -->
-        <button onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold transition shadow-sm">
+        <button type="button" onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold transition shadow-sm cursor-pointer">
           <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
           <span>Neue Spule</span>
         </button>
@@ -137,37 +137,36 @@
     <!-- Mobile Backdrop -->
     <div id="sidebarBackdrop" onclick="closeSidebarOnMobile()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden lg:hidden"></div>
 
-    <!-- ================= LINKES MENÜ (KOMPLETT AM LINKEN RAND) ================= -->
+    <!-- ================= LINKES MENÜ (KOMPLETT LINKSBÜNDIG) ================= -->
     <aside id="leftSidebar" class="fixed lg:sticky top-0 lg:top-[53px] left-0 z-50 lg:z-20 h-screen lg:h-[calc(100vh-53px)] w-[340px] sm:w-[370px] bg-surface-900 border-r border-white/[0.08] flex flex-col transition-all duration-200 -translate-x-full lg:translate-x-0 shrink-0 overflow-hidden">
       
-      <!-- Sidebar Navigation (5 Tabs inkl. Einstellungen) -->
       <div class="p-3 border-b border-white/[0.07] bg-surface-950/50">
         <div class="flex items-center justify-between mb-2 px-1">
           <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Menü & Werkzeuge</span>
-          <button onclick="toggleSidebar()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
+          <button type="button" onclick="toggleSidebar()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer">
             <i data-lucide="chevrons-left" class="w-3.5 h-3.5"></i>
             <span>Einklappen</span>
           </button>
         </div>
 
         <div class="grid grid-cols-5 gap-1 bg-surface-950 p-1 rounded-xl border border-white/[0.06]">
-          <button id="tabBtn-ai" onclick="switchSidebarTab('ai')" class="py-2 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-1 transition bg-sky-500 text-surface-950">
+          <button id="tabBtn-ai" type="button" onclick="switchSidebarTab('ai')" class="py-2 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-1 transition bg-sky-500 text-surface-950 cursor-pointer">
             <i data-lucide="bot" class="w-4 h-4"></i>
             <span>KI-Agent</span>
           </button>
-          <button id="tabBtn-gcode" onclick="switchSidebarTab('gcode')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
+          <button id="tabBtn-gcode" type="button" onclick="switchSidebarTab('gcode')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white cursor-pointer">
             <i data-lucide="file-code-2" class="w-4 h-4"></i>
             <span>G-Code</span>
           </button>
-          <button id="tabBtn-calc" onclick="switchSidebarTab('calc')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
+          <button id="tabBtn-calc" type="button" onclick="switchSidebarTab('calc')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white cursor-pointer">
             <i data-lucide="calculator" class="w-4 h-4"></i>
             <span>Rechner</span>
           </button>
-          <button id="tabBtn-sync" onclick="switchSidebarTab('sync')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
+          <button id="tabBtn-sync" type="button" onclick="switchSidebarTab('sync')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white cursor-pointer">
             <i data-lucide="smartphone" class="w-4 h-4"></i>
             <span>Sync</span>
           </button>
-          <button id="tabBtn-settings" onclick="switchSidebarTab('settings')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
+          <button id="tabBtn-settings" type="button" onclick="switchSidebarTab('settings')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white cursor-pointer">
             <i data-lucide="settings" class="w-4 h-4"></i>
             <span>Optionen</span>
           </button>
@@ -176,12 +175,12 @@
 
       <div class="flex-1 overflow-y-auto p-4 space-y-4">
 
-        <!-- TAB 1: KI-AGENT (INKL. FIREFOX SPRACHAUSGABE & DIKTAT) -->
+        <!-- TAB 1: KI-AGENT -->
         <div id="sidebarPanel-ai" class="flex flex-col h-full space-y-3">
           <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-1.5">
             <div class="flex items-center justify-between">
               <p class="text-xs font-bold text-white">KI-Agent & Sprachsteuerung</p>
-              <button onclick="speakText('Sprachausgabe im Firefox und Browser ist bereit.')" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 text-[10px] font-semibold flex items-center gap-1">
+              <button type="button" onclick="speakText('Sprachausgabe im Firefox und Browser ist bereit.')" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 text-[10px] font-semibold flex items-center gap-1 cursor-pointer">
                 <i data-lucide="volume-2" class="w-3 h-3"></i>
                 <span>Test-Stimme</span>
               </button>
@@ -194,7 +193,7 @@
           <div id="aiChatMessages" class="flex-1 min-h-[250px] max-h-[400px] overflow-y-auto space-y-2 rounded-xl bg-surface-950 border border-white/[0.06] p-3 text-xs"></div>
 
           <div class="flex gap-1.5">
-            <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" title="Einsprechen (funktioniert auch mit Firefox Diktier-Helfer)" class="px-3 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 text-sky-400 border border-white/[0.1] transition">
+            <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" title="Einsprechen" class="px-3 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 text-sky-400 border border-white/[0.1] transition cursor-pointer">
               <i data-lucide="mic" class="w-4 h-4"></i>
             </button>
             <input
@@ -204,7 +203,7 @@
               class="flex-1 px-3 py-2.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-sky-500 text-xs text-white outline-none"
               onkeydown="if(event.key==='Enter'){ sendAiMessage(); }"
             />
-            <button onclick="sendAiMessage()" class="px-3.5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 font-bold text-xs transition">
+            <button type="button" onclick="sendAiMessage()" class="px-3.5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 font-bold text-xs transition cursor-pointer">
               <i data-lucide="send" class="w-4 h-4"></i>
             </button>
           </div>
@@ -215,7 +214,7 @@
           <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3">
             <h3 class="text-xs font-bold text-white">G-Code Direkt-Abzug</h3>
             <p class="text-[11px] text-slate-400 mt-1">
-              Fertige `.gcode` Datei reinziehen → Gewicht wird erkannt → Spule antippen und abziehen.
+              Fertige `.gcode` Datei hochladen → Gewicht wird erkannt → Spule antippen und abziehen.
             </p>
           </div>
 
@@ -229,7 +228,7 @@
           <div id="gcodeResultBox" class="hidden rounded-xl bg-surface-950 border border-emerald-500/35 p-3.5 space-y-3">
             <div class="flex items-center justify-between border-b border-white/[0.07] pb-2">
               <p id="gcodeFileName" class="text-xs font-bold text-white truncate">Druck.gcode</p>
-              <button onclick="transferGcodeToCalc()" class="text-[11px] text-sky-400 hover:underline font-semibold">→ Zum Rechner</button>
+              <button type="button" onclick="transferGcodeToCalc()" class="text-[11px] text-sky-400 hover:underline font-semibold cursor-pointer">→ Zum Rechner</button>
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div class="rounded-lg bg-surface-900 p-2.5 border border-white/[0.06]">
@@ -303,21 +302,21 @@
               <span class="text-xs font-bold text-emerald-400">Gesamtkosten:</span>
               <span id="calcResTotal" class="text-lg font-extrabold font-mono-num text-emerald-400">1,08 €</span>
             </div>
-            <button onclick="deductFromCalculator()" class="w-full py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-bold transition">
+            <button type="button" onclick="deductFromCalculator()" class="w-full py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-bold transition cursor-pointer">
               Gewicht von Spule abziehen
             </button>
           </div>
         </div>
 
-        <!-- TAB 4: HANDY-KOPPLUNG & GIT-HOSTING -->
+        <!-- TAB 4: HANDY-KOPPLUNG -->
         <div id="sidebarPanel-sync" class="hidden space-y-3.5">
           <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-2.5">
             <h3 class="text-xs font-bold text-white">PC & Handy Cloud-Sync</h3>
             <div class="grid grid-cols-2 gap-2">
-              <button onclick="forcePushToCloud()" class="py-2 px-2.5 rounded-lg bg-sky-500 text-surface-950 text-[11px] font-bold">
+              <button type="button" onclick="forcePushToCloud()" class="py-2 px-2.5 rounded-lg bg-sky-500 text-surface-950 text-[11px] font-bold cursor-pointer">
                 ↑ In Cloud senden
               </button>
-              <button onclick="forcePullFromCloud()" class="py-2 px-2.5 rounded-lg bg-emerald-500 text-surface-950 text-[11px] font-bold">
+              <button type="button" onclick="forcePullFromCloud()" class="py-2 px-2.5 rounded-lg bg-emerald-500 text-surface-950 text-[11px] font-bold cursor-pointer">
                 ↓ Cloud abrufen
               </button>
             </div>
@@ -327,7 +326,7 @@
             <label class="block text-[11px] font-bold text-slate-300">Gemeinsame Cloud-ID (npoint.io):</label>
             <div class="flex gap-1.5">
               <input id="cloudIdInput" type="text" value="2a75ad089c77e7c35f98" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-emerald-400 outline-none" />
-              <button onclick="saveCloudId()" class="px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-850 text-white text-xs font-bold">Speichern</button>
+              <button type="button" onclick="saveCloudId()" class="px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-850 text-white text-xs font-bold cursor-pointer">Speichern</button>
             </div>
           </div>
 
@@ -344,25 +343,20 @@
 
         <!-- TAB 5: EINSTELLUNGS-MENÜ & ZWISCHENSPEICHER-TRESOR -->
         <div id="sidebarPanel-settings" class="hidden space-y-4">
-          
-          <!-- 1. Zwischenspeicher & Daten-Rettung -->
           <div class="rounded-xl bg-surface-950 border border-emerald-500/30 p-3.5 space-y-2.5">
-            <div class="flex items-center justify-between">
-              <h3 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-                <i data-lucide="shield-check" class="w-4 h-4"></i>
-                <span>Zwischenspeicher & Notfall-Tresor</span>
-              </h3>
-            </div>
+            <h3 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              <span>Zwischenspeicher & Notfall-Tresor</span>
+            </h3>
             <p class="text-[11px] text-slate-400">
-              Jeder Stand wird automatisch zwischengespeichert. Falls mal etwas gelöscht wurde, kannst du es hier sofort zurückholen.
+              Jeder Stand wird automatisch zwischengespeichert. Falls etwas gelöscht wurde, kannst du es hier sofort zurückholen.
             </p>
-            <button onclick="rescueAllBrowserStorage()" class="w-full py-2 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition">
+            <button type="button" onclick="rescueAllBrowserStorage()" class="w-full py-2 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition cursor-pointer">
               🔍 Alle alten Browser-Speicher durchsuchen & retten
             </button>
             <div id="snapshotListContainer" class="space-y-1.5 max-h-40 overflow-y-auto pt-1"></div>
           </div>
 
-          <!-- 2. Darstellungs-Optionen -->
           <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-3">
             <h3 class="text-xs font-bold text-white">Darstellung & Design</h3>
 
@@ -392,7 +386,6 @@
             </div>
           </div>
 
-          <!-- 3. Standardwerte (eBOS Bag, Strom, Sprache) -->
           <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-2.5">
             <h3 class="text-xs font-bold text-white">Standardwerte & Firefox-Audio</h3>
 
@@ -413,12 +406,10 @@
             </div>
           </div>
 
-          <!-- 4. Druck-Verlauf öffnen -->
-          <button onclick="openHistoryModal()" class="w-full py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 border border-white/[0.08] text-xs font-bold text-slate-200 flex items-center justify-center gap-2">
+          <button type="button" onclick="openHistoryModal()" class="w-full py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 border border-white/[0.08] text-xs font-bold text-slate-200 flex items-center justify-center gap-2 cursor-pointer">
             <i data-lucide="history" class="w-4 h-4 text-sky-400"></i>
             <span>Druck-Verlauf anzeigen (<span id="historyBadge">0</span>)</span>
           </button>
-
         </div>
 
       </div>
@@ -427,7 +418,7 @@
     <!-- ================= HAUPT-BEREICH RECHTS (VOLLE BREITE) ================= -->
     <main class="flex-1 min-w-0 w-full px-3 sm:px-6 py-4 space-y-4">
 
-      <!-- SCHNELL-EINGABE (WIRD IM SCHLICHT-MODUS AUTOMATISCH AUSGEBLENDET) -->
+      <!-- SCHNELL-EINGABE (WIRD IM SCHLICHT-MODUS AUSGEBLENDET) -->
       <section id="quickScannerSection" class="clean-panel rounded-2xl p-3.5">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div>
@@ -436,7 +427,7 @@
           </div>
 
           <div class="flex-1 max-w-2xl flex gap-2">
-            <button id="micBtnQuick" type="button" onclick="startVoiceRecognition('quickLinkInput', 'micBtnQuick', false)" title="Filament per Mikrofon einsprechen" class="px-3 py-2 rounded-xl bg-surface-950 hover:bg-surface-850 text-sky-400 border border-white/[0.1] transition flex items-center gap-1.5 shrink-0 text-xs font-semibold">
+            <button id="micBtnQuick" type="button" onclick="startVoiceRecognition('quickLinkInput', 'micBtnQuick', false)" title="Filament per Mikrofon einsprechen" class="px-3 py-2 rounded-xl bg-surface-950 hover:bg-surface-850 text-sky-400 border border-white/[0.1] transition flex items-center gap-1.5 shrink-0 text-xs font-semibold cursor-pointer">
               <i data-lucide="mic" class="w-4 h-4"></i>
               <span class="hidden sm:inline">Diktieren</span>
             </button>
@@ -449,8 +440,9 @@
             />
             <button
               id="quickScanBtn"
+              type="button"
               onclick="handleQuickLinkImport()"
-              class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 font-bold text-xs sm:text-sm transition whitespace-nowrap"
+              class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 font-bold text-xs sm:text-sm transition whitespace-nowrap cursor-pointer"
             >
               Anlegen
             </button>
@@ -458,7 +450,7 @@
         </div>
       </section>
 
-      <!-- KPI-LEISTE (BLEIBT AUCH IM SCHLICHT-MODUS IMMER SICHTBAR) -->
+      <!-- KPI-LEISTE -->
       <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div class="clean-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
@@ -493,7 +485,7 @@
         </div>
       </section>
 
-      <!-- MATERIAL-FILTER & SUCHE (BLEIBT AUCH IM SCHLICHT-MODUS SICHTBAR) -->
+      <!-- MATERIAL-FILTER & SUCHE -->
       <section class="clean-panel rounded-2xl p-3 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
         <div id="materialFilterBar" class="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0"></div>
 
@@ -524,7 +516,7 @@
         </div>
       </section>
 
-      <!-- SPULEN-RASTER (VOLLE BREITE) -->
+      <!-- SPULEN-RASTER -->
       <section id="spoolGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"></section>
 
     </main>
@@ -532,23 +524,23 @@
 
   <!-- ================= HANDY BOTTOM-NAV ================= -->
   <nav class="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-surface-950/95 backdrop-blur-xl border-t border-white/[0.08] px-2 py-1.5 grid grid-cols-5 gap-1">
-    <button onclick="closeSidebarOnMobile()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-sky-400">
+    <button type="button" onclick="closeSidebarOnMobile()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-sky-400">
       <i data-lucide="disc-3" class="w-4 h-4"></i>
       <span>Bestand</span>
     </button>
-    <button onclick="toggleMinimalMode()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
+    <button type="button" onclick="toggleMinimalMode()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
       <i data-lucide="eye" class="w-4 h-4"></i>
       <span>Schlicht</span>
     </button>
-    <button onclick="openSidebarTab('gcode')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
+    <button type="button" onclick="openSidebarTab('gcode')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
       <i data-lucide="file-code-2" class="w-4 h-4"></i>
       <span>G-Code</span>
     </button>
-    <button onclick="openSidebarTab('settings')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
+    <button type="button" onclick="openSidebarTab('settings')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
       <i data-lucide="settings" class="w-4 h-4"></i>
       <span>Optionen</span>
     </button>
-    <button onclick="openSpoolModal()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-sky-400">
+    <button type="button" onclick="openSpoolModal()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-sky-400">
       <i data-lucide="plus-circle" class="w-4 h-4"></i>
       <span>Neu</span>
     </button>
@@ -562,7 +554,7 @@
           <h3 class="text-base sm:text-lg font-extrabold text-white">Sicherer Import / Export & Zwischenspeicher</h3>
           <p class="text-xs text-slate-400">Vor jedem Import wird dein bisheriger Stand automatisch im Zwischenspeicher gesichert.</p>
         </div>
-        <button onclick="closeDataVaultModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">✕</button>
+        <button type="button" onclick="closeDataVaultModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white cursor-pointer">✕</button>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -570,12 +562,12 @@
           <i data-lucide="upload" class="w-5 h-5 text-emerald-400 shrink-0"></i>
           <div>
             <p class="text-xs font-bold text-white">.JSON / .TXT Datei laden</p>
-            <p class="text-[10px] text-slate-400">In Vorschau prüfen</p>
+            <p class="text-[10px] text-slate-400">Sicher importieren</p>
           </div>
           <input id="vaultFileInput" type="file" accept=".json,.txt,.csv" class="hidden" onchange="handleVaultFileUpload(event)" />
         </label>
 
-        <button onclick="downloadReadableTxtFile()" class="p-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 flex items-center gap-2.5 text-left transition">
+        <button type="button" onclick="downloadReadableTxtFile()" class="p-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 flex items-center gap-2.5 text-left transition cursor-pointer">
           <i data-lucide="file-text" class="w-5 h-5 text-sky-400 shrink-0"></i>
           <div>
             <p class="text-xs font-bold text-white">Als .TXT speichern</p>
@@ -583,7 +575,7 @@
           </div>
         </button>
 
-        <button onclick="downloadJsonBackupFile()" class="p-3 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 flex items-center gap-2.5 text-left transition">
+        <button type="button" onclick="downloadJsonBackupFile()" class="p-3 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 flex items-center gap-2.5 text-left transition cursor-pointer">
           <i data-lucide="database" class="w-5 h-5 text-purple-400 shrink-0"></i>
           <div>
             <p class="text-xs font-bold text-white">Als .JSON Backup</p>
@@ -595,7 +587,7 @@
       <div class="space-y-1.5">
         <div class="flex justify-between items-center text-[11px] text-slate-400">
           <span>Vorschau & Direkt-Editor (<code class="text-slate-300">Marke | Name | Material | Farbe | Rest(g) | Voll(g) | Spulen-Tara | ebos_bag/open/factory_sealed | Bag-Tara | Preis</code>)</span>
-          <button type="button" onclick="startVoiceRecognition('vaultTextArea', 'micBtnVault', false, true)" id="micBtnVault" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 font-semibold">🎙️ Zeile diktieren</button>
+          <button type="button" onclick="startVoiceRecognition('vaultTextArea', 'micBtnVault', false, true)" id="micBtnVault" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 font-semibold cursor-pointer">🎙️ Zeile diktieren</button>
         </div>
         <textarea
           id="vaultTextArea"
@@ -606,14 +598,14 @@
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/[0.08]">
-        <button onclick="restoreLatestSnapshot()" class="px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-xs font-bold text-amber-300 border border-amber-500/30">
+        <button type="button" onclick="restoreLatestSnapshot()" class="px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-xs font-bold text-amber-300 border border-amber-500/30 cursor-pointer">
           ⏪ Letzten Zwischenspeicher wiederherstellen
         </button>
         <div class="flex flex-wrap gap-2">
-          <button onclick="applyVaultText('append')" class="px-4 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
+          <button type="button" onclick="applyVaultText('append')" class="px-4 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold cursor-pointer">
             ➕ Zum Bestand hinzufügen
           </button>
-          <button onclick="applyVaultText('replace')" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold">
+          <button type="button" onclick="applyVaultText('replace')" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold cursor-pointer">
             ✓ Sicher übernehmen
           </button>
         </div>
@@ -621,7 +613,7 @@
     </div>
   </div>
 
-  <!-- ================= MODAL: SPULE BEARBEITEN / NEU (ÜBERSICHTLICH & FEHLERFREI) ================= -->
+  <!-- ================= MODAL: SPULE BEARBEITEN / NEU ================= -->
   <div id="spoolModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
     <div class="bg-surface-900 border border-white/[0.12] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl my-8">
       <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
@@ -629,14 +621,13 @@
           <h3 id="modalTitle" class="text-base font-extrabold text-white">Spule bearbeiten</h3>
           <p class="text-[11px] text-slate-400">Schnelle & übersichtliche Bearbeitung</p>
         </div>
-        <button type="button" onclick="closeSpoolModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">✕</button>
+        <button type="button" onclick="closeSpoolModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white cursor-pointer">✕</button>
       </div>
 
       <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-4">
         <input type="hidden" id="fId" />
         <input type="hidden" id="fLastDried" />
 
-        <!-- 1. Marke & Beschreibung -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Marke / Hersteller *</label>
@@ -667,7 +658,6 @@
           </div>
         </div>
 
-        <!-- 2. Material, Farbe & Preis -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Material *</label>
@@ -698,7 +688,6 @@
           </div>
         </div>
 
-        <!-- 3. eBOS Vakuum-Beutel / Verpackung -->
         <div class="rounded-xl bg-surface-950 border border-sky-500/25 p-3 space-y-2">
           <div class="flex items-center justify-between">
             <label class="text-xs font-bold text-white">Verpackung / eBOS Vakuum-Beutel</label>
@@ -719,11 +708,10 @@
           <p id="modalMaterialStorageInfo" class="text-[11px] text-slate-400"></p>
         </div>
 
-        <!-- 4. Gewicht & Waage -->
         <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-2.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-white">Gewicht & Waagen-Rechner</span>
-            <button type="button" onclick="document.getElementById('fEmptySpoolWeight').value=0;applyModalScale();" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 text-[10px] font-semibold">
+            <button type="button" onclick="document.getElementById('fEmptySpoolWeight').value=0;applyModalScale();" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 text-[10px] font-semibold cursor-pointer">
               Ohne Spule / Refill (0g)
             </button>
           </div>
@@ -745,7 +733,6 @@
           <p id="fScaleHint" class="text-[10px] text-slate-400"></p>
         </div>
 
-        <!-- 5. Shop-Link & Trocknung -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
             <label class="block text-[10px] text-slate-400 mb-1">Shop-Link (leer = automatisch)</label>
@@ -768,12 +755,12 @@
         </div>
 
         <div class="flex items-center justify-between pt-2 border-t border-white/[0.08]">
-          <button type="button" onclick="document.getElementById('fLastDried').value = new Date().toISOString(); showToast('Auf heute getrocknet gesetzt!');" class="text-xs text-sky-400 hover:underline font-semibold">
+          <button type="button" onclick="document.getElementById('fLastDried').value = new Date().toISOString(); showToast('Auf heute getrocknet gesetzt!');" class="text-xs text-sky-400 hover:underline font-semibold cursor-pointer">
             🔥 Als „Heute getrocknet“ markieren
           </button>
           <div class="flex gap-2">
-            <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl bg-surface-800 text-xs font-semibold text-slate-300">Abbrechen</button>
-            <button type="submit" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold">Speichern</button>
+            <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl bg-surface-800 text-xs font-semibold text-slate-300 cursor-pointer">Abbrechen</button>
+            <button type="submit" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold cursor-pointer">Speichern</button>
           </div>
         </div>
       </form>
@@ -785,7 +772,7 @@
     <div class="bg-surface-900 border border-white/[0.1] rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl">
       <div class="flex justify-between items-center border-b border-white/[0.08] pb-2.5">
         <h3 class="text-base font-bold text-white">Druck-Verlauf</h3>
-        <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-white">✕</button>
+        <button type="button" onclick="closeHistoryModal()" class="text-slate-400 hover:text-white cursor-pointer">✕</button>
       </div>
       <div id="historyList" class="space-y-2 max-h-72 overflow-y-auto"></div>
     </div>
@@ -797,9 +784,9 @@
   <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS -->
   <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-900/95 border border-white/[0.12] shadow-xl text-[11px] text-slate-300 backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-sky-400">v18.0</span>
+    <span class="font-mono-num font-bold text-sky-400">v18.1</span>
     <span class="text-slate-600">|</span>
-    <span class="font-mono-num text-slate-300">19.10.2026, 18:22 Uhr</span>
+    <span class="font-mono-num text-slate-300">19.10.2026, 18:40 Uhr</span>
     <span class="text-slate-600">|</span>
     <span id="syncStatusLabel" class="text-emerald-400 font-semibold">Synchron</span>
   </div>
@@ -917,7 +904,12 @@
         else if (matUpper === 'TPU') slug = 'tpu-95a-hf';
         else if (matUpper === 'ASA') slug = 'asa-filament';
         else if (matUpper === 'ABS') slug = 'abs-filament';
-        return `https://eu.store.bambulab.com/de/products/${slug}?color=${encodeURIComponent(colorEn)}&spool=${isRefill ? 'refill' : 'with-spool'}`; }  if (lowerBrand.includes('sunlu')) { const sunluQ = ['SUNLU', matUpper, colorEn, isRefill ? 'refill' : '', '1.75mm'].filter(Boolean).join(' '); return `https://store.sunlu.com/search?q=${encodeURIComponent(sunluQ)}`;
+        return `https://eu.store.bambulab.com/de/products/${slug}?color=${encodeURIComponent(colorEn)}&spool=${isRefill ? 'refill' : 'with-spool'}`;
+      }
+
+      if (lowerBrand.includes('sunlu')) {
+        const sunluQ = ['SUNLU', matUpper, colorEn, isRefill ? 'refill' : '', '1.75mm'].filter(Boolean).join(' ');
+        return `https://store.sunlu.com/search?q=${encodeURIComponent(sunluQ)}`;
       }
 
       if (lowerBrand.includes('elegoo') && (colorName || '').toLowerCase().includes('marmor')) {
@@ -925,7 +917,35 @@
       }
 
       const amzQ = [brand, matUpper, 'Filament 1.75mm', colorName !== 'Standard' ? colorName : '', isRefill ? 'Refill' : '', '1kg'].filter(Boolean).join(' ');
-      return `https://www.amazon.de/s?k=${encodeURIComponent(amzQ)}`; }  // ========================================================================= // 2. ZWISCHENSPEICHER-TRESOR & KUGELSICHERE SPEICHERUNG // ========================================================================= const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v18'; const PERMANENT_HISTORY_KEY = 'filamenthub_history_v18'; const SAFE_SNAPSHOTS_KEY = 'filamenthub_safe_snapshots_v18'; const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v18'; const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v18'; const CLOUD_ID_STORAGE_KEY = 'filamenthub_cloud_id';  const ALL_KNOWN_STORAGE_KEYS = [ 'filamenthub_spools_v18', 'filamenthub_spools_v17', 'filamenthub_spools_v16', 'filamenthub_spools_v15', 'filamenthub_spools_permanent', 'filamenthub_spools_v13', 'filamenthub_spools_v9', 'filamenthub_spools_v8', 'filamenthub_spools_v7', 'filamenthub_spools_v6', 'filamenthub_spools_v5', 'filamenthub_spools_v3', 'filamenthub_spools_v2' ];  const urlParams = new URLSearchParams(window.location.search); const paramCloud = urlParams.get('cloud'); if (paramCloud) { const cleanId = paramCloud.replace('https://api.npoint.io/', '').trim(); if (cleanId) localStorage.setItem(CLOUD_ID_STORAGE_KEY, cleanId); }  let currentCloudId = localStorage.getItem(CLOUD_ID_STORAGE_KEY) \vert{}\vert{} '2a75ad089c77e7c35f98'; function getCloudDbUrl() { return `https://api.npoint.io/${currentCloudId}`; }
+      return `https://www.amazon.de/s?k=${encodeURIComponent(amzQ)}`;
+    }
+
+    // =========================================================================
+    // 2. ZWISCHENSPEICHER-TRESOR & KUGELSICHERE SPEICHERUNG
+    // =========================================================================
+    const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v18';
+    const PERMANENT_HISTORY_KEY = 'filamenthub_history_v18';
+    const SAFE_SNAPSHOTS_KEY = 'filamenthub_safe_snapshots_v18';
+    const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v18';
+    const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v18';
+    const CLOUD_ID_STORAGE_KEY = 'filamenthub_cloud_id';
+
+    const ALL_KNOWN_STORAGE_KEYS = [
+      'filamenthub_spools_v18', 'filamenthub_spools_v17', 'filamenthub_spools_v16',
+      'filamenthub_spools_v15', 'filamenthub_spools_permanent', 'filamenthub_spools_v13',
+      'filamenthub_spools_v9', 'filamenthub_spools_v8', 'filamenthub_spools_v7',
+      'filamenthub_spools_v6', 'filamenthub_spools_v5', 'filamenthub_spools_v3', 'filamenthub_spools_v2'
+    ];
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramCloud = urlParams.get('cloud');
+    if (paramCloud) {
+      const cleanId = paramCloud.replace('https://api.npoint.io/', '').trim();
+      if (cleanId) localStorage.setItem(CLOUD_ID_STORAGE_KEY, cleanId);
+    }
+
+    let currentCloudId = localStorage.getItem(CLOUD_ID_STORAGE_KEY) || '2a75ad089c77e7c35f98';
+    function getCloudDbUrl() { return `https://api.npoint.io/${currentCloudId}`; }
 
     let spools = [];
     let printHistory = [];
@@ -958,7 +978,6 @@
       return false;
     }
 
-    // Erstellt automatisch einen sicheren Zwischenspeicher-Punkt (vor Löschen / Import)
     function createSafeSnapshot(reason = 'Automatisch') {
       if (!spools || !spools.length) return;
       const snap = {
@@ -989,7 +1008,7 @@
             <span class="font-bold text-white">${sn.count} Spulen</span>
             <span class="text-slate-400"> • ${sn.reason} (${sn.time})</span>
           </div>
-          <button onclick="restoreSnapshotById('${sn.id}')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold hover:bg-emerald-500/30">Laden</button>
+          <button type="button" onclick="restoreSnapshotById('${sn.id}')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold hover:bg-emerald-500/30 cursor-pointer">Laden</button>
         </div>
       `).join('');
     }
@@ -1012,7 +1031,13 @@
       restoreSnapshotById(safeSnapshots[0].id);
     }
 
-    // Durchsucht sämtliche alten Browser-Keys und rettet alle jemals gespeicherten Spulen
+    function isUnwantedDefaultCharcoal(spool) {
+      if (!spool) return true;
+      if (deletedIds.includes(spool.id)) return true;
+      const full = `${spool.brand || ''} ${spool.name || ''}`.toLowerCase();
+      return full.includes('matte charcoal') || full.includes('made charcoal');
+    }
+
     function rescueAllBrowserStorage() {
       let rescued = [...spools];
       const seenIds = new Set(rescued.map(s => s.id));
@@ -1024,7 +1049,7 @@
             const parsed = JSON.parse(raw);
             const arr = Array.isArray(parsed) ? parsed : (parsed.spools || []);
             arr.forEach(item => {
-              if (item && item.name && !item.name.toLowerCase().includes('matte charcoal') && !seenIds.has(item.id)) {
+              if (item && item.name && !isUnwantedDefaultCharcoal(item) && !seenIds.has(item.id)) {
                 seenIds.add(item.id);
                 rescued.push(item);
               }
@@ -1042,14 +1067,6 @@
       } else {
         showToast('Alle verfügbaren Spulen sind bereits geladen.');
       }
-    }
-
-    function is unwantedDefaultCharcoal(spool) {
-      if (!spool) return true;
-      if (deletedIds.includes(spool.id)) return true;
-      const full = `${spool.brand || ''} ${spool.name || ''}`.toLowerCase();
-      if (full.includes('matte charcoal') || full.includes('made charcoal')) return true;
-      return false;
     }
 
     function sanitizeSpools() {
@@ -1073,13 +1090,6 @@
           s.productUrl = buildVendorUrl(s.brand, s.material, s.colorName || '', s.name || '', Number(s.emptySpoolWeight) === 0);
         }
       });
-    }
-
-    function isUnwantedDefaultCharcoal(spool) {
-      if (!spool) return true;
-      if (deletedIds.includes(spool.id)) return true;
-      const full = `${spool.brand || ''} ${spool.name || ''}`.toLowerCase();
-      return full.includes('matte charcoal') || full.includes('made charcoal');
     }
 
     function setSyncStatus(text, isOk = true) {
@@ -1111,7 +1121,6 @@
     async function loadStateFromCloud(manual = false) {
       if (!manual && isAnyModalOrInputActive()) return;
 
-      // Lokale Daten beim Start aus v18 oder früheren Versionen laden
       if (spools.length === 0) {
         for (const k of ALL_KNOWN_STORAGE_KEYS) {
           const raw = localStorage.getItem(k);
@@ -1141,7 +1150,6 @@
             const cloudCleaned = data.spools.filter(s => !isUnwantedDefaultCharcoal(s));
             const cloudTime = Number(data.updatedAt || 0);
 
-            // Wichtig: Niemals einen vollen lokalen Bestand durch eine leere Cloud löschen!
             if ((manual || cloudTime > localUpdatedAt || spools.length === 0) && (cloudCleaned.length > 0 || spools.length === 0)) {
               spools = cloudCleaned;
               printHistory = Array.isArray(data.printHistory) ? data.printHistory : printHistory;
@@ -1241,8 +1249,8 @@
       if (label) label.textContent = isMin ? 'Schlicht-Modus: AN' : 'Schlicht-Modus: AUS';
       if (btn) {
         btn.className = isMin
-          ? 'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-sky-500 text-surface-950 border border-sky-400 text-xs font-extrabold transition shadow-sm'
-          : 'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.08] text-xs font-bold transition';
+          ? 'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-sky-500 text-surface-950 border border-sky-400 text-xs font-extrabold transition shadow-sm cursor-pointer'
+          : 'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.08] text-xs font-bold transition cursor-pointer';
       }
       if (scannerSec) {
         scannerSec.classList.toggle('hidden', isMin);
@@ -1290,12 +1298,10 @@
       const btn = document.getElementById(btnId);
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-      // Falls der Browser (z. B. Standard-Firefox ohne Flag) keine WebSpeech-STT hat:
-      // Sofortiger Fokus + Sprachausgabe-Hinweis für Windows+H / macOS Diktat!
       if (!SpeechRec) {
         if (inputEl) {
           inputEl.focus();
-          const spoken = prompt('🎙️ Firefox Direkt-Diktat (Tipp: Drücke Windows+H oder nutze dein Mikrofon und bestätige mit Enter):');
+          const spoken = prompt('🎙️ Direkt-Diktat (Tipp: Drücke Windows+H oder nutze dein Mikrofon und bestätige mit OK):');
           if (spoken && spoken.trim()) {
             if (appendNewLine) {
               inputEl.value = (inputEl.value ? inputEl.value.trim() + '\n' : '') + spoken.trim();
@@ -1350,7 +1356,7 @@
     }
 
     // =========================================================================
-    // 5. SICHERER DATEI / JSON / TEXT IMPORT & EXPORT (KEIN DATENVERLUST!)
+    // 5. SICHERER DATEI / JSON / TEXT IMPORT & EXPORT
     // =========================================================================
     function spoolsToReadableText() {
       if (!spools.length) return '';
@@ -1367,7 +1373,6 @@
       const trimmed = (rawText || '').trim();
       if (!trimmed) return [];
 
-      // 1. Sichere JSON-Erkennung (unterstützt alle Backup-Formate!)
       if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
         try {
           const parsedJson = JSON.parse(trimmed);
@@ -1398,7 +1403,6 @@
         }
       }
 
-      // 2. Text-Zeilen-Erkennung
       const lines = trimmed.split(/\r?\n/);
       const result = [];
       const modes = getStorageModes();
@@ -1502,7 +1506,6 @@
       a.click();
     }
 
-    // Datei-Upload schreibt erst sicher in den Zwischenspeicher und lädt dann die Spulen!
     function handleVaultFileUpload(event) {
       const file = event.target.files?.[0];
       if (!file) return;
@@ -1520,7 +1523,7 @@
         deletedIds = [];
         saveState();
         document.getElementById('vaultTextArea').value = spoolsToReadableText();
-        showToast(`✓ ${imported.length} Spulen sicher importiert (alter Stand im Zwischenspeicher)!`);
+        showToast(`✓ ${imported.length} Spulen sicher importiert!`);
       };
       reader.readAsText(file);
       event.target.value = '';
@@ -1548,7 +1551,7 @@
     }
 
     // =========================================================================
-    // 6. SMART SCANNER (ERKENNT eBOS BEUTEL / EYEBROWS / VAKUUM)
+    // 6. SMART SCANNER
     // =========================================================================
     function extractEuroPriceFromText(rawText) {
       if (!rawText) return null;
@@ -1591,7 +1594,6 @@
       const isRefill = combined.includes('ohne spule') || combined.includes('refill');
       if (isRefill) detectedTara = 0;
 
-      // Erkennt eBOS ("ebos", "eyebrows", "beutel", "bag") & OVP
       let detectedStorageMode = 'open';
       if (combined.includes('ebos') || combined.includes('eyebrow') || combined.includes('bag') || combined.includes('beutel') || combined.includes('bq')) {
         detectedStorageMode = 'ebos_bag';
@@ -1674,11 +1676,9 @@
       } else {
         sidebarCollapsedDesktop = !sidebarCollapsedDesktop;
         if (sidebarCollapsedDesktop) {
-          sidebar.classList.add('lg:w-0', 'lg:border-r-0', 'lg:-translate-x-full');
-          sidebar.classList.remove('sm:w-[370px]');
+          sidebar.classList.add('lg:hidden');
         } else {
-          sidebar.classList.remove('lg:w-0', 'lg:border-r-0', 'lg:-translate-x-full');
-          sidebar.classList.add('sm:w-[370px]');
+          sidebar.classList.remove('lg:hidden');
         }
       }
     }
@@ -1695,8 +1695,8 @@
         if (panel) panel.classList.toggle('hidden', t !== tabName);
         if (btn) {
           btn.className = t === tabName
-            ? 'py-2 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-1 transition bg-sky-500 text-surface-950'
-            : 'py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white';
+            ? 'py-2 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-1 transition bg-sky-500 text-surface-950 cursor-pointer'
+            : 'py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white cursor-pointer';
         }
       });
       if (tabName === 'sync') renderSidebarQr();
@@ -1713,7 +1713,8 @@
         sidebar?.classList.remove('-translate-x-full');
         backdrop?.classList.remove('hidden');
       } else if (sidebarCollapsedDesktop) {
-        toggleSidebar();
+        sidebarCollapsedDesktop = false;
+        sidebar?.classList.remove('lg:hidden');
       }
       switchSidebarTab(tabName);
     }
@@ -1794,7 +1795,7 @@
       container.innerHTML = spools.map(s => {
         const cost = ((g / 1000) * (Number(s.pricePerKg) || 17.99)).toFixed(2).replace('.', ',');
         return `
-          <button onclick="confirmGcodeDeduct('${s.id}')" class="w-full p-2.5 rounded-xl bg-surface-900 hover:bg-sky-500/15 border border-white/[0.07] hover:border-sky-500/50 flex items-center justify-between gap-2 text-left transition">
+          <button type="button" onclick="confirmGcodeDeduct('${s.id}')" class="w-full p-2.5 rounded-xl bg-surface-900 hover:bg-sky-500/15 border border-white/[0.07] hover:border-sky-500/50 flex items-center justify-between gap-2 text-left transition cursor-pointer">
             <div class="flex items-center gap-2 min-w-0">
               <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${s.colorHex || '#38bdf8'}"></span>
               <div class="min-w-0">
@@ -1930,7 +1931,7 @@
     }
 
     // =========================================================================
-    // 8. KARTEN-RENDERING (INKL. ULTRA-SAUBEREM SCHLICHT-MODUS)
+    // 8. KARTEN-RENDERING (INKL. SCHLICHT-MODUS & 3 ICONS OBEN RECHTS)
     // =========================================================================
     function getDryingStatus(spool) {
       const lastDriedMs = new Date(spool.lastDried || Date.now()).getTime();
@@ -1986,7 +1987,6 @@
       const modes = getStorageModes();
       const isMin = !!appSettings.minimalMode;
 
-      // KPIs oben
       const statSpools = document.getElementById('statTotalSpools');
       if (statSpools) statSpools.textContent = spools.length;
       const totalGrams = spools.reduce((sum, s) => sum + (Number(s.remainingWeight) || 0), 0);
@@ -2000,11 +2000,10 @@
       const histBadge = document.getElementById('historyBadge');
       if (histBadge) histBadge.textContent = printHistory.length;
 
-      // Material-Filter
       const bar = document.getElementById('materialFilterBar');
       if (bar) {
         bar.innerHTML = ['ALL', 'PLA', 'PLA+', 'PETG', 'TPU', 'ABS', 'ASA', 'PA / Nylon'].map(mat => `
-          <button onclick="activeMaterialFilter='${mat}';renderSpools(true);" class="px-3 py-1 rounded-xl text-xs font-semibold border transition whitespace-nowrap ${activeMaterialFilter === mat ? 'bg-sky-500 text-surface-950 border-sky-500 font-bold' : 'bg-surface-950 text-slate-400 border-white/[0.07] hover:text-white'}">
+          <button type="button" onclick="activeMaterialFilter='${mat}';renderSpools(true);" class="px-3 py-1 rounded-xl text-xs font-semibold border transition whitespace-nowrap cursor-pointer ${activeMaterialFilter === mat ? 'bg-sky-500 text-surface-950 border-sky-500 font-bold' : 'bg-surface-950 text-slate-400 border-white/[0.07] hover:text-white'}">
             ${mat === 'ALL' ? `Alle (${spools.length})` : mat}
           </button>
         `).join('');
@@ -2053,9 +2052,7 @@
         const barClass = getBarColorClass(pct);
         const isScaleOpen = !!openScaleCards[spool.id];
 
-        // ===============================================================
-        // VARIANTE A: SCHLICHT-MODUS (NUR MARKE, MATERIAL, NAME, BAR & TROCKNUNGS-WARNUNG + 3 ICONS)
-        // ===============================================================
+        // SCHLICHT-MODUS
         if (isMin) {
           return `
             <div class="clean-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 flex flex-col justify-between gap-3">
@@ -2071,21 +2068,19 @@
                   </div>
                 </div>
 
-                <!-- 3 ICONS OBEN RECHTS: 1. LINK, 2. BEARBEITEN, 3. LÖSCHEN -->
                 <div class="flex items-center gap-1 shrink-0">
                   <a href="${shopUrl}" target="_blank" rel="noopener" title="Shop-Link öffnen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-sky-400 transition">
                     <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                   </a>
-                  <button type="button" onclick="openSpoolModal('${spool.id}')" title="Spule bearbeiten" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-slate-300 hover:text-white transition">
+                  <button type="button" onclick="openSpoolModal('${spool.id}')" title="Spule bearbeiten" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-slate-300 hover:text-white transition cursor-pointer">
                     <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
-                  </a>
-                  <button type="button" onclick="deleteSpool('${spool.id}')" title="Spule löschen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition">
+                  </button>
+                  <button type="button" onclick="deleteSpool('${spool.id}')" title="Spule löschen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition cursor-pointer">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
               </div>
 
-              <!-- Fortschrittsleiste (Blau/Grün) -->
               <div class="space-y-1">
                 <div class="flex justify-between text-[11px] text-slate-400">
                   <span>${spool.colorName || ''}</span>
@@ -2096,24 +2091,20 @@
                 </div>
               </div>
 
-              <!-- NUR ANZEIGEN, WENN TROCKNUNG FÄLLIG IST -->
               ${dry.statusLevel !== 'ok' ? `
                 <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-[11px]">
                   <span class="text-rose-400 font-bold">⚠️ Muss getrocknet werden</span>
-                  <button type="button" onclick="markDried('${spool.id}')" class="text-sky-400 hover:underline font-semibold">Erledigt</button>
+                  <button type="button" onclick="markDried('${spool.id}')" class="text-sky-400 hover:underline font-semibold cursor-pointer">Erledigt</button>
                 </div>
               ` : ''}
             </div>
           `;
         }
 
-        // ===============================================================
-        // VARIANTE B: KOMPLETTE ANSICHT (MIT eBOS BEUTEL, WAAGE & ABZUG)
-        // ===============================================================
+        // KOMPLETTE ANSICHT
         return `
           <div class="clean-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 sm:p-5 flex flex-col justify-between gap-3.5">
             
-            <!-- 1. Kopfzeile + 3 Icons oben rechts (Link, Bearbeiten, Löschen) -->
             <div class="flex justify-between items-start gap-2">
               <div class="flex items-center gap-3 min-w-0">
                 <span class="w-7 h-7 rounded-full border-4 shrink-0 shadow-sm" style="border-color: ${hex}; background-color: ${hex}33;"></span>
@@ -2127,21 +2118,19 @@
                 </div>
               </div>
 
-              <!-- 3 ICONS OBEN RECHTS: LINK | BEARBEITEN | LÖSCHEN -->
               <div class="flex items-center gap-1 shrink-0">
                 <a href="${shopUrl}" target="_blank" rel="noopener" title="Produkt-Link öffnen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-sky-400 transition">
                   <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                 </a>
-                <button type="button" onclick="openSpoolModal('${spool.id}')" title="Spule bearbeiten" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-slate-300 hover:text-white transition">
+                <button type="button" onclick="openSpoolModal('${spool.id}')" title="Spule bearbeiten" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-slate-300 hover:text-white transition cursor-pointer">
                   <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                 </button>
-                <button type="button" onclick="deleteSpool('${spool.id}')" title="Spule löschen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition">
+                <button type="button" onclick="deleteSpool('${spool.id}')" title="Spule löschen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition cursor-pointer">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
             </div>
 
-            <!-- 2. eBOS Vakuum-Beutel Dropdown -->
             <div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-surface-950 border ${mode !== 'open' ? 'border-sky-500/35' : 'border-white/[0.06]'}">
               <span class="text-[11px] text-slate-400 font-medium">Beutel / Lagerung:</span>
               <select
@@ -2154,7 +2143,6 @@
               </select>
             </div>
 
-            <!-- 3. Gewicht, Blaue/Grüne Bar & Waage -->
             <div class="space-y-1.5">
               <div class="flex justify-between items-baseline text-xs">
                 <span class="text-slate-400">${spool.colorName || 'Standard'}</span>
@@ -2164,7 +2152,7 @@
                 <div class="h-full ${barClass} transition-all" style="width: ${pct}%"></div>
               </div>
               <div class="flex items-center justify-between pt-1 text-[11px] text-slate-400">
-                <button type="button" onclick="toggleCardScale('${spool.id}')" class="hover:text-emerald-400 transition">
+                <button type="button" onclick="toggleCardScale('${spool.id}')" class="hover:text-emerald-400 transition cursor-pointer">
                   ⚖️ Waage: ≈ ${scaleNow}g <span class="text-[10px] text-slate-500">(Tara: ${spoolTara}g+${bagTara}g)</span>
                 </button>
                 <span class="text-[10px] font-mono-num text-slate-500">Wert: ${((remW/1000)*priceKg).toFixed(2).replace('.', ',')} €</span>
@@ -2172,20 +2160,18 @@
 
               <div id="scale-box-${spool.id}" class="${isScaleOpen ? '' : 'hidden'} pt-2 mt-1 border-t border-white/[0.06] flex gap-1.5">
                 <input id="scale-${spool.id}" type="number" placeholder="Waage Brutto (g)..." onkeydown="if(event.key==='Enter'){applyScaleWeight('${spool.id}');}" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs text-white font-mono-num outline-none" />
-                <button type="button" onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-surface-950 text-xs font-bold">Setzen</button>
+                <button type="button" onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-surface-950 text-xs font-bold cursor-pointer">Setzen</button>
               </div>
             </div>
 
-            <!-- 4. Schnell-Abzug -->
             <div class="flex items-center gap-1.5">
               <input id="deduct-${spool.id}" type="number" placeholder="Gramm..." onkeydown="if(event.key==='Enter'){deductWeight('${spool.id}');}" class="w-24 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.08] text-xs text-white font-mono-num outline-none focus:border-sky-500" />
-              <button type="button" onclick="deductWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-bold transition">Abziehen</button>
-              <button type="button" onclick="deductWeight('${spool.id}', 10)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-10g</button>
-              <button type="button" onclick="deductWeight('${spool.id}', 25)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-25g</button>
-              <button type="button" onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-50g</button>
+              <button type="button" onclick="deductWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-bold transition cursor-pointer">Abziehen</button>
+              <button type="button" onclick="deductWeight('${spool.id}', 10)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300 cursor-pointer">-10g</button>
+              <button type="button" onclick="deductWeight('${spool.id}', 25)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300 cursor-pointer">-25g</button>
+              <button type="button" onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300 cursor-pointer">-50g</button>
             </div>
 
-            <!-- 5. Trocknungs-Status -->
             <div class="flex items-center justify-between pt-2 border-t border-white/[0.06] text-[11px]">
               <span class="font-mono-num ${dry.isOverdue ? 'text-rose-400 font-bold' : (mode !== 'open' ? 'text-sky-400' : 'text-slate-400')}">
                 ${dry.isOverdue
@@ -2196,7 +2182,7 @@
                           ? `🛡️ Im eBOS-Beutel (${dry.days}d)`
                           : `🔥 Offen haltbar: ${dry.days}d${dry.hours}h`))}
               </span>
-              <button type="button" onclick="markDried('${spool.id}')" class="text-sky-400 hover:underline font-semibold">
+              <button type="button" onclick="markDried('${spool.id}')" class="text-sky-400 hover:underline font-semibold cursor-pointer">
                 Getrocknet
               </button>
             </div>
@@ -2547,7 +2533,7 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-sky-400 font-mono-num font-bold">-${h.grams}g</span>
-            <button onclick="undoHistory('${h.id}')" class="px-2 py-1 rounded bg-surface-800 hover:bg-surface-850 text-[10px] text-slate-200">Rückgängig</button>
+            <button type="button" onclick="undoHistory('${h.id}')" class="px-2 py-1 rounded bg-surface-800 hover:bg-surface-850 text-[10px] text-slate-200 cursor-pointer">Rückgängig</button>
           </div>
         </div>
       `).join('') || '<p class="text-xs text-slate-500 text-center py-4">Noch keine Einträge.</p>';
