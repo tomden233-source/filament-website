@@ -71,19 +71,36 @@
       <h3 id="modalTitle" class="text-lg font-bold text-white">Spule eintragen</h3>
       <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-3">
         <input type="hidden" id="fId" />
+        
+        <!-- Hersteller Dropdown -->
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Marke *</label>
-          <input id="fBrand" type="text" required placeholder="z.B. Bambu Lab" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none" />
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Hersteller / Marke *</label>
+          <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none mb-2">
+            <option value="Bambu Lab">Bambu Lab</option>
+            <option value="Prusament">Prusament</option>
+            <option value="Extrudr">Extrudr</option>
+            <option value="Polymaker">Polymaker</option>
+            <option value="eSUN">eSUN</option>
+            <option value="SUNLU">SUNLU</option>
+            <option value="Das Filament">Das Filament</option>
+            <option value="3DJake">3DJake</option>
+            <option value="Overture">Overture</option>
+            <option value="Creality">Creality</option>
+            <option value="Elegoo">Elegoo</option>
+            <option value="OTHER">➕ Anderer Hersteller / Manuell...</option>
+          </select>
+          <input id="fBrandCustom" type="text" placeholder="Hersteller-Name eingeben..." class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none hidden" />
         </div>
+
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Bezeichnung *</label>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Bezeichnung / Serie *</label>
           <input id="fName" type="text" required placeholder="z.B. PLA Matte Charcoal" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none" />
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Material</label>
             <select id="fMaterial" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none">
-              <option value="PLA">PLA</option><option value="PETG">PETG</option><option value="TPU">TPU</option><option value="ABS">ABS</option>
+              <option value="PLA">PLA</option><option value="PETG">PETG</option><option value="TPU">TPU</option><option value="ABS">ABS</option><option value="ASA">ASA</option><option value="PA / Nylon">PA / Nylon</option>
             </select>
           </div>
           <div>
@@ -226,13 +243,35 @@
       renderSpools();
     }
 
-    function openSpoolModal() { document.getElementById('spoolModal').classList.replace('hidden', 'flex'); }
+    function handleBrandDropdownChange() {
+      const select = document.getElementById('fBrandSelect');
+      const customInput = document.getElementById('fBrandCustom');
+      if (select.value === 'OTHER') {
+        customInput.classList.remove('hidden');
+        customInput.focus();
+      } else {
+        customInput.classList.add('hidden');
+      }
+    }
+
+    function openSpoolModal() {
+      document.getElementById('fBrandSelect').value = 'Bambu Lab';
+      document.getElementById('fBrandCustom').classList.add('hidden');
+      document.getElementById('fBrandCustom').value = '';
+      document.getElementById('spoolModal').classList.replace('hidden', 'flex');
+    }
+
     function closeSpoolModal() { document.getElementById('spoolModal').classList.replace('flex', 'hidden'); }
+
     function saveSpool(e) {
       e.preventDefault();
+      const selectVal = document.getElementById('fBrandSelect').value;
+      const customVal = document.getElementById('fBrandCustom').value.trim();
+      const brand = selectVal === 'OTHER' ? (customVal || 'Unbekannt') : selectVal;
+
       spools.unshift({
         id: 'sp-' + Date.now(),
-        brand: document.getElementById('fBrand').value,
+        brand: brand,
         name: document.getElementById('fName').value,
         material: document.getElementById('fMaterial').value,
         colorHex: document.getElementById('fColorHex').value,
@@ -252,9 +291,8 @@
     }
     function closeHistoryModal() { document.getElementById('historyModal').classList.replace('flex', 'hidden'); }
 
-    // --- ROBUuster CLOUD SYNC ---
     const CLOUD_KEY = 'filamenthub_npoint_url';
-    let cloudDbUrl = localStorage.getItem(CLOUD_KEY) || 'https://api.npoint.io/2a75ad089c77e7c35f98'; // Direkte Kopplung für dich!
+    let cloudDbUrl = localStorage.getItem(CLOUD_KEY) || 'https://api.npoint.io/2a75ad089c77e7c35f98';
     let isSyncing = false;
 
     async function pushToCloud() {
@@ -289,7 +327,7 @@
       loadState();
       renderSpools();
       if (cloudDbUrl) pullFromCloud();
-      setInterval(pullFromCloud, 10000); // Alle 10 Sekunden automatisch abgleichen
+      setInterval(pullFromCloud, 10000);
     });
   </script>
 </body>
