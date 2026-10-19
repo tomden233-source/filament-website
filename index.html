@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FilamentHub – 3D-Druck Filament-Manager & Link-Scanner</title>
+  <title>FilamentHub – 3D-Druck Filament-Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
@@ -29,9 +29,9 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-xl font-extrabold tracking-tight text-white">FilamentHub</h1>
-            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-400 border border-orange-500/30">Pro Link-Scanner</span>
+            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Cloud Storage Aktiv</span>
           </div>
-          <p class="text-xs text-slate-400">Bestand, Druckverbrauch, Sortierung & Live-Countdown</p>
+          <p class="text-xs text-slate-400">Bestand, Druckverbrauch & fester Cloud-Speicher</p>
         </div>
       </div>
 
@@ -60,7 +60,6 @@
             <span>Automatischer Produkt-Link Scanner</span>
           </div>
           <h2 class="text-base sm:text-lg font-bold text-white">Filament-Link einfügen & Daten automatisch ziehen</h2>
-          <p class="text-xs text-slate-400">Unterstützt Links von Bambu Lab, 3DJake, Prusa, Amazon, Extrudr, eSUN u.v.m.</p>
         </div>
 
         <div class="flex-1 max-w-2xl">
@@ -70,19 +69,12 @@
               <input
                 id="quickLinkInput"
                 type="url"
-                placeholder="https://eu.store.bambulab.com/products/pla-matte-filament..."
-                class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700 focus:border-orange-500 text-sm text-white placeholder-slate-500 outline-none transition"
+                placeholder="https://eu.store.bambulab.com/products/..."
+                class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700 focus:border-orange-500 text-sm text-white outline-none"
                 onkeydown="if(event.key==='Enter'){ handleQuickLinkImport(); }"
               />
             </div>
-            <button
-              id="quickLinkBtn"
-              onclick="handleQuickLinkImport()"
-              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-500/20 transition whitespace-nowrap"
-            >
-              <i data-lucide="sparkles" class="w-4 h-4"></i>
-              <span>Daten ziehen</span>
-            </button>
+            <button onclick="handleQuickLinkImport()" class="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm transition">Daten ziehen</button>
           </div>
         </div>
       </div>
@@ -93,18 +85,8 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div id="materialFilterBar" class="flex items-center gap-1.5 overflow-x-auto pb-1"></div>
         <div class="flex flex-wrap items-center gap-2.5">
-          <input
-            id="searchInput"
-            type="text"
-            oninput="renderSpools()"
-            placeholder="Marke, Farbe, Material..."
-            class="w-full sm:w-56 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-xs text-white outline-none"
-          />
-          <select
-            id="sortSelect"
-            onchange="renderSpools()"
-            class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 outline-none"
-          >
+          <input id="searchInput" type="text" oninput="renderSpools()" placeholder="Marke, Farbe, Material..." class="w-full sm:w-56 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white outline-none" />
+          <select id="sortSelect" onchange="renderSpools()" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 outline-none">
             <option value="drying_urgent">🔥 Trocknung (dringend zuerst)</option>
             <option value="material_asc">🧪 Material (A–Z)</option>
             <option value="remaining_asc">⚖️ Restgewicht (wenig zuerst)</option>
@@ -126,19 +108,16 @@
         <button onclick="closeSpoolModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
 
-      <!-- URL Auto-Fetch inside Modal -->
       <div class="rounded-xl bg-slate-950/90 border border-orange-500/30 p-3 space-y-2">
         <label class="block text-xs font-bold text-orange-400 uppercase">Produkt-Link einfügen</label>
         <div class="flex gap-2">
           <input id="fProductUrl" type="url" placeholder="Shop-Link..." class="flex-1 px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white outline-none" />
           <button type="button" onclick="fetchFromModalUrl()" class="px-3 py-2 rounded-lg bg-orange-500 text-white text-xs font-bold">Laden</button>
         </div>
-        <p id="linkFetchStatus" class="text-[11px] text-slate-400 hidden"></p>
       </div>
 
       <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-3">
         <input type="hidden" id="fId" />
-        
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Hersteller / Marke *</label>
           <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none mb-2">
@@ -150,9 +129,6 @@
             <option value="SUNLU">SUNLU</option>
             <option value="Das Filament">Das Filament</option>
             <option value="3DJake">3DJake</option>
-            <option value="Overture">Overture</option>
-            <option value="Creality">Creality</option>
-            <option value="Elegoo">Elegoo</option>
             <option value="OTHER">➕ Anderer Hersteller / Manuell...</option>
           </select>
           <input id="fBrandCustom" type="text" placeholder="Hersteller-Name eingeben..." class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none hidden" />
@@ -167,7 +143,7 @@
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Material</label>
             <select id="fMaterial" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none">
-              <option value="PLA">PLA</option><option value="PLA+">PLA+</option><option value="PETG">PETG</option><option value="TPU">TPU</option><option value="ABS">ABS</option><option value="ASA">ASA</option><option value="PA / Nylon">PA / Nylon</option><option value="PC">PC</option>
+              <option value="PLA">PLA</option><option value="PLA+">PLA+</option><option value="PETG">PETG</option><option value="TPU">TPU</option><option value="ABS">ABS</option><option value="ASA">ASA</option><option value="PA / Nylon">PA / Nylon</option>
             </select>
           </div>
           <div>
@@ -203,8 +179,6 @@
     </div>
   </div>
 
-  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
   <script>
     const MATERIAL_PRESETS = {
       'PLA': { intervalDays: 30 }, 'PLA+': { intervalDays: 28 }, 'PETG': { intervalDays: 21 },
@@ -222,28 +196,58 @@
       { keys: ['3djake'], name: '3DJake' }
     ];
 
-    const STORAGE_KEY_SPOOLS = 'filamenthub_spools_v4';
-    const STORAGE_KEY_HISTORY = 'filamenthub_history_v4';
+    const STORAGE_KEY_SPOOLS = 'filamenthub_spools_v5';
+    const STORAGE_KEY_HISTORY = 'filamenthub_history_v5';
 
     let spools = [];
     let printHistory = [];
     let activeMaterialFilter = 'ALL';
 
-    function loadState() {
+    // Fester Cloud-Speicher (npoint.io)
+    const cloudDbUrl = 'https://api.npoint.io/2a75ad089c77e7c35f98';
+    let isSyncing = false;
+
+    async function loadStateFromCloud() {
+      try {
+        const res = await fetch(cloudDbUrl);
+        const data = await res.json();
+        if (data && Array.isArray(data.spools) && data.spools.length > 0) {
+          spools = data.spools;
+          printHistory = Array.isArray(data.printHistory) ? data.printHistory : [];
+          localStorage.setItem(STORAGE_KEY_SPOOLS, JSON.stringify(spools));
+          localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(printHistory));
+          renderSpools();
+          return;
+        }
+      } catch(e) {}
+
+      // Fallback auf lokalen Speicher, falls Cloud nicht erreichbar
       const s = localStorage.getItem(STORAGE_KEY_SPOOLS);
       const h = localStorage.getItem(STORAGE_KEY_HISTORY);
       if (s) try { spools = JSON.parse(s); } catch(e){}
       if (h) try { printHistory = JSON.parse(h); } catch(e){}
+      
       if (!spools.length) {
         spools = [{ id: 'sp-1', brand: 'Bambu Lab', name: 'PLA Matte Charcoal', material: 'PLA', colorHex: '#27272a', initialWeight: 1000, remainingWeight: 750, lastDried: new Date().toISOString(), dryIntervalDays: 30 }];
         saveState();
       }
+      renderSpools();
     }
 
-    function saveState() {
+    async function saveState() {
       localStorage.setItem(STORAGE_KEY_SPOOLS, JSON.stringify(spools));
       localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(printHistory));
-      if (cloudDbUrl && !isSyncing) pushToCloud();
+      
+      // Sofort in die feste Cloud schreiben
+      if (!isSyncing) {
+        try {
+          await fetch(cloudDbUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ updatedAt: Date.now(), spools, printHistory })
+          });
+        } catch(e) {}
+      }
     }
 
     // Link parser
@@ -441,43 +445,10 @@
     }
     function closeHistoryModal() { document.getElementById('historyModal').classList.replace('flex', 'hidden'); }
 
-    const CLOUD_KEY = 'filamenthub_npoint_url';
-    let cloudDbUrl = localStorage.getItem(CLOUD_KEY) || 'https://api.npoint.io/2a75ad089c77e7c35f98';
-    let isSyncing = false;
-
-    async function pushToCloud() {
-      if (!cloudDbUrl) return;
-      try {
-        await fetch(cloudDbUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ updatedAt: Date.now(), spools, printHistory })
-        });
-      } catch(e) {}
-    }
-
-    async function pullFromCloud() {
-      if (!cloudDbUrl) return;
-      try {
-        isSyncing = true;
-        const res = await fetch(cloudDbUrl);
-        const data = await res.json();
-        if (data && Array.isArray(data.spools)) {
-          spools = data.spools;
-          printHistory = Array.isArray(data.printHistory) ? data.printHistory : [];
-          localStorage.setItem(STORAGE_KEY_SPOOLS, JSON.stringify(spools));
-          localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(printHistory));
-          renderSpools();
-        }
-      } catch(e) {}
-      finally { isSyncing = false; }
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
-      loadState();
-      renderSpools();
-      if (cloudDbUrl) pullFromCloud();
-      setInterval(pullFromCloud, 10000);
+      loadStateFromCloud();
+      // Alle 15 Sekunden im Hintergrund synchronisieren
+      setInterval(loadStateFromCloud, 15000);
     });
   </script>
 </body>
