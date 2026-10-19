@@ -5,51 +5,99 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#080c14" />
-  <title>FilamentHub v18.1 – 3D-Filament Manager</title>
+  <title>FilamentHub v19.0 – 3D-Filament Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            surface: { 950: '#080c14', 900: '#0f1623', 850: '#162033', 800: '#1e2b45' }
-          }
-        }
-      }
-    };
-  </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+    :root {
+      --bg-main: #080c14;
+      --bg-panel: #0f1623;
+      --bg-card: #0f1623;
+      --bg-sub: #080c14;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border-col: rgba(255, 255, 255, 0.08);
+    }
+
+    body.theme-midnight {
+      --bg-main: #0b1120;
+      --bg-panel: #131c31;
+      --bg-card: #152038;
+      --bg-sub: #0b1120;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-col: rgba(56, 189, 248, 0.14);
+    }
+
+    body.theme-light {
+      --bg-main: #f1f5f9;
+      --bg-panel: #ffffff;
+      --bg-card: #ffffff;
+      --bg-sub: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-col: rgba(15, 23, 42, 0.11);
+    }
+
+    body.theme-soft {
+      --bg-main: #e2e8f0;
+      --bg-panel: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-sub: #edf2f7;
+      --text-main: #1e293b;
+      --text-muted: #475569;
+      --border-col: rgba(15, 23, 42, 0.12);
+    }
+
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #080c14;
-      color: #f1f5f9;
+      background-color: var(--bg-main);
+      color: var(--text-main);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
+
     .font-mono-num { font-family: 'JetBrains Mono', monospace; }
-    .clean-panel {
-      background-color: #0f1623;
-      border: 1px solid rgba(255, 255, 255, 0.07);
+
+    .t-panel {
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-col);
     }
-    .clean-card {
-      background-color: #0f1623;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+    .t-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-col);
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
     }
-    .clean-card:hover {
-      border-color: rgba(56, 189, 248, 0.4);
-      box-shadow: 0 10px 26px -8px rgba(0, 0, 0, 0.55);
+
+    .t-card:hover {
+      border-color: rgba(14, 165, 233, 0.45);
+      box-shadow: 0 10px 26px -8px rgba(0, 0, 0, 0.25);
     }
+
+    .t-sub {
+      background-color: var(--bg-sub);
+      border: 1px solid var(--border-col);
+    }
+
+    .t-input {
+      background-color: var(--bg-sub);
+      border: 1px solid var(--border-col);
+      color: var(--text-main);
+    }
+
+    .t-muted { color: var(--text-muted); }
+
     @keyframes pulse-overdue {
       0%, 100% { border-color: rgba(244, 63, 94, 0.85); }
       50% { border-color: rgba(244, 63, 94, 0.25); }
     }
     .overdue-card { animation: pulse-overdue 2.2s infinite; }
+
     @keyframes mic-pulse {
       0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
       50% { transform: scale(1.06); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
@@ -59,390 +107,597 @@
       color: #ffffff !important;
       animation: mic-pulse 1.4s infinite;
     }
+
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #080c14; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.35); border-radius: 9999px; }
   </style>
 </head>
-<body class="min-h-screen w-full flex flex-col selection:bg-sky-500 selection:text-white pb-24 lg:pb-12">
+<body class="min-h-screen w-full flex selection:bg-sky-500 selection:text-white">
 
-  <!-- ================= VOLLE BREITE TOP-HEADER (KOMPLETT LINKSBÜNDIG) ================= -->
-  <header class="sticky top-0 z-30 w-full bg-surface-950/95 backdrop-blur-xl border-b border-white/[0.08]">
-    <div class="w-full px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
-      
-      <!-- Ganz links: Menü-Toggle & Logo -->
-      <div class="flex items-center gap-2.5">
-        <button type="button" onclick="toggleSidebar()" class="px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.09] transition flex items-center gap-2 text-xs font-bold cursor-pointer">
-          <i data-lucide="panel-left" class="w-4 h-4 text-sky-400"></i>
-          <span>Menü</span>
+  <!-- ================= 1. VERTIKALE MENÜ-LEISTE LINKS (VON OBEN NACH UNTEN) ================= -->
+  <aside class="fixed top-0 left-0 bottom-0 z-50 w-16 sm:w-20 t-panel border-r flex flex-col items-center justify-between py-3 select-none shadow-xl">
+    
+    <!-- Oben: Logo & Menü-Öffner -->
+    <div class="flex flex-col items-center gap-3 w-full px-1.5">
+      <button type="button" onclick="toggleSideDrawer()" title="Werkzeug-Panel ein-/ausklappen" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-400 flex items-center justify-center text-slate-950 shadow-md hover:scale-105 transition cursor-pointer">
+        <i data-lucide="disc-3" class="w-6 h-6 stroke-[2.3]"></i>
+      </button>
+
+      <div class="w-8 h-[1px] bg-slate-500/20"></div>
+
+      <!-- Vertikale Menü-Buttons (öffnen das Panel zur Seite) -->
+      <nav class="flex flex-col items-center gap-1.5 w-full">
+        <button id="railBtn-ai" type="button" onclick="openDrawerTab('ai')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-bold transition cursor-pointer">
+          <i data-lucide="bot" class="w-5 h-5"></i>
+          <span>KI-Agent</span>
         </button>
 
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-500 to-emerald-500 flex items-center justify-center text-surface-950 shadow-sm">
-            <i data-lucide="disc-3" class="w-5 h-5 stroke-[2.3]"></i>
+        <button id="railBtn-gcode" type="button" onclick="openDrawerTab('gcode')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
+          <i data-lucide="file-code-2" class="w-5 h-5"></i>
+          <span>G-Code</span>
+        </button>
+
+        <button id="railBtn-calc" type="button" onclick="openDrawerTab('calc')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
+          <i data-lucide="calculator" class="w-5 h-5"></i>
+          <span>Rechner</span>
+        </button>
+
+        <!-- NEU: EIGENER MENÜPUNKT FÜR ZWISCHENSPEICHER + IMPORT/EXPORT -->
+        <button id="railBtn-vault" type="button" onclick="openDrawerTab('vault')" class="relative w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
+          <i data-lucide="archive-restore" class="w-5 h-5"></i>
+          <span>Speicher</span>
+          <span id="railSnapshotBadge" class="absolute top-1.5 right-2 px-1.5 py-0.2 text-[9px] font-mono-num font-extrabold rounded-full bg-emerald-500 text-slate-950">0</span>
+        </button>
+
+        <button id="railBtn-sync" type="button" onclick="openDrawerTab('sync')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
+          <i data-lucide="smartphone" class="w-5 h-5"></i>
+          <span>Handy</span>
+        </button>
+
+        <button id="railBtn-settings" type="button" onclick="openDrawerTab('settings')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
+          <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+          <span>Optionen</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Unten: Verlauf & Ein-/Ausklapp-Pfeil -->
+    <div class="flex flex-col items-center gap-2 w-full px-1.5">
+      <button type="button" onclick="openHistoryModal()" title="Druck-Verlauf" class="w-full py-2 rounded-xl t-sub hover:opacity-80 flex flex-col items-center gap-0.5 text-[10px] font-semibold cursor-pointer">
+        <i data-lucide="history" class="w-4 h-4 text-sky-400"></i>
+        <span id="historyBadge" class="font-mono-num text-[10px]">0</span>
+      </button>
+
+      <button type="button" onclick="toggleSideDrawer()" title="Seitenpanel ein-/ausfahren" class="w-full py-2 rounded-xl t-sub hover:opacity-80 flex items-center justify-center cursor-pointer">
+        <i id="drawerChevronIcon" data-lucide="chevrons-right" class="w-4 h-4 t-muted"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================= 2. SEITLICH AUSFAHRENDES WERKZEUG-PANEL (SLIDE-OUT DRAWER) ================= -->
+  <div id="drawerBackdrop" onclick="closeSideDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+
+  <aside
+    id="sideDrawer"
+    class="fixed top-0 bottom-0 left-16 sm:left-20 z-40 w-[330px] sm:w-[395px] t-panel border-r shadow-2xl flex flex-col transition-transform duration-300 ease-out -translate-x-[420px]"
+  >
+    <!-- Drawer Kopfzeile -->
+    <div class="px-4 py-3.5 border-b border-slate-500/15 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+        <h2 id="drawerTitle" class="text-sm font-extrabold uppercase tracking-wider">KI-Agent</h2>
+      </div>
+      <button type="button" onclick="closeSideDrawer()" class="p-1.5 rounded-lg t-sub hover:opacity-80 text-xs font-bold flex items-center gap-1 cursor-pointer">
+        <i data-lucide="chevrons-left" class="w-4 h-4"></i>
+        <span>Zuklappen</span>
+      </button>
+    </div>
+
+    <!-- Drawer Inhalt -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-4">
+
+      <!-- ================= PANEL 1: KI-AGENT ================= -->
+      <div id="drawerPanel-ai" class="flex flex-col h-full space-y-3">
+        <div class="rounded-xl t-sub p-3 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-bold">KI-Agent & Sprachsteuerung</p>
+            <button type="button" onclick="speakText('Sprachausgabe funktioniert einwandfrei.')" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 text-[10px] font-semibold flex items-center gap-1 cursor-pointer">
+              <i data-lucide="volume-2" class="w-3 h-3"></i>
+              <span>Stimme testen</span>
+            </button>
           </div>
-          <span class="text-base sm:text-lg font-extrabold tracking-tight text-white">FilamentHub</span>
+          <p class="text-[11px] t-muted">
+            Schreibe oder diktiere z. B.: <em>„Neue Spule Bambu Lab PETG Blau im eBOS Beutel“</em> oder <em>„Ziehe 45g von Weiß ab“</em>.
+          </p>
+        </div>
+
+        <div id="aiChatMessages" class="flex-1 min-h-[280px] max-h-[450px] overflow-y-auto space-y-2 rounded-xl t-sub p-3 text-xs"></div>
+
+        <div class="flex gap-1.5">
+          <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" title="Einsprechen" class="px-3 py-2.5 rounded-xl t-sub text-sky-400 hover:opacity-80 transition cursor-pointer">
+            <i data-lucide="mic" class="w-4 h-4"></i>
+          </button>
+          <input
+            id="aiUserInput"
+            type="text"
+            placeholder="Befehl eingeben oder diktieren..."
+            class="flex-1 px-3 py-2.5 rounded-xl t-input text-xs outline-none focus:border-sky-500"
+            onkeydown="if(event.key==='Enter'){ sendAiMessage(); }"
+          />
+          <button type="button" onclick="sendAiMessage()" class="px-3.5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition cursor-pointer">
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
         </div>
       </div>
 
-      <!-- Rechts: Schlicht-Schalter, Zwischenspeicher, Import & Neue Spule -->
-      <div class="flex flex-wrap items-center gap-2">
+      <!-- ================= PANEL 2: G-CODE DIREKT-ABZUG ================= -->
+      <div id="drawerPanel-gcode" class="hidden space-y-4">
+        <div class="rounded-xl t-sub p-3">
+          <h3 class="text-xs font-bold">G-Code Direkt-Abzug</h3>
+          <p class="text-[11px] t-muted mt-1">
+            Fertige `.gcode` Datei hochladen → Gewicht wird automatisch erkannt → Spule antippen und abziehen.
+          </p>
+        </div>
+
+        <label for="gcodeFileInput" class="cursor-pointer block rounded-xl border-2 border-dashed border-sky-500/40 hover:border-sky-400 t-sub p-5 text-center transition">
+          <i data-lucide="upload-cloud" class="w-7 h-7 text-sky-400 mx-auto mb-2"></i>
+          <p class="text-xs font-bold">G-Code Datei auswählen (.gcode)</p>
+          <p class="text-[11px] t-muted mt-0.5">Bambu Studio, OrcaSlicer, PrusaSlicer, Cura</p>
+          <input id="gcodeFileInput" type="file" accept=".gcode,.gco,.txt" class="hidden" onchange="handleGcodeUpload(event, 'deduct')" />
+        </label>
+
+        <div id="gcodeResultBox" class="hidden rounded-xl t-sub border-emerald-500/40 p-3.5 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-500/15 pb-2">
+            <p id="gcodeFileName" class="text-xs font-bold truncate">Druck.gcode</p>
+            <button type="button" onclick="transferGcodeToCalc()" class="text-[11px] text-sky-400 hover:underline font-semibold cursor-pointer">→ Zum Rechner</button>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="rounded-lg t-panel p-2.5">
+              <span class="text-[10px] t-muted block">Gewicht (g)</span>
+              <input id="gcodeParsedGrams" type="number" step="0.1" oninput="renderGcodeSpoolSelection()" class="w-full bg-transparent text-base font-extrabold text-emerald-400 font-mono-num outline-none" />
+            </div>
+            <div class="rounded-lg t-panel p-2.5">
+              <span class="text-[10px] t-muted block">Druckzeit</span>
+              <p id="gcodeParsedTime" class="text-sm font-bold font-mono-num mt-1">—</p>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <p class="text-[11px] font-bold text-sky-400">Spule antippen zum Abziehen:</p>
+            <div id="gcodeSpoolSelectionList" class="space-y-1.5 max-h-64 overflow-y-auto"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= PANEL 3: KOSTENRECHNER ================= -->
+      <div id="drawerPanel-calc" class="hidden space-y-3.5">
+        <label for="calcGcodeInput" class="cursor-pointer flex items-center justify-between px-3.5 py-2.5 rounded-xl t-sub border border-dashed border-sky-500/40 transition">
+          <div>
+            <p class="text-xs font-bold">Aus G-Code Datei ziehen</p>
+            <p id="calcGcodeLabel" class="text-[10px] t-muted">Gewicht & Druckzeit automatisch laden</p>
+          </div>
+          <span class="px-2 py-1 rounded bg-sky-500/15 text-sky-400 text-[10px] font-bold">Upload</span>
+          <input id="calcGcodeInput" type="file" accept=".gcode,.gco,.txt" class="hidden" onchange="handleGcodeUpload(event, 'calc')" />
+        </label>
+
+        <div class="space-y-2.5 rounded-xl t-sub p-3">
+          <div>
+            <label class="block text-[11px] t-muted mb-1">Filament wählen</label>
+            <select id="calcSpoolSelect" onchange="onCalcSpoolChange()" class="w-full px-3 py-2 rounded-lg t-input text-xs outline-none"></select>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] t-muted mb-1">Preis (€/kg)</label>
+              <input id="calcPricePerKg" type="number" step="0.01" value="17.99" oninput="calculatePrintCost()" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-mono-num text-emerald-400 font-bold outline-none" />
+            </div>
+            <div>
+              <label class="block text-[11px] t-muted mb-1">Gewicht (g)</label>
+              <input id="calcWeightGrams" type="number" step="0.1" value="50" oninput="calculatePrintCost()" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-mono-num font-bold outline-none" />
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 pt-1">
+            <div>
+              <label class="block text-[10px] t-muted mb-1">Dauer (h)</label>
+              <input id="calcHours" type="number" step="0.1" value="2.0" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
+            </div>
+            <div>
+              <label class="block text-[10px] t-muted mb-1">Watt</label>
+              <input id="calcWatts" type="number" value="120" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
+            </div>
+            <div>
+              <label class="block text-[10px] t-muted mb-1">€/kWh</label>
+              <input id="calcKwhPrice" type="number" step="0.01" value="0.32" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl t-sub border-emerald-500/30 p-3.5 space-y-2">
+          <div class="flex justify-between text-xs t-muted">
+            <span>Materialkosten:</span>
+            <span id="calcResMaterial" class="font-mono-num font-bold">0,90 €</span>
+          </div>
+          <div class="flex justify-between text-xs t-muted">
+            <span>Strom + Verschleiß:</span>
+            <span id="calcResPower" class="font-mono-num font-bold">0,18 €</span>
+          </div>
+          <div class="border-t border-slate-500/15 pt-2 flex justify-between items-center">
+            <span class="text-xs font-bold text-emerald-400">Gesamtkosten:</span>
+            <span id="calcResTotal" class="text-lg font-extrabold font-mono-num text-emerald-400">1,08 €</span>
+          </div>
+          <button type="button" onclick="deductFromCalculator()" class="w-full py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold transition cursor-pointer">
+            Gewicht von Spule abziehen
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= PANEL 4: DATENTRESOR (ZWISCHENSPEICHER + IMPORT/EXPORT) ================= -->
+      <div id="drawerPanel-vault" class="hidden space-y-4">
         
+        <!-- TEIL A: AUSKLAPPBARER ZWISCHENSPEICHER -->
+        <div class="rounded-xl t-sub border border-emerald-500/35 p-3.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i data-lucide="database" class="w-4 h-4 text-emerald-400"></i>
+              <h3 class="text-xs font-extrabold uppercase tracking-wide text-emerald-400">Zwischenspeicher</h3>
+            </div>
+            <span id="vaultSnapshotCountLabel" class="text-[11px] font-mono-num font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">0 Spulen</span>
+          </div>
+
+          <!-- Ausklapp-Button für die Spulen im Zwischenspeicher -->
+          <div class="rounded-xl t-panel p-2.5 space-y-2">
+            <button type="button" onclick="toggleBufferPreview()" class="w-full flex items-center justify-between text-xs font-bold cursor-pointer">
+              <span id="bufferPreviewTitle">📦 Inhalt im Zwischenspeicher anzeigen</span>
+              <i id="bufferChevron" data-lucide="chevron-down" class="w-4 h-4 text-sky-400 transition-transform"></i>
+            </button>
+
+            <!-- Ausgefahrene Liste aller Spulen im Zwischenspeicher -->
+            <div id="bufferSpoolDetailsList" class="hidden pt-2 border-t border-slate-500/15 space-y-1.5 max-h-56 overflow-y-auto"></div>
+          </div>
+
+          <!-- 2 Haupt-Knöpfe: JETZT LADEN & JETZT LÖSCHEN -->
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="loadBufferNow()" class="py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold flex items-center justify-center gap-1.5 shadow cursor-pointer">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>Jetzt laden</span>
+            </button>
+            <button type="button" onclick="clearBufferNow()" class="py-2 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              <span>Jetzt löschen</span>
+            </button>
+          </div>
+
+          <!-- EINMAL-KNOPF: Alten Browserspeicher durchsuchen & retten -->
+          <button
+            id="browserRescueBtn"
+            type="button"
+            onclick="rescueAllBrowserStorageOnce()"
+            class="w-full py-2 px-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 border border-sky-500/30 text-[11px] font-bold transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            🔍 Alten Browserspeicher durchsuchen & retten
+          </button>
+        </div>
+
+        <!-- TEIL B: DATEI & TEXT IMPORT / EXPORT -->
+        <div class="rounded-xl t-sub p-3.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold flex items-center gap-1.5">
+              <i data-lucide="folder-sync" class="w-4 h-4 text-sky-400"></i>
+              <span>Import & Export (.TXT / .JSON)</span>
+            </h3>
+            <button type="button" onclick="startVoiceRecognition('vaultTextArea', 'micBtnVault', false, true)" id="micBtnVault" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 text-[10px] font-bold cursor-pointer">
+              🎙️ Diktieren
+            </button>
+          </div>
+
+          <div class="grid grid-cols-3 gap-1.5">
+            <label for="vaultFileInput" class="cursor-pointer p-2 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-center transition">
+              <i data-lucide="upload" class="w-4 h-4 text-emerald-400 mx-auto mb-0.5"></i>
+              <span class="text-[10px] font-bold block">Datei laden</span>
+              <input id="vaultFileInput" type="file" accept=".json,.txt,.csv" class="hidden" onchange="handleVaultFileUpload(event)" />
+            </label>
+
+            <button type="button" onclick="downloadReadableTxtFile()" class="p-2 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-center transition cursor-pointer">
+              <i data-lucide="file-text" class="w-4 h-4 text-sky-400 mx-auto mb-0.5"></i>
+              <span class="text-[10px] font-bold block">.TXT Export</span>
+            </button>
+
+            <button type="button" onclick="downloadJsonBackupFile()" class="p-2 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-center transition cursor-pointer">
+              <i data-lucide="file-json" class="w-4 h-4 text-purple-400 mx-auto mb-0.5"></i>
+              <span class="text-[10px] font-bold block">.JSON Export</span>
+            </button>
+          </div>
+
+          <textarea
+            id="vaultTextArea"
+            rows="7"
+            placeholder="Liste oder JSON hier bearbeiten oder einfügen..."
+            class="w-full p-2.5 rounded-xl t-input text-[11px] font-mono-num outline-none leading-relaxed"
+          ></textarea>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="applyVaultText('append')" class="py-2 px-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 text-xs font-bold cursor-pointer">
+              ➕ Hinzufügen
+            </button>
+            <button type="button" onclick="applyVaultText('replace')" class="py-2 px-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-extrabold cursor-pointer">
+              ✓ Liste übernehmen
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= PANEL 5: HANDY-KOPPLUNG & CLOUD-SYNC ================= -->
+      <div id="drawerPanel-sync" class="hidden space-y-3.5">
+        <div class="rounded-xl t-sub p-3.5 space-y-2.5">
+          <h3 class="text-xs font-bold">PC & Handy Cloud-Sync</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="forcePushToCloud()" class="py-2 px-2.5 rounded-lg bg-sky-500 text-slate-950 text-[11px] font-bold cursor-pointer">
+              ↑ In Cloud senden
+            </button>
+            <button type="button" onclick="forcePullFromCloud()" class="py-2 px-2.5 rounded-lg bg-emerald-500 text-slate-950 text-[11px] font-bold cursor-pointer">
+              ↓ Cloud abrufen
+            </button>
+          </div>
+        </div>
+
+        <div class="rounded-xl t-sub p-3 space-y-2">
+          <label class="block text-[11px] font-bold">Gemeinsame Cloud-ID (npoint.io):</label>
+          <div class="flex gap-1.5">
+            <input id="cloudIdInput" type="text" value="2a75ad089c77e7c35f98" class="flex-1 px-2.5 py-1.5 rounded-lg t-input text-xs font-mono-num text-emerald-400 outline-none" />
+            <button type="button" onclick="saveCloudId()" class="px-3 py-1.5 rounded-lg bg-sky-500 text-slate-950 text-xs font-bold cursor-pointer">Setzen</button>
+          </div>
+        </div>
+
+        <div class="rounded-xl t-sub p-3 space-y-2">
+          <label class="block text-[11px] font-bold">QR-Code fürs Handy:</label>
+          <div class="flex justify-center">
+            <div class="p-2 rounded-xl bg-white">
+              <div id="qrCanvasSidebar" class="w-[135px] h-[135px] flex items-center justify-center text-center text-[11px] text-slate-700 p-2"></div>
+            </div>
+          </div>
+          <input id="qrUrlSidebarInput" type="url" placeholder="Deine GitHub Pages / Online-URL..." oninput="onSidebarQrInput()" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs outline-none" />
+        </div>
+      </div>
+
+      <!-- ================= PANEL 6: OPTIONEN (3 AUSFAHRBARE MENÜS) ================= -->
+      <div id="drawerPanel-settings" class="hidden space-y-3">
+
+        <!-- 1. AUSFAHRBAR: DARSTELLUNG & DESIGN -->
+        <div class="rounded-xl t-sub overflow-hidden">
+          <button type="button" onclick="toggleSettingsAccordion('accDesign')" class="w-full p-3.5 flex items-center justify-between text-xs font-extrabold uppercase tracking-wider cursor-pointer">
+            <span class="flex items-center gap-2">
+              <i data-lucide="palette" class="w-4 h-4 text-sky-400"></i>
+              <span>1. Darstellung & Design</span>
+            </span>
+            <i id="icon-accDesign" data-lucide="chevron-down" class="w-4 h-4 t-muted transition-transform"></i>
+          </button>
+
+          <div id="accDesign" class="p-3.5 pt-0 border-t border-slate-500/15 space-y-3">
+            <div>
+              <label class="block text-[11px] t-muted mb-1">Hintergrund / Theme (inkl. Hell-Modus)</label>
+              <select id="settingTheme" onchange="updateAppSetting('theme', this.value)" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-semibold outline-none">
+                <option value="obsidian">🌑 Obsidian Dunkel (Standard)</option>
+                <option value="midnight">🌌 Midnight Tech-Blau</option>
+                <option value="light">☀️ Hell / Light-Mode (Weiß & Clean)</option>
+                <option value="soft">🌤️ Sanft-Hell (Soft Slate)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] t-muted mb-1">Farbe der Fortschrittsleiste</label>
+              <select id="settingBarStyle" onchange="updateAppSetting('barStyle', this.value)" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-semibold outline-none">
+                <option value="blue_green">🌊 Blau-Türkis Verlauf (Favorit)</option>
+                <option value="dynamic">🚦 Dynamisch (Grün → Gelb → Rot nach %)</option>
+                <option value="cyber">🔮 Cyber-Violett / Pink Verlauf</option>
+                <option value="sunset">🌅 Sunset Orange / Gold Verlauf</option>
+                <option value="ocean">💎 Ozean-Blau Verlauf</option>
+                <option value="emerald">🌿 Smaragd-Grün</option>
+              </select>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs">Schlicht-Modus (Minimal-Karten)</span>
+              <input id="settingMinimalToggle" type="checkbox" onchange="toggleMinimalMode(this.checked)" class="w-4 h-4 accent-sky-500 rounded cursor-pointer" />
+            </div>
+
+            <div>
+              <label class="block text-[11px] t-muted mb-1">Karten pro Zeile</label>
+              <select id="settingGridCols" onchange="updateAppSetting('gridCols', this.value)" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs outline-none">
+                <option value="auto">Automatisch (3 bis 4 Karten)</option>
+                <option value="3">3 Karten pro Zeile</option>
+                <option value="4">4 Karten pro Zeile</option>
+                <option value="5">5 Karten pro Zeile</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. AUSFAHRBAR: STANDARDWERTE (SPULEN PRO HERSTELLER & BEUTEL) -->
+        <div class="rounded-xl t-sub overflow-hidden">
+          <button type="button" onclick="toggleSettingsAccordion('accTara')" class="w-full p-3.5 flex items-center justify-between text-xs font-extrabold uppercase tracking-wider cursor-pointer">
+            <span class="flex items-center gap-2">
+              <i data-lucide="scale" class="w-4 h-4 text-emerald-400"></i>
+              <span>2. Standardwerte (Spulen & Beutel)</span>
+            </span>
+            <i id="icon-accTara" data-lucide="chevron-down" class="w-4 h-4 t-muted transition-transform"></i>
+          </button>
+
+          <div id="accTara" class="hidden p-3.5 pt-0 border-t border-slate-500/15 space-y-3">
+            <p class="text-[11px] t-muted">
+              Wähle einen Hersteller aus, um dessen Standard-Leerspulengewicht (Tara) und Standardpreis anzupassen:
+            </p>
+
+            <div>
+              <label class="block text-[11px] font-bold mb-1">Hersteller auswählen</label>
+              <select id="settingBrandSelect" onchange="loadBrandPresetIntoSettings()" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-bold outline-none"></select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] t-muted mb-1">Leerspule Tara (g)</label>
+                <input id="settingBrandTara" type="number" oninput="saveCurrentBrandPresetFromSettings()" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs font-mono-num font-bold text-emerald-400 outline-none" />
+              </div>
+              <div>
+                <label class="block text-[10px] t-muted mb-1">Standardpreis (€/kg)</label>
+                <input id="settingBrandPrice" type="number" step="0.01" oninput="saveCurrentBrandPresetFromSettings()" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs font-mono-num font-bold text-sky-400 outline-none" />
+              </div>
+            </div>
+
+            <div class="border-t border-slate-500/15 pt-2.5 grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] t-muted mb-1">eBOS Vakuum-Beutel (g)</label>
+                <input id="settingEbosWeight" type="number" value="25" onchange="updateAppSetting('ebosWeight', parseInt(this.value)||25)" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs font-mono-num font-bold outline-none" />
+              </div>
+              <div>
+                <label class="block text-[10px] t-muted mb-1">OVP Folie (g)</label>
+                <input id="settingOvpWeight" type="number" value="18" onchange="updateAppSetting('ovpWeight', parseInt(this.value)||18)" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs font-mono-num font-bold outline-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. AUSFAHRBAR: AUFBEWAHRUNGSDAUER & TROCKNUNG PRO FILAMENT -->
+        <div class="rounded-xl t-sub overflow-hidden">
+          <button type="button" onclick="toggleSettingsAccordion('accDry')" class="w-full p-3.5 flex items-center justify-between text-xs font-extrabold uppercase tracking-wider cursor-pointer">
+            <span class="flex items-center gap-2">
+              <i data-lucide="flame" class="w-4 h-4 text-amber-400"></i>
+              <span>3. Haltbarkeit pro Filament</span>
+            </span>
+            <i id="icon-accDry" data-lucide="chevron-down" class="w-4 h-4 t-muted transition-transform"></i>
+          </button>
+
+          <div id="accDry" class="hidden p-3.5 pt-0 border-t border-slate-500/15 space-y-3">
+            <p class="text-[11px] t-muted">
+              Bestimme für jeden Filamenttyp, wie viele Tage er offen, im eBOS-Beutel oder OVP gelagert werden darf:
+            </p>
+
+            <div>
+              <label class="block text-[11px] font-bold mb-1">Filamenttyp auswählen</label>
+              <select id="settingMatSelect" onchange="loadMaterialPresetIntoSettings()" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-bold outline-none">
+                <option value="PLA">PLA</option>
+                <option value="PLA+">PLA+</option>
+                <option value="PETG">PETG</option>
+                <option value="TPU">TPU (Flex)</option>
+                <option value="ABS">ABS</option>
+                <option value="ASA">ASA</option>
+                <option value="PA / Nylon">PA / Nylon</option>
+                <option value="PC">PC (Polycarbonat)</option>
+                <option value="PET-CF / PA-CF">Carbon (CF)</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="block text-[10px] t-muted mb-1">🌬️ Offen (Tage)</label>
+                <input id="settingMatOpenDays" type="number" oninput="saveCurrentMaterialPresetFromSettings()" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num font-bold text-amber-400 outline-none" />
+              </div>
+              <div>
+                <label class="block text-[10px] t-muted mb-1">🛡️ eBOS (Tage)</label>
+                <input id="settingMatEbosDays" type="number" oninput="saveCurrentMaterialPresetFromSettings()" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num font-bold text-sky-400 outline-none" />
+              </div>
+              <div>
+                <label class="block text-[10px] t-muted mb-1">📦 OVP (Tage)</label>
+                <input id="settingMatOvpDays" type="number" oninput="saveCurrentMaterialPresetFromSettings()" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num font-bold text-emerald-400 outline-none" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <div>
+                <label class="block text-[10px] t-muted mb-1">Trocknungs-Temp (°C)</label>
+                <input id="settingMatTemp" type="number" oninput="saveCurrentMaterialPresetFromSettings()" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
+              </div>
+              <div>
+                <label class="block text-[10px] t-muted mb-1">Trocknungs-Dauer (h)</label>
+                <input id="settingMatHours" type="number" oninput="saveCurrentMaterialPresetFromSettings()" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audio / Vorlesen Option -->
+        <div class="rounded-xl t-sub p-3 flex items-center justify-between">
+          <span class="text-xs font-semibold">🔊 Sprachausgabe (Firefox & Browser)</span>
+          <input id="settingTtsEnabled" type="checkbox" onchange="updateAppSetting('ttsEnabled', this.checked)" class="w-4 h-4 accent-sky-500 rounded cursor-pointer" />
+        </div>
+
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- ================= 3. HAUPT-BEREICH RECHTS (VOLLE BREITE) ================= -->
+  <div class="flex-1 flex flex-col min-w-0 pl-16 sm:pl-20 pb-20 lg:pb-12">
+
+    <!-- OBERE LEISTE -->
+    <header class="sticky top-0 z-30 w-full t-panel border-b px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5">
+        <h1 class="text-base sm:text-lg font-extrabold tracking-tight">Filament<span class="text-sky-400">Hub</span></h1>
+        <span class="text-[10px] font-mono-num px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold">Cloud-Sync</span>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
         <!-- SCHALTER: SCHLICHT-MODUS -->
         <button
           id="minimalModeToggleBtn"
           type="button"
           onclick="toggleMinimalMode()"
-          class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.08] text-xs font-bold transition cursor-pointer"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-sub text-xs font-bold transition cursor-pointer"
         >
-          <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+          <i data-lucide="eye" class="w-3.5 h-3.5 text-sky-400"></i>
           <span id="minimalModeLabel">Schlicht-Modus: AUS</span>
         </button>
 
         <!-- Undo / Redo -->
-        <div class="inline-flex items-center rounded-xl bg-surface-900 border border-white/[0.08]">
-          <button id="undoBtn" type="button" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:bg-surface-850 text-slate-300 transition disabled:opacity-30 cursor-pointer">
+        <div class="inline-flex items-center rounded-xl t-sub overflow-hidden">
+          <button id="undoBtn" type="button" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:opacity-75 transition disabled:opacity-30 cursor-pointer">
             <i data-lucide="undo-2" class="w-3.5 h-3.5"></i>
           </button>
-          <button id="redoBtn" type="button" onclick="redoAction()" title="Vorwärts (Strg+Y)" class="p-2 hover:bg-surface-850 text-slate-300 border-l border-white/[0.08] transition disabled:opacity-30 cursor-pointer">
+          <button id="redoBtn" type="button" onclick="redoAction()" title="Vorwärts (Strg+Y)" class="p-2 hover:opacity-75 border-l border-slate-500/15 transition disabled:opacity-30 cursor-pointer">
             <i data-lucide="redo-2" class="w-3.5 h-3.5"></i>
           </button>
         </div>
 
-        <!-- ZWISCHENSPEICHER / NOTFALL-TRESOR -->
-        <button type="button" onclick="openSidebarTab('settings')" title="Zwischenspeicher & Einstellungen öffnen" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-emerald-400 text-xs font-semibold border border-emerald-500/25 transition cursor-pointer">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-          <span class="hidden md:inline">Zwischenspeicher</span>
-          <span id="snapshotBadge" class="px-1.5 py-0.2 text-[10px] font-mono-num rounded-full bg-emerald-500/15 text-emerald-300">0</span>
-        </button>
-
-        <!-- Datei / JSON / Text Import & Export -->
-        <button type="button" onclick="openDataVaultModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 text-xs font-semibold border border-white/[0.08] transition cursor-pointer">
-          <i data-lucide="folder-sync" class="w-3.5 h-3.5 text-sky-400"></i>
-          <span>Import / Export</span>
+        <!-- Direkt-Button zum Speicher/Import-Menü -->
+        <button type="button" onclick="openDrawerTab('vault')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-sub text-xs font-bold hover:border-sky-500/40 transition cursor-pointer">
+          <i data-lucide="archive-restore" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>Speicher & Import</span>
         </button>
 
         <!-- Neue Spule -->
-        <button type="button" onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold transition shadow-sm cursor-pointer">
+        <button type="button" onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-extrabold transition shadow-sm cursor-pointer">
           <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
           <span>Neue Spule</span>
         </button>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- ================= HAUPT-LAYOUT (100% VOLLBILD & LINKSBÜNDIG) ================= -->
-  <div class="flex-1 flex w-full relative">
-
-    <!-- Mobile Backdrop -->
-    <div id="sidebarBackdrop" onclick="closeSidebarOnMobile()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden lg:hidden"></div>
-
-    <!-- ================= LINKES MENÜ (KOMPLETT LINKSBÜNDIG) ================= -->
-    <aside id="leftSidebar" class="fixed lg:sticky top-0 lg:top-[53px] left-0 z-50 lg:z-20 h-screen lg:h-[calc(100vh-53px)] w-[340px] sm:w-[370px] bg-surface-900 border-r border-white/[0.08] flex flex-col transition-all duration-200 -translate-x-full lg:translate-x-0 shrink-0 overflow-hidden">
-      
-      <div class="p-3 border-b border-white/[0.07] bg-surface-950/50">
-        <div class="flex items-center justify-between mb-2 px-1">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Menü & Werkzeuge</span>
-          <button type="button" onclick="toggleSidebar()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer">
-            <i data-lucide="chevrons-left" class="w-3.5 h-3.5"></i>
-            <span>Einklappen</span>
-          </button>
-        </div>
-
-        <div class="grid grid-cols-5 gap-1 bg-surface-950 p-1 rounded-xl border border-white/[0.06]">
-          <button id="tabBtn-ai" type="button" onclick="switchSidebarTab('ai')" class="py-2 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-1 transition bg-sky-500 text-surface-950 cursor-pointer">
-            <i data-lucide="bot" class="w-4 h-4"></i>
-            <span>KI-Agent</span>
-          </button>
-          <button id="tabBtn-gcode" type="button" onclick="switchSidebarTab('gcode')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white cursor-pointer">
-            <i data-lucide="file-code-2" class="w-4 h-4"></i>
-            <span>G-Code</span>
-          </button>
-          <button id="tabBtn-calc" type="button" onclick="switchSidebarTab('calc')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white cursor-pointer">
-            <i data-lucide="calculator" class="w-4 h-4"></i>
-            <span>Rechner</span>
-          </button>
-          <button id="tabBtn-sync" type="button" onclick="switchSidebarTab('sync')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white cursor-pointer">
-            <i data-lucide="smartphone" class="w-4 h-4"></i>
-            <span>Sync</span>
-          </button>
-          <button id="tabBtn-settings" type="button" onclick="switchSidebarTab('settings')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white cursor-pointer">
-            <i data-lucide="settings" class="w-4 h-4"></i>
-            <span>Optionen</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="flex-1 overflow-y-auto p-4 space-y-4">
-
-        <!-- TAB 1: KI-AGENT -->
-        <div id="sidebarPanel-ai" class="flex flex-col h-full space-y-3">
-          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-1.5">
-            <div class="flex items-center justify-between">
-              <p class="text-xs font-bold text-white">KI-Agent & Sprachsteuerung</p>
-              <button type="button" onclick="speakText('Sprachausgabe im Firefox und Browser ist bereit.')" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 text-[10px] font-semibold flex items-center gap-1 cursor-pointer">
-                <i data-lucide="volume-2" class="w-3 h-3"></i>
-                <span>Test-Stimme</span>
-              </button>
-            </div>
-            <p class="text-[11px] text-slate-400">
-              Schreibe oder diktiere z. B.: <em>„Neue Spule Bambu Lab PETG Basic Blau im eBOS Beutel“</em> oder <em>„Ziehe 45g von Marmor ab“</em>.
-            </p>
-          </div>
-
-          <div id="aiChatMessages" class="flex-1 min-h-[250px] max-h-[400px] overflow-y-auto space-y-2 rounded-xl bg-surface-950 border border-white/[0.06] p-3 text-xs"></div>
-
-          <div class="flex gap-1.5">
-            <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" title="Einsprechen" class="px-3 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 text-sky-400 border border-white/[0.1] transition cursor-pointer">
-              <i data-lucide="mic" class="w-4 h-4"></i>
-            </button>
-            <input
-              id="aiUserInput"
-              type="text"
-              placeholder="Befehl eingeben oder diktieren..."
-              class="flex-1 px-3 py-2.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-sky-500 text-xs text-white outline-none"
-              onkeydown="if(event.key==='Enter'){ sendAiMessage(); }"
-            />
-            <button type="button" onclick="sendAiMessage()" class="px-3.5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 font-bold text-xs transition cursor-pointer">
-              <i data-lucide="send" class="w-4 h-4"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- TAB 2: G-CODE UPLOAD & DIREKT-ABZUG -->
-        <div id="sidebarPanel-gcode" class="hidden space-y-4">
-          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3">
-            <h3 class="text-xs font-bold text-white">G-Code Direkt-Abzug</h3>
-            <p class="text-[11px] text-slate-400 mt-1">
-              Fertige `.gcode` Datei hochladen → Gewicht wird erkannt → Spule antippen und abziehen.
-            </p>
-          </div>
-
-          <label for="gcodeFileInput" class="cursor-pointer block rounded-xl border border-dashed border-sky-500/40 hover:border-sky-400 bg-surface-950 p-5 text-center transition">
-            <i data-lucide="upload-cloud" class="w-6 h-6 text-sky-400 mx-auto mb-2"></i>
-            <p class="text-xs font-bold text-white">G-Code Datei hochladen (.gcode)</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">Bambu Studio, OrcaSlicer, PrusaSlicer, Cura</p>
-            <input id="gcodeFileInput" type="file" accept=".gcode,.gco,.txt" class="hidden" onchange="handleGcodeUpload(event, 'deduct')" />
-          </label>
-
-          <div id="gcodeResultBox" class="hidden rounded-xl bg-surface-950 border border-emerald-500/35 p-3.5 space-y-3">
-            <div class="flex items-center justify-between border-b border-white/[0.07] pb-2">
-              <p id="gcodeFileName" class="text-xs font-bold text-white truncate">Druck.gcode</p>
-              <button type="button" onclick="transferGcodeToCalc()" class="text-[11px] text-sky-400 hover:underline font-semibold cursor-pointer">→ Zum Rechner</button>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-              <div class="rounded-lg bg-surface-900 p-2.5 border border-white/[0.06]">
-                <span class="text-[10px] text-slate-400 block">Gewicht (g)</span>
-                <input id="gcodeParsedGrams" type="number" step="0.1" oninput="renderGcodeSpoolSelection()" class="w-full bg-transparent text-base font-extrabold text-emerald-400 font-mono-num outline-none" />
-              </div>
-              <div class="rounded-lg bg-surface-900 p-2.5 border border-white/[0.06]">
-                <span class="text-[10px] text-slate-400 block">Druckzeit</span>
-                <p id="gcodeParsedTime" class="text-sm font-bold text-white font-mono-num mt-1">—</p>
-              </div>
-            </div>
-            <div class="space-y-1.5">
-              <p class="text-[11px] font-bold text-sky-400">Spule antippen zum Abziehen:</p>
-              <div id="gcodeSpoolSelectionList" class="space-y-1.5 max-h-60 overflow-y-auto"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 3: KOSTENRECHNER -->
-        <div id="sidebarPanel-calc" class="hidden space-y-3.5">
-          <label for="calcGcodeInput" class="cursor-pointer flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 border border-dashed border-sky-500/40 transition">
-            <div>
-              <p class="text-xs font-bold text-white">Aus G-Code Datei ziehen</p>
-              <p id="calcGcodeLabel" class="text-[10px] text-slate-400">Gewicht & Druckzeit automatisch laden</p>
-            </div>
-            <span class="px-2 py-1 rounded bg-sky-500/15 text-sky-400 text-[10px] font-bold">Upload</span>
-            <input id="calcGcodeInput" type="file" accept=".gcode,.gco,.txt" class="hidden" onchange="handleGcodeUpload(event, 'calc')" />
-          </label>
-
-          <div class="space-y-2.5 rounded-xl bg-surface-950 border border-white/[0.07] p-3">
-            <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Filament wählen</label>
-              <select id="calcSpoolSelect" onchange="onCalcSpoolChange()" class="w-full px-3 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white outline-none"></select>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Preis (€/kg)</label>
-                <input id="calcPricePerKg" type="number" step="0.01" value="17.99" oninput="calculatePrintCost()" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-emerald-400 font-bold outline-none" />
-              </div>
-              <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Gewicht (g)</label>
-                <input id="calcWeightGrams" type="number" step="0.1" value="50" oninput="calculatePrintCost()" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-white font-bold outline-none" />
-              </div>
-            </div>
-            <div class="grid grid-cols-3 gap-2 pt-1">
-              <div>
-                <label class="block text-[10px] text-slate-400 mb-1">Dauer (h)</label>
-                <input id="calcHours" type="number" step="0.1" value="2.0" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg bg-surface-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-400 mb-1">Watt</label>
-                <input id="calcWatts" type="number" value="120" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg bg-surface-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-400 mb-1">€/kWh</label>
-                <input id="calcKwhPrice" type="number" step="0.01" value="0.32" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg bg-surface-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
-              </div>
-            </div>
-          </div>
-
-          <div class="rounded-xl bg-surface-950 border border-emerald-500/30 p-3.5 space-y-2">
-            <div class="flex justify-between text-xs text-slate-400">
-              <span>Materialkosten:</span>
-              <span id="calcResMaterial" class="font-mono-num font-bold text-white">0,90 €</span>
-            </div>
-            <div class="flex justify-between text-xs text-slate-400">
-              <span>Strom + Verschleiß:</span>
-              <span id="calcResPower" class="font-mono-num font-bold text-white">0,18 €</span>
-            </div>
-            <div class="border-t border-white/[0.08] pt-2 flex justify-between items-center">
-              <span class="text-xs font-bold text-emerald-400">Gesamtkosten:</span>
-              <span id="calcResTotal" class="text-lg font-extrabold font-mono-num text-emerald-400">1,08 €</span>
-            </div>
-            <button type="button" onclick="deductFromCalculator()" class="w-full py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-bold transition cursor-pointer">
-              Gewicht von Spule abziehen
-            </button>
-          </div>
-        </div>
-
-        <!-- TAB 4: HANDY-KOPPLUNG -->
-        <div id="sidebarPanel-sync" class="hidden space-y-3.5">
-          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-2.5">
-            <h3 class="text-xs font-bold text-white">PC & Handy Cloud-Sync</h3>
-            <div class="grid grid-cols-2 gap-2">
-              <button type="button" onclick="forcePushToCloud()" class="py-2 px-2.5 rounded-lg bg-sky-500 text-surface-950 text-[11px] font-bold cursor-pointer">
-                ↑ In Cloud senden
-              </button>
-              <button type="button" onclick="forcePullFromCloud()" class="py-2 px-2.5 rounded-lg bg-emerald-500 text-surface-950 text-[11px] font-bold cursor-pointer">
-                ↓ Cloud abrufen
-              </button>
-            </div>
-          </div>
-
-          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-2">
-            <label class="block text-[11px] font-bold text-slate-300">Gemeinsame Cloud-ID (npoint.io):</label>
-            <div class="flex gap-1.5">
-              <input id="cloudIdInput" type="text" value="2a75ad089c77e7c35f98" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-emerald-400 outline-none" />
-              <button type="button" onclick="saveCloudId()" class="px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-850 text-white text-xs font-bold cursor-pointer">Speichern</button>
-            </div>
-          </div>
-
-          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-2">
-            <label class="block text-[11px] font-bold text-slate-300">QR-Code fürs Handy:</label>
-            <div class="flex justify-center">
-              <div class="p-2 rounded-xl bg-white">
-                <div id="qrCanvasSidebar" class="w-[135px] h-[135px] flex items-center justify-center text-center text-[11px] text-slate-700 p-2"></div>
-              </div>
-            </div>
-            <input id="qrUrlSidebarInput" type="url" placeholder="Deine GitHub Pages / Cloudflare URL..." oninput="onSidebarQrInput()" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white outline-none" />
-          </div>
-        </div>
-
-        <!-- TAB 5: EINSTELLUNGS-MENÜ & ZWISCHENSPEICHER-TRESOR -->
-        <div id="sidebarPanel-settings" class="hidden space-y-4">
-          <div class="rounded-xl bg-surface-950 border border-emerald-500/30 p-3.5 space-y-2.5">
-            <h3 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-              <i data-lucide="shield-check" class="w-4 h-4"></i>
-              <span>Zwischenspeicher & Notfall-Tresor</span>
-            </h3>
-            <p class="text-[11px] text-slate-400">
-              Jeder Stand wird automatisch zwischengespeichert. Falls etwas gelöscht wurde, kannst du es hier sofort zurückholen.
-            </p>
-            <button type="button" onclick="rescueAllBrowserStorage()" class="w-full py-2 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition cursor-pointer">
-              🔍 Alle alten Browser-Speicher durchsuchen & retten
-            </button>
-            <div id="snapshotListContainer" class="space-y-1.5 max-h-40 overflow-y-auto pt-1"></div>
-          </div>
-
-          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-3">
-            <h3 class="text-xs font-bold text-white">Darstellung & Design</h3>
-
-            <div class="flex items-center justify-between">
-              <span class="text-xs text-slate-300">Schlicht-Modus (Minimal-Karten)</span>
-              <input id="settingMinimalToggle" type="checkbox" onchange="toggleMinimalMode(this.checked)" class="w-4 h-4 accent-sky-500 rounded cursor-pointer" />
-            </div>
-
-            <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Farbe der Fortschrittsleiste</label>
-              <select id="settingBarStyle" onchange="updateAppSetting('barStyle', this.value)" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white outline-none">
-                <option value="blue_green">Blau / Türkis Verlauf (Clean)</option>
-                <option value="green">Smaragd-Grün</option>
-                <option value="blue">Tech-Blau</option>
-                <option value="dynamic">Dynamisch (Grün → Gelb → Rot)</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Karten pro Zeile (Vollbild)</label>
-              <select id="settingGridCols" onchange="updateAppSetting('gridCols', this.value)" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white outline-none">
-                <option value="auto">Automatisch (3 bis 4 Karten)</option>
-                <option value="3">Maximal 3 Karten pro Zeile</option>
-                <option value="4">4 Karten pro Zeile (Breitbild)</option>
-                <option value="5">5 Karten pro Zeile (Kompakt)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-2.5">
-            <h3 class="text-xs font-bold text-white">Standardwerte & Firefox-Audio</h3>
-
-            <div class="flex items-center justify-between">
-              <span class="text-xs text-slate-300">Sprachausgabe (Antworten vorlesen)</span>
-              <input id="settingTtsEnabled" type="checkbox" onchange="updateAppSetting('ttsEnabled', this.checked)" class="w-4 h-4 accent-sky-500 rounded cursor-pointer" />
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 pt-1">
-              <div>
-                <label class="block text-[10px] text-slate-400 mb-1">eBOS Beutel Tara (g)</label>
-                <input id="settingEbosWeight" type="number" value="25" onchange="updateAppSetting('ebosWeight', parseInt(this.value)||25)" class="w-full px-2 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-400 mb-1">OVP Folie Tara (g)</label>
-                <input id="settingOvpWeight" type="number" value="18" onchange="updateAppSetting('ovpWeight', parseInt(this.value)||18)" class="w-full px-2 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
-              </div>
-            </div>
-          </div>
-
-          <button type="button" onclick="openHistoryModal()" class="w-full py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 border border-white/[0.08] text-xs font-bold text-slate-200 flex items-center justify-center gap-2 cursor-pointer">
-            <i data-lucide="history" class="w-4 h-4 text-sky-400"></i>
-            <span>Druck-Verlauf anzeigen (<span id="historyBadge">0</span>)</span>
-          </button>
-        </div>
-
-      </div>
-    </aside>
-
-    <!-- ================= HAUPT-BEREICH RECHTS (VOLLE BREITE) ================= -->
-    <main class="flex-1 min-w-0 w-full px-3 sm:px-6 py-4 space-y-4">
+    <!-- HAUPT-DASHBOARD -->
+    <main class="flex-1 w-full px-4 sm:px-6 py-4 space-y-4">
 
       <!-- SCHNELL-EINGABE (WIRD IM SCHLICHT-MODUS AUSGEBLENDET) -->
-      <section id="quickScannerSection" class="clean-panel rounded-2xl p-3.5">
+      <section id="quickScannerSection" class="t-panel rounded-2xl p-3.5">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div>
-            <h2 class="text-xs sm:text-sm font-bold text-white">Schnell-Eintrag (Link, Text oder 🎙️ Spracheingabe)</h2>
-            <p class="text-[11px] text-slate-400">Erkennt Marke, Material, Farbe, „im eBOS Beutel“, „einvakuumiert“ oder „ohne Spule“</p>
+            <h2 class="text-xs sm:text-sm font-bold">Schnell-Eintrag (Link, Text oder 🎙️ Spracheingabe)</h2>
+            <p class="text-[11px] t-muted">Erkennt Marke, Material, Farbe, „im eBOS Beutel“, „einvakuumiert“ oder „ohne Spule“</p>
           </div>
 
           <div class="flex-1 max-w-2xl flex gap-2">
-            <button id="micBtnQuick" type="button" onclick="startVoiceRecognition('quickLinkInput', 'micBtnQuick', false)" title="Filament per Mikrofon einsprechen" class="px-3 py-2 rounded-xl bg-surface-950 hover:bg-surface-850 text-sky-400 border border-white/[0.1] transition flex items-center gap-1.5 shrink-0 text-xs font-semibold cursor-pointer">
+            <button id="micBtnQuick" type="button" onclick="startVoiceRecognition('quickLinkInput', 'micBtnQuick', false)" class="px-3 py-2 rounded-xl t-sub text-sky-400 flex items-center gap-1.5 shrink-0 text-xs font-semibold cursor-pointer">
               <i data-lucide="mic" class="w-4 h-4"></i>
               <span class="hidden sm:inline">Diktieren</span>
             </button>
             <input
               id="quickLinkInput"
               type="text"
-              placeholder="z.B. 'Bambu Lab PETG Basic Blau im eBOS Beutel' oder Link..."
-              class="w-full px-3.5 py-2 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-sky-500 text-xs sm:text-sm text-white outline-none"
+              placeholder="z.B. 'Bambu Lab PETG Basic Blau im eBOS Beutel' oder Shop-Link..."
+              class="w-full px-3.5 py-2 rounded-xl t-input text-xs sm:text-sm outline-none focus:border-sky-500"
               onkeydown="if(event.key==='Enter'){ handleQuickLinkImport(); }"
             />
             <button
-              id="quickScanBtn"
               type="button"
               onclick="handleQuickLinkImport()"
-              class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 font-bold text-xs sm:text-sm transition whitespace-nowrap cursor-pointer"
+              class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs sm:text-sm transition whitespace-nowrap cursor-pointer"
             >
               Anlegen
             </button>
@@ -450,61 +705,61 @@
         </div>
       </section>
 
-      <!-- KPI-LEISTE -->
+      <!-- KPI-LEISTE (BLEIBT AUCH IM SCHLICHT-MODUS SICHTBAR) -->
       <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div class="clean-panel rounded-2xl p-3.5 flex items-center justify-between">
+        <div class="t-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-400">Spulen im Bestand</p>
-            <p id="statTotalSpools" class="text-xl sm:text-2xl font-extrabold text-white font-mono-num mt-0.5">0</p>
+            <p class="text-xs t-muted">Spulen im Bestand</p>
+            <p id="statTotalSpools" class="text-xl sm:text-2xl font-extrabold font-mono-num mt-0.5">0</p>
           </div>
-          <i data-lucide="disc-3" class="w-5 h-5 text-sky-400/70"></i>
+          <i data-lucide="disc-3" class="w-5 h-5 text-sky-400"></i>
         </div>
 
-        <div class="clean-panel rounded-2xl p-3.5 flex items-center justify-between">
+        <div class="t-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-400">Nettogewicht</p>
-            <p id="statTotalWeight" class="text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono-num mt-0.5">0 g</p>
+            <p class="text-xs t-muted">Nettogewicht</p>
+            <p id="statTotalWeight" class="text-xl sm:text-2xl font-extrabold text-emerald-500 font-mono-num mt-0.5">0 g</p>
           </div>
-          <i data-lucide="scale" class="w-5 h-5 text-emerald-400/70"></i>
+          <i data-lucide="scale" class="w-5 h-5 text-emerald-500"></i>
         </div>
 
-        <div class="clean-panel rounded-2xl p-3.5 flex items-center justify-between">
+        <div class="t-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-400">Materialwert</p>
-            <p id="statTotalValue" class="text-xl sm:text-2xl font-extrabold text-sky-400 font-mono-num mt-0.5">0,00 €</p>
+            <p class="text-xs t-muted">Materialwert</p>
+            <p id="statTotalValue" class="text-xl sm:text-2xl font-extrabold text-sky-500 font-mono-num mt-0.5">0,00 €</p>
           </div>
-          <i data-lucide="badge-euro" class="w-5 h-5 text-sky-400/70"></i>
+          <i data-lucide="badge-euro" class="w-5 h-5 text-sky-500"></i>
         </div>
 
-        <div class="clean-panel rounded-2xl p-3.5 flex items-center justify-between">
+        <div class="t-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-400">Trocknung fällig</p>
-            <p id="statDryingDue" class="text-xl sm:text-2xl font-extrabold text-amber-400 font-mono-num mt-0.5">0</p>
+            <p class="text-xs t-muted">Trocknung fällig</p>
+            <p id="statDryingDue" class="text-xl sm:text-2xl font-extrabold text-amber-500 font-mono-num mt-0.5">0</p>
           </div>
-          <i data-lucide="flame" class="w-5 h-5 text-amber-400/70"></i>
+          <i data-lucide="flame" class="w-5 h-5 text-amber-500"></i>
         </div>
       </section>
 
       <!-- MATERIAL-FILTER & SUCHE -->
-      <section class="clean-panel rounded-2xl p-3 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+      <section class="t-panel rounded-2xl p-3 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
         <div id="materialFilterBar" class="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0"></div>
 
         <div class="flex flex-wrap items-center gap-2">
           <div class="relative flex-1 sm:w-52">
-            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <i data-lucide="search" class="w-3.5 h-3.5 t-muted absolute left-3 top-1/2 -translate-y-1/2"></i>
             <input
               id="searchInput"
               type="text"
               oninput="renderSpools(true)"
               placeholder="Suchen..."
-              class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-surface-950 border border-white/[0.08] focus:border-sky-500 text-xs text-white outline-none"
+              class="w-full pl-8 pr-3 py-1.5 rounded-xl t-input text-xs outline-none focus:border-sky-500"
             />
           </div>
 
           <select
             id="sortSelect"
             onchange="renderSpools(true)"
-            class="px-3 py-1.5 rounded-xl bg-surface-950 border border-white/[0.08] text-xs font-semibold text-slate-200 outline-none"
+            class="px-3 py-1.5 rounded-xl t-input text-xs font-semibold outline-none"
           >
             <option value="drying_urgent">Sortierung: Trocknung dringend</option>
             <option value="remaining_asc">Sortierung: Wenig Gewicht zuerst</option>
@@ -522,106 +777,15 @@
     </main>
   </div>
 
-  <!-- ================= HANDY BOTTOM-NAV ================= -->
-  <nav class="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-surface-950/95 backdrop-blur-xl border-t border-white/[0.08] px-2 py-1.5 grid grid-cols-5 gap-1">
-    <button type="button" onclick="closeSidebarOnMobile()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-sky-400">
-      <i data-lucide="disc-3" class="w-4 h-4"></i>
-      <span>Bestand</span>
-    </button>
-    <button type="button" onclick="toggleMinimalMode()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
-      <i data-lucide="eye" class="w-4 h-4"></i>
-      <span>Schlicht</span>
-    </button>
-    <button type="button" onclick="openSidebarTab('gcode')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
-      <i data-lucide="file-code-2" class="w-4 h-4"></i>
-      <span>G-Code</span>
-    </button>
-    <button type="button" onclick="openSidebarTab('settings')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
-      <i data-lucide="settings" class="w-4 h-4"></i>
-      <span>Optionen</span>
-    </button>
-    <button type="button" onclick="openSpoolModal()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-sky-400">
-      <i data-lucide="plus-circle" class="w-4 h-4"></i>
-      <span>Neu</span>
-    </button>
-  </nav>
-
-  <!-- ================= MODAL: SICHERER DATEI / JSON / TEXT IMPORT & EXPORT ================= -->
-  <div id="dataVaultModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-    <div class="bg-surface-900 border border-white/[0.1] rounded-2xl max-w-3xl w-full p-6 space-y-4 shadow-2xl my-8">
-      <div class="flex items-start justify-between border-b border-white/[0.08] pb-3">
-        <div>
-          <h3 class="text-base sm:text-lg font-extrabold text-white">Sicherer Import / Export & Zwischenspeicher</h3>
-          <p class="text-xs text-slate-400">Vor jedem Import wird dein bisheriger Stand automatisch im Zwischenspeicher gesichert.</p>
-        </div>
-        <button type="button" onclick="closeDataVaultModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white cursor-pointer">✕</button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-        <label for="vaultFileInput" class="cursor-pointer p-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 flex items-center gap-2.5 text-left transition">
-          <i data-lucide="upload" class="w-5 h-5 text-emerald-400 shrink-0"></i>
-          <div>
-            <p class="text-xs font-bold text-white">.JSON / .TXT Datei laden</p>
-            <p class="text-[10px] text-slate-400">Sicher importieren</p>
-          </div>
-          <input id="vaultFileInput" type="file" accept=".json,.txt,.csv" class="hidden" onchange="handleVaultFileUpload(event)" />
-        </label>
-
-        <button type="button" onclick="downloadReadableTxtFile()" class="p-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 flex items-center gap-2.5 text-left transition cursor-pointer">
-          <i data-lucide="file-text" class="w-5 h-5 text-sky-400 shrink-0"></i>
-          <div>
-            <p class="text-xs font-bold text-white">Als .TXT speichern</p>
-            <p class="text-[10px] text-slate-400">Lesbar & bearbeitbar</p>
-          </div>
-        </button>
-
-        <button type="button" onclick="downloadJsonBackupFile()" class="p-3 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 flex items-center gap-2.5 text-left transition cursor-pointer">
-          <i data-lucide="database" class="w-5 h-5 text-purple-400 shrink-0"></i>
-          <div>
-            <p class="text-xs font-bold text-white">Als .JSON Backup</p>
-            <p class="text-[10px] text-slate-400">Komplett-Sicherung</p>
-          </div>
-        </button>
-      </div>
-
-      <div class="space-y-1.5">
-        <div class="flex justify-between items-center text-[11px] text-slate-400">
-          <span>Vorschau & Direkt-Editor (<code class="text-slate-300">Marke | Name | Material | Farbe | Rest(g) | Voll(g) | Spulen-Tara | ebos_bag/open/factory_sealed | Bag-Tara | Preis</code>)</span>
-          <button type="button" onclick="startVoiceRecognition('vaultTextArea', 'micBtnVault', false, true)" id="micBtnVault" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 font-semibold cursor-pointer">🎙️ Zeile diktieren</button>
-        </div>
-        <textarea
-          id="vaultTextArea"
-          rows="10"
-          placeholder="Hier Liste oder JSON einfügen..."
-          class="w-full p-3.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-sky-500 text-xs font-mono-num text-slate-200 outline-none leading-relaxed"
-        ></textarea>
-      </div>
-
-      <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/[0.08]">
-        <button type="button" onclick="restoreLatestSnapshot()" class="px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-xs font-bold text-amber-300 border border-amber-500/30 cursor-pointer">
-          ⏪ Letzten Zwischenspeicher wiederherstellen
-        </button>
-        <div class="flex flex-wrap gap-2">
-          <button type="button" onclick="applyVaultText('append')" class="px-4 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold cursor-pointer">
-            ➕ Zum Bestand hinzufügen
-          </button>
-          <button type="button" onclick="applyVaultText('replace')" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold cursor-pointer">
-            ✓ Sicher übernehmen
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- ================= MODAL: SPULE BEARBEITEN / NEU ================= -->
-  <div id="spoolModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-    <div class="bg-surface-900 border border-white/[0.12] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl my-8">
-      <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
+  <div id="spoolModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="t-panel rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl my-8">
+      <div class="flex items-center justify-between border-b border-slate-500/15 pb-3">
         <div>
-          <h3 id="modalTitle" class="text-base font-extrabold text-white">Spule bearbeiten</h3>
-          <p class="text-[11px] text-slate-400">Schnelle & übersichtliche Bearbeitung</p>
+          <h3 id="modalTitle" class="text-base font-extrabold">Spule bearbeiten</h3>
+          <p class="text-[11px] t-muted">Zieht automatisch deine eingestellten Standardwerte</p>
         </div>
-        <button type="button" onclick="closeSpoolModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white cursor-pointer">✕</button>
+        <button type="button" onclick="closeSpoolModal()" class="p-1.5 rounded-lg t-sub cursor-pointer">✕</button>
       </div>
 
       <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-4">
@@ -630,38 +794,21 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Marke / Hersteller *</label>
-            <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none">
-              <option value="Bambu Lab">Bambu Lab (250g Spule)</option>
-              <option value="SUNLU">SUNLU (195g Spule)</option>
-              <option value="ELEGOO">ELEGOO (160g Spule)</option>
-              <option value="eSUN">eSUN (220g Spule)</option>
-              <option value="3DJake">3DJake (215g Spule)</option>
-              <option value="Prusament">Prusament (200g Spule)</option>
-              <option value="Extrudr">Extrudr (240g Spule)</option>
-              <option value="Polymaker">Polymaker (140g Spule)</option>
-              <option value="Anycubic">Anycubic (190g Spule)</option>
-              <option value="Creality">Creality (180g Spule)</option>
-              <option value="Eryone">Eryone (200g Spule)</option>
-              <option value="Overture">Overture (145g Spule)</option>
-              <option value="Jayo">Jayo (195g Spule)</option>
-              <option value="Geeetech">Geeetech (195g Spule)</option>
-              <option value="Das Filament">Das Filament (210g Spule)</option>
-              <option value="OTHER">➕ Anderer Hersteller...</option>
-            </select>
-            <input id="fBrandCustom" type="text" placeholder="Hersteller eingeben..." class="w-full mt-2 px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none hidden" />
+            <label class="block text-xs font-semibold mb-1">Marke / Hersteller *</label>
+            <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl t-input text-xs sm:text-sm outline-none"></select>
+            <input id="fBrandCustom" type="text" placeholder="Hersteller eingeben..." class="w-full mt-2 px-3 py-2 rounded-xl t-input text-xs outline-none hidden" />
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Beschreibung / Serie *</label>
-            <input id="fName" type="text" required placeholder="z.B. PETG Basic" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none" />
+            <label class="block text-xs font-semibold mb-1">Beschreibung / Serie *</label>
+            <input id="fName" type="text" required placeholder="z.B. PETG Basic" class="w-full px-3 py-2 rounded-xl t-input text-xs sm:text-sm outline-none" />
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Material *</label>
-            <select id="fMaterial" onchange="onMaterialOrStorageChangeInModal()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none">
+            <label class="block text-xs font-semibold mb-1">Material *</label>
+            <select id="fMaterial" onchange="onMaterialOrStorageChangeInModal()" class="w-full px-3 py-2 rounded-xl t-input text-xs sm:text-sm outline-none">
               <option value="PLA">PLA</option>
               <option value="PLA+">PLA+</option>
               <option value="PETG">PETG</option>
@@ -675,92 +822,92 @@
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Farbe *</label>
+            <label class="block text-xs font-semibold mb-1">Farbe *</label>
             <div class="flex items-center gap-1.5">
-              <input id="fColorHex" type="color" value="#38bdf8" class="w-9 h-9 rounded-xl bg-surface-950 border border-white/[0.1] p-1 cursor-pointer shrink-0" />
-              <input id="fColorName" type="text" required placeholder="z.B. Blau" oninput="autoMatchHexFromColorInput(this.value)" class="w-full px-2.5 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
+              <input id="fColorHex" type="color" value="#38bdf8" class="w-9 h-9 rounded-xl t-input p-1 cursor-pointer shrink-0" />
+              <input id="fColorName" type="text" required placeholder="z.B. Weiß" oninput="autoMatchHexFromColorInput(this.value)" class="w-full px-2.5 py-2 rounded-xl t-input text-xs outline-none" />
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-emerald-400 mb-1">Preis (€/kg)</label>
-            <input id="fPricePerKg" type="number" step="0.01" min="1" max="500" value="18.99" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-emerald-400 font-bold outline-none" />
+            <label class="block text-xs font-semibold text-emerald-500 mb-1">Preis (€/kg)</label>
+            <input id="fPricePerKg" type="number" step="0.01" min="1" max="500" value="18.99" class="w-full px-3 py-2 rounded-xl t-input text-xs sm:text-sm font-mono-num text-emerald-500 font-bold outline-none" />
           </div>
         </div>
 
-        <div class="rounded-xl bg-surface-950 border border-sky-500/25 p-3 space-y-2">
+        <div class="rounded-xl t-sub border border-sky-500/25 p-3 space-y-2">
           <div class="flex items-center justify-between">
-            <label class="text-xs font-bold text-white">Verpackung / eBOS Vakuum-Beutel</label>
+            <label class="text-xs font-bold">Verpackung / eBOS Vakuum-Beutel</label>
             <span id="modalStorageBadge" class="text-[10px] font-mono-num text-sky-400 font-semibold">0g Beutel</span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <div class="sm:col-span-2">
-              <select id="fStorageMode" onchange="onMaterialOrStorageChangeInModal()" class="w-full px-3 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white font-semibold outline-none">
+              <select id="fStorageMode" onchange="onMaterialOrStorageChangeInModal()" class="w-full px-3 py-2 rounded-lg t-input text-xs font-semibold outline-none">
                 <option value="open">🌬️ Offen an der Luft (0g Beutel)</option>
-                <option value="ebos_bag">🛡️ Im eBOS Vakuum-Beutel (+25g)</option>
-                <option value="factory_sealed">📦 OVP Hersteller-Vakuumiert (+18g)</option>
+                <option value="ebos_bag">🛡️ Im eBOS Vakuum-Beutel</option>
+                <option value="factory_sealed">📦 OVP Hersteller-Vakuumiert</option>
               </select>
             </div>
             <div>
-              <input id="fBagWeight" type="number" min="0" max="200" value="0" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-sky-300 font-bold outline-none" title="Beutel-Tara in Gramm" />
+              <input id="fBagWeight" type="number" min="0" max="200" value="0" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-mono-num text-sky-400 font-bold outline-none" title="Beutel-Tara in Gramm" />
             </div>
           </div>
-          <p id="modalMaterialStorageInfo" class="text-[11px] text-slate-400"></p>
+          <p id="modalMaterialStorageInfo" class="text-[11px] t-muted"></p>
         </div>
 
-        <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-2.5">
+        <div class="rounded-xl t-sub p-3 space-y-2.5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-white">Gewicht & Waagen-Rechner</span>
-            <button type="button" onclick="document.getElementById('fEmptySpoolWeight').value=0;applyModalScale();" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 text-[10px] font-semibold cursor-pointer">
+            <span class="text-xs font-bold">Gewicht & Waagen-Rechner</span>
+            <button type="button" onclick="document.getElementById('fEmptySpoolWeight').value=0;applyModalScale();" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 text-[10px] font-semibold cursor-pointer">
               Ohne Spule / Refill (0g)
             </button>
           </div>
           <div class="grid grid-cols-3 gap-2">
             <div>
-              <label class="block text-[10px] text-slate-400 mb-1">Netto Rest (g)</label>
-              <input id="fRemainingWeight" type="number" value="1000" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-emerald-500/50 text-xs sm:text-sm font-mono-num text-emerald-400 font-bold outline-none" />
+              <label class="block text-[10px] t-muted mb-1">Netto Rest (g)</label>
+              <input id="fRemainingWeight" type="number" value="1000" class="w-full px-2.5 py-1.5 rounded-lg t-input border-emerald-500/50 text-xs sm:text-sm font-mono-num text-emerald-500 font-bold outline-none" />
             </div>
             <div>
-              <label class="block text-[10px] text-slate-400 mb-1">Start Voll (g)</label>
-              <input id="fInitialWeight" type="number" value="1000" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-white outline-none" />
+              <label class="block text-[10px] t-muted mb-1">Start Voll (g)</label>
+              <input id="fInitialWeight" type="number" value="1000" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs sm:text-sm font-mono-num outline-none" />
             </div>
             <div>
-              <label class="block text-[10px] text-slate-400 mb-1">Spulen-Tara (g)</label>
-              <input id="fEmptySpoolWeight" type="number" value="250" oninput="applyModalScale()" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-slate-300 outline-none" />
+              <label class="block text-[10px] t-muted mb-1">Spulen-Tara (g)</label>
+              <input id="fEmptySpoolWeight" type="number" value="250" oninput="applyModalScale()" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs sm:text-sm font-mono-num outline-none" />
             </div>
           </div>
-          <input id="fScaleGross" type="number" placeholder="⚖️ Auf Waage gewogen (Spule + Beutel + Filament in g)..." oninput="applyModalScale()" class="w-full px-3 py-1.5 rounded-lg bg-surface-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none focus:border-emerald-400" />
-          <p id="fScaleHint" class="text-[10px] text-slate-400"></p>
+          <input id="fScaleGross" type="number" placeholder="⚖️ Auf Waage gewogen (Spule + Beutel + Filament in g)..." oninput="applyModalScale()" class="w-full px-3 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none focus:border-emerald-400" />
+          <p id="fScaleHint" class="text-[10px] t-muted"></p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
-            <label class="block text-[10px] text-slate-400 mb-1">Shop-Link (leer = automatisch)</label>
-            <input id="fProductUrl" type="text" placeholder="https://..." class="w-full px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
+            <label class="block text-[10px] t-muted mb-1">Shop-Link (leer = automatisch)</label>
+            <input id="fProductUrl" type="text" placeholder="https://..." class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs outline-none" />
           </div>
           <div class="grid grid-cols-3 gap-1.5">
             <div>
-              <label class="block text-[10px] text-slate-400 mb-1">Tage</label>
-              <input id="fDryIntervalDays" type="number" value="30" class="w-full px-2 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
+              <label class="block text-[10px] t-muted mb-1">Tage</label>
+              <input id="fDryIntervalDays" type="number" value="30" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
             </div>
             <div>
-              <label class="block text-[10px] text-slate-400 mb-1">°C</label>
-              <input id="fDryTemp" type="number" value="50" class="w-full px-2 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
+              <label class="block text-[10px] t-muted mb-1">°C</label>
+              <input id="fDryTemp" type="number" value="50" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
             </div>
             <div>
-              <label class="block text-[10px] text-slate-400 mb-1">Std.</label>
-              <input id="fDryHours" type="number" value="5" class="w-full px-2 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
+              <label class="block text-[10px] t-muted mb-1">Std.</label>
+              <input id="fDryHours" type="number" value="5" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
             </div>
           </div>
         </div>
 
-        <div class="flex items-center justify-between pt-2 border-t border-white/[0.08]">
+        <div class="flex items-center justify-between pt-2 border-t border-slate-500/15">
           <button type="button" onclick="document.getElementById('fLastDried').value = new Date().toISOString(); showToast('Auf heute getrocknet gesetzt!');" class="text-xs text-sky-400 hover:underline font-semibold cursor-pointer">
             🔥 Als „Heute getrocknet“ markieren
           </button>
           <div class="flex gap-2">
-            <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl bg-surface-800 text-xs font-semibold text-slate-300 cursor-pointer">Abbrechen</button>
-            <button type="submit" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold cursor-pointer">Speichern</button>
+            <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl t-sub text-xs font-semibold cursor-pointer">Abbrechen</button>
+            <button type="submit" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-extrabold cursor-pointer">Speichern</button>
           </div>
         </div>
       </form>
@@ -768,11 +915,11 @@
   </div>
 
   <!-- MODAL: DRUCK-VERLAUF -->
-  <div id="historyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-    <div class="bg-surface-900 border border-white/[0.1] rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-white/[0.08] pb-2.5">
-        <h3 class="text-base font-bold text-white">Druck-Verlauf</h3>
-        <button type="button" onclick="closeHistoryModal()" class="text-slate-400 hover:text-white cursor-pointer">✕</button>
+  <div id="historyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+    <div class="t-panel rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-500/15 pb-2.5">
+        <h3 class="text-base font-bold">Druck-Verlauf</h3>
+        <button type="button" onclick="closeHistoryModal()" class="t-muted cursor-pointer">✕</button>
       </div>
       <div id="historyList" class="space-y-2 max-h-72 overflow-y-auto"></div>
     </div>
@@ -782,44 +929,65 @@
   <div id="toastContainer" class="fixed bottom-14 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS -->
-  <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-900/95 border border-white/[0.12] shadow-xl text-[11px] text-slate-300 backdrop-blur-md">
+  <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full t-panel shadow-xl text-[11px] backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-sky-400">v18.1</span>
-    <span class="text-slate-600">|</span>
-    <span class="font-mono-num text-slate-300">19.10.2026, 18:40 Uhr</span>
-    <span class="text-slate-600">|</span>
+    <span class="font-mono-num font-bold text-sky-400">v19.0</span>
+    <span class="t-muted">|</span>
+    <span class="font-mono-num">19.10.2026, 19:35 Uhr</span>
+    <span class="t-muted">|</span>
     <span id="syncStatusLabel" class="text-emerald-400 font-semibold">Synchron</span>
   </div>
 
   <script>
     // =========================================================================
-    // 1. EINSTELLUNGEN & eBOS VAKUUM-BEUTEL DATENBANK
+    // 1. ANPASSBARE STANDARDWERTE (SPULEN-TARA, BEUTEL & FILAMENT-HALTBARKEIT)
     // =========================================================================
-    const SETTINGS_KEY = 'filamenthub_settings_v18';
+    const SETTINGS_KEY = 'filamenthub_settings_v19';
+    const CUSTOM_BRANDS_KEY = 'filamenthub_custom_brands_v19';
+    const CUSTOM_MATS_KEY = 'filamenthub_custom_mats_v19';
+
     let appSettings = {
+      theme: 'obsidian',
       minimalMode: false,
       barStyle: 'blue_green',
       gridCols: 'auto',
       ttsEnabled: true,
       ebosWeight: 25,
-      ovpWeight: 18
+      ovpWeight: 18,
+      browserRescueUsed: false
     };
 
     try {
-      const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
-      appSettings = { ...appSettings, ...savedSettings };
+      const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+      appSettings = { ...appSettings, ...saved };
     } catch (e) {}
 
-    function getStorageModes() {
-      return {
-        'open': { label: '🌬️ Offen (Luft)', bagWeight: 0 },
-        'ebos_bag': { label: '🛡️ eBOS Vakuum-Beutel', bagWeight: Number(appSettings.ebosWeight) || 25 },
-        'biqu_bag': { label: '🛡️ eBOS Vakuum-Beutel', bagWeight: Number(appSettings.ebosWeight) || 25 },
-        'factory_sealed': { label: '📦 OVP Vakuumiert', bagWeight: Number(appSettings.ovpWeight) || 18 }
-      };
-    }
+    let BRAND_DATABASE = [
+      { keys: ['bambulab', 'bambu lab', 'bambu'], name: 'Bambu Lab', tara: 250, basePrice: 19.99 },
+      { keys: ['eibos', 'eyebrows', 'ebos'], name: 'Eibos', tara: 200, basePrice: 18.99 },
+      { keys: ['bq'], name: 'BQ', tara: 250, basePrice: 17.99 },
+      { keys: ['eryone'], name: 'Eryone', tara: 151, basePrice: 18.99 },
+      { keys: ['sunlu', 'sunluu'], name: 'SUNLU', tara: 195, basePrice: 14.99 },
+      { keys: ['elegoo'], name: 'ELEGOO', tara: 160, basePrice: 16.99 },
+      { keys: ['esun', 'e-sun'], name: 'eSUN', tara: 220, basePrice: 17.99 },
+      { keys: ['3djake'], name: '3DJake', tara: 215, basePrice: 19.99 },
+      { keys: ['prusament', 'prusa'], name: 'Prusament', tara: 200, basePrice: 29.99 },
+      { keys: ['extrudr'], name: 'Extrudr', tara: 240, basePrice: 26.99 },
+      { keys: ['polymaker', 'polyterra', 'polylite'], name: 'Polymaker', tara: 140, basePrice: 21.99 },
+      { keys: ['anycubic'], name: 'Anycubic', tara: 190, basePrice: 15.99 },
+      { keys: ['creality', 'ender', 'hyper pla'], name: 'Creality', tara: 180, basePrice: 16.99 },
+      { keys: ['overture'], name: 'Overture', tara: 145, basePrice: 18.99 },
+      { keys: ['jayo'], name: 'Jayo', tara: 195, basePrice: 13.99 },
+      { keys: ['geeetech'], name: 'Geeetech', tara: 195, basePrice: 14.99 },
+      { keys: ['dasfilament', 'das filament'], name: 'Das Filament', tara: 210, basePrice: 19.95 }
+    ];
 
-    const MATERIAL_PRESETS = {
+    try {
+      const savedBrands = JSON.parse(localStorage.getItem(CUSTOM_BRANDS_KEY) || 'null');
+      if (Array.isArray(savedBrands) && savedBrands.length) BRAND_DATABASE = savedBrands;
+    } catch (e) {}
+
+    let MATERIAL_PRESETS = {
       'PLA':            { openDays: 30, ebosBagDays: 180, factorySealedDays: 365, temp: 50, hours: 5, defaultPrice: 17.99 },
       'PLA+':           { openDays: 21, ebosBagDays: 150, factorySealedDays: 365, temp: 50, hours: 5, defaultPrice: 18.99 },
       'PETG':           { openDays: 14, ebosBagDays: 120, factorySealedDays: 365, temp: 65, hours: 6, defaultPrice: 18.99 },
@@ -831,30 +999,38 @@
       'PET-CF / PA-CF': { openDays: 4,  ebosBagDays: 60,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 39.99 }
     };
 
-    function getRecommendedDays(material, storageMode) {
-      const p = MATERIAL_PRESETS[material] || MATERIAL_PRESETS['PLA'];
-      if (storageMode === 'factory_sealed') return p.factorySealedDays;
-      if (storageMode === 'ebos_bag' || storageMode === 'biqu_bag') return p.ebosBagDays;
-      return p.openDays;
+    try {
+      const savedMats = JSON.parse(localStorage.getItem(CUSTOM_MATS_KEY) || 'null');
+      if (savedMats && typeof savedMats === 'object') MATERIAL_PRESETS = { ...MATERIAL_PRESETS, ...savedMats };
+    } catch (e) {}
+
+    // Deine 8 diktierten Spulen als eingebaute Sicherung für den Zwischenspeicher
+    const DEFAULT_8_SPOOLS_BACKUP = [
+      { id: 'sp-u1', brand: 'Bambu Lab', name: 'PLA Basic Weiß', material: 'PLA', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 250, storageMode: 'factory_sealed', bagWeight: 18, pricePerKg: 19.99, lastDried: new Date().toISOString(), dryIntervalDays: 365 },
+      { id: 'sp-u2', brand: 'Bambu Lab', name: 'PLA Basic Weiß (Refill)', material: 'PLA', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 0, storageMode: 'factory_sealed', bagWeight: 18, pricePerKg: 16.99, lastDried: new Date().toISOString(), dryIntervalDays: 365 },
+      { id: 'sp-u3', brand: 'Bambu Lab', name: 'PLA Basic Weiß (Refill 2)', material: 'PLA', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 0, storageMode: 'factory_sealed', bagWeight: 18, pricePerKg: 16.99, lastDried: new Date().toISOString(), dryIntervalDays: 365 },
+      { id: 'sp-u4', brand: 'BQ', name: 'PLA Basic Grün', material: 'PLA', colorName: 'Grün', colorHex: '#22c55e', initialWeight: 1000, remainingWeight: 416, emptySpoolWeight: 250, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 17.99, lastDried: new Date().toISOString(), dryIntervalDays: 180 },
+      { id: 'sp-u5', brand: 'Bambu Lab', name: 'PLA Basic Hellgrün (Eibos Spule)', material: 'PLA', colorName: 'Grün', colorHex: '#4ade80', initialWeight: 1000, remainingWeight: 1261, emptySpoolWeight: 50, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 19.99, lastDried: new Date().toISOString(), dryIntervalDays: 180 },
+      { id: 'sp-u6', brand: 'Eibos', name: 'PETG Basic Weiß', material: 'PETG', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 941, emptySpoolWeight: 200, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 18.99, lastDried: new Date().toISOString(), dryIntervalDays: 120 },
+      { id: 'sp-u7', brand: 'Eryone', name: 'PLA Glow in the Dark', material: 'PLA', colorName: 'Glow', colorHex: '#a3e635', initialWeight: 1000, remainingWeight: 1108, emptySpoolWeight: 151, storageMode: 'open', bagWeight: 0, pricePerKg: 21.99, lastDried: new Date(Date.now() - 40 * 86400000).toISOString(), dryIntervalDays: 30 },
+      { id: 'sp-u8', brand: 'Eryone', name: 'PLA Standard Durchsichtig (Blau)', material: 'PLA', colorName: 'Transparent', colorHex: '#38bdf8', initialWeight: 1000, remainingWeight: 970, emptySpoolWeight: 151, storageMode: 'open', bagWeight: 0, pricePerKg: 19.99, lastDried: new Date().toISOString(), dryIntervalDays: 30 }
+    ];
+
+    function getStorageModes() {
+      return {
+        'open': { label: '🌬️ Offen (Luft)', bagWeight: 0 },
+        'ebos_bag': { label: '🛡️ eBOS Vakuum-Beutel', bagWeight: Number(appSettings.ebosWeight) || 25 },
+        'biqu_bag': { label: '🛡️ eBOS Vakuum-Beutel', bagWeight: Number(appSettings.ebosWeight) || 25 },
+        'factory_sealed': { label: '📦 OVP Vakuumiert', bagWeight: Number(appSettings.ovpWeight) || 18 }
+      };
     }
 
-    const BRAND_DATABASE = [
-      { keys: ['bambulab', 'bambu lab', 'bambu'], name: 'Bambu Lab', tara: 250, basePrice: 19.99 },
-      { keys: ['sunlu', 'sunluu'], name: 'SUNLU', tara: 195, basePrice: 14.99 },
-      { keys: ['elegoo'], name: 'ELEGOO', tara: 160, basePrice: 16.99 },
-      { keys: ['esun', 'e-sun'], name: 'eSUN', tara: 220, basePrice: 17.99 },
-      { keys: ['3djake'], name: '3DJake', tara: 215, basePrice: 19.99 },
-      { keys: ['prusament', 'prusa'], name: 'Prusament', tara: 200, basePrice: 29.99 },
-      { keys: ['extrudr'], name: 'Extrudr', tara: 240, basePrice: 26.99 },
-      { keys: ['polymaker', 'polyterra', 'polylite'], name: 'Polymaker', tara: 140, basePrice: 21.99 },
-      { keys: ['anycubic'], name: 'Anycubic', tara: 190, basePrice: 15.99 },
-      { keys: ['creality', 'ender', 'hyper pla'], name: 'Creality', tara: 180, basePrice: 16.99 },
-      { keys: ['eryone'], name: 'Eryone', tara: 200, basePrice: 18.99 },
-      { keys: ['overture'], name: 'Overture', tara: 145, basePrice: 18.99 },
-      { keys: ['jayo'], name: 'Jayo', tara: 195, basePrice: 13.99 },
-      { keys: ['geeetech'], name: 'Geeetech', tara: 195, basePrice: 14.99 },
-      { keys: ['dasfilament', 'das filament'], name: 'Das Filament', tara: 210, basePrice: 19.95 }
-    ];
+    function getRecommendedDays(material, storageMode) {
+      const p = MATERIAL_PRESETS[material] || MATERIAL_PRESETS['PLA'];
+      if (storageMode === 'factory_sealed') return Number(p.factorySealedDays) || 365;
+      if (storageMode === 'ebos_bag' || storageMode === 'biqu_bag') return Number(p.ebosBagDays) || 120;
+      return Number(p.openDays) || 30;
+    }
 
     const COLOR_MAP = [
       { keys: ['weiss', 'weiß', 'white', 'ivory', 'jade white'], name: 'Weiß', en: 'white', hex: '#f8fafc' },
@@ -865,7 +1041,7 @@
       { keys: ['rot', 'red', 'crimson', 'weinrot'], name: 'Rot', en: 'red', hex: '#ef4444' },
       { keys: ['türkis', 'tuerkis', 'turquoise', 'cyan', 'mint', 'teal'], name: 'Türkis / Cyan', en: 'cyan', hex: '#06b6d4' },
       { keys: ['blau', 'blue', 'navy', 'cobalt', 'eisblau', 'hellblau'], name: 'Blau', en: 'blue', hex: '#3b82f6' },
-      { keys: ['grün', 'gruen', 'green', 'olive', 'emerald', 'lime', 'bambusgrün'], name: 'Grün', en: 'green', hex: '#22c55e' },
+      { keys: ['grün', 'gruen', 'green', 'olive', 'emerald', 'lime', 'hellgrün', 'glow'], name: 'Grün', en: 'green', hex: '#22c55e' },
       { keys: ['gelb', 'yellow', 'lemon', 'sunflower'], name: 'Gelb', en: 'yellow', hex: '#eab308' },
       { keys: ['orange', 'mandarin', 'pumpkin', 'amber'], name: 'Orange', en: 'orange', hex: '#f97316' },
       { keys: ['lila', 'purple', 'violet', 'violett', 'lavender'], name: 'Lila', en: 'purple', hex: '#a855f7' },
@@ -873,14 +1049,13 @@
       { keys: ['gold', 'messing', 'brass'], name: 'Gold', en: 'gold', hex: '#eab308' },
       { keys: ['kupfer', 'copper', 'bronze'], name: 'Kupfer / Bronze', en: 'copper', hex: '#d97706' },
       { keys: ['braun', 'brown', 'wood', 'holz', 'beige', 'sand'], name: 'Braun / Holz', en: 'brown', hex: '#a16207' },
-      { keys: ['transparent', 'clear', 'translucent', 'natur'], name: 'Transparent', en: 'transparent', hex: '#cbd5e1' }
+      { keys: ['transparent', 'clear', 'translucent', 'natur', 'durchsichtig'], name: 'Transparent', en: 'transparent', hex: '#38bdf8' }
     ];
 
     function getDefaultPriceForSpool(brand, material) {
       const b = BRAND_DATABASE.find(x => x.name.toLowerCase() === (brand || '').toLowerCase());
       const m = MATERIAL_PRESETS[material];
-      if (b && material === 'PLA') return b.basePrice;
-      if (b && m) return +((b.basePrice + m.defaultPrice) / 2).toFixed(2);
+      if (b) return Number(b.basePrice) || 18.99;
       return m ? m.defaultPrice : 18.99;
     }
 
@@ -912,44 +1087,122 @@
         return `https://store.sunlu.com/search?q=${encodeURIComponent(sunluQ)}`;
       }
 
-      if (lowerBrand.includes('elegoo') && (colorName || '').toLowerCase().includes('marmor')) {
-        return 'https://www.amazon.de/dp/B0CM6C7W84';
-      }
-
       const amzQ = [brand, matUpper, 'Filament 1.75mm', colorName !== 'Standard' ? colorName : '', isRefill ? 'Refill' : '', '1kg'].filter(Boolean).join(' ');
       return `https://www.amazon.de/s?k=${encodeURIComponent(amzQ)}`;
     }
 
     // =========================================================================
-    // 2. ZWISCHENSPEICHER-TRESOR & KUGELSICHERE SPEICHERUNG
+    // 2. SEITLICHES DRAWER-MENÜ & OPTIONEN-AKKORDEONS
     // =========================================================================
-    const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v18';
-    const PERMANENT_HISTORY_KEY = 'filamenthub_history_v18';
-    const SAFE_SNAPSHOTS_KEY = 'filamenthub_safe_snapshots_v18';
-    const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v18';
-    const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v18';
+    let activeDrawerTab = null;
+
+    function openDrawerTab(tabName) {
+      const drawer = document.getElementById('sideDrawer');
+      const backdrop = document.getElementById('drawerBackdrop');
+      const chevron = document.getElementById('drawerChevronIcon');
+
+      if (activeDrawerTab === tabName && !drawer.classList.contains('-translate-x-[420px]')) {
+        closeSideDrawer();
+        return;
+      }
+
+      activeDrawerTab = tabName;
+      drawer.classList.remove('-translate-x-[420px]');
+      if (window.innerWidth < 1024) backdrop.classList.remove('hidden');
+      if (chevron) chevron.setAttribute('data-lucide', 'chevrons-left');
+
+      const titles = {
+        ai: '🤖 KI-Agent & Sprache',
+        gcode: '📂 G-Code Direkt-Abzug',
+        calc: '🧮 Druck-Kostenrechner',
+        vault: '🛡️ Zwischenspeicher & Import',
+        sync: '📱 Handy-Kopplung & Sync',
+        settings: '⚙️ Optionen & Standardwerte'
+      };
+      document.getElementById('drawerTitle').textContent = titles[tabName] || 'Menü';
+
+      ['ai', 'gcode', 'calc', 'vault', 'sync', 'settings'].forEach(t => {
+        const panel = document.getElementById(`drawerPanel-${t}`);
+        const btn = document.getElementById(`railBtn-${t}`);
+        if (panel) panel.classList.toggle('hidden', t !== tabName);
+        if (btn) {
+          btn.className = t === tabName
+            ? 'relative w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-extrabold transition bg-sky-500 text-slate-950 shadow cursor-pointer'
+            : 'relative w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition t-muted hover:opacity-100 cursor-pointer';
+        }
+      });
+
+      if (tabName === 'vault') {
+        document.getElementById('vaultTextArea').value = spoolsToReadableText();
+        renderBufferUI();
+      }
+      if (tabName === 'sync') renderSidebarQr();
+      if (tabName === 'calc') { populateCalcSpoolDropdown(); calculatePrintCost(); }
+      if (tabName === 'gcode') renderGcodeSpoolSelection();
+      if (tabName === 'settings') {
+        populateBrandSelects();
+        loadBrandPresetIntoSettings();
+        loadMaterialPresetIntoSettings();
+      }
+      lucide.createIcons();
+    }
+
+    function closeSideDrawer() {
+      const drawer = document.getElementById('sideDrawer');
+      const backdrop = document.getElementById('drawerBackdrop');
+      const chevron = document.getElementById('drawerChevronIcon');
+      drawer.classList.add('-translate-x-[420px]');
+      backdrop.classList.add('hidden');
+      activeDrawerTab = null;
+      if (chevron) chevron.setAttribute('data-lucide', 'chevrons-right');
+      ['ai', 'gcode', 'calc', 'vault', 'sync', 'settings'].forEach(t => {
+        const btn = document.getElementById(`railBtn-${t}`);
+        if (btn) btn.className = 'relative w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition t-muted hover:opacity-100 cursor-pointer';
+      });
+      lucide.createIcons();
+    }
+
+    function toggleSideDrawer() {
+      const drawer = document.getElementById('sideDrawer');
+      if (drawer.classList.contains('-translate-x-[420px]')) {
+        openDrawerTab(activeDrawerTab || 'vault');
+      } else {
+        closeSideDrawer();
+      }
+    }
+
+    function toggleSettingsAccordion(accId) {
+      const el = document.getElementById(accId);
+      const icon = document.getElementById(`icon-${accId}`);
+      if (!el) return;
+      const isHidden = el.classList.contains('hidden');
+      el.classList.toggle('hidden', !isHidden);
+      if (icon) icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    // =========================================================================
+    // 3. ZWISCHENSPEICHER (AUSFAHRBAR, JETZT LADEN, JETZT LÖSCHEN & 1X-RETTUNG)
+    // =========================================================================
+    const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v19';
+    const PERMANENT_HISTORY_KEY = 'filamenthub_history_v19';
+    const BUFFER_STORAGE_KEY = 'filamenthub_buffer_spools_v19';
+    const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v19';
+    const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v19';
     const CLOUD_ID_STORAGE_KEY = 'filamenthub_cloud_id';
 
-    const ALL_KNOWN_STORAGE_KEYS = [
+    const ALL_LEGACY_STORAGE_KEYS = [
       'filamenthub_spools_v18', 'filamenthub_spools_v17', 'filamenthub_spools_v16',
       'filamenthub_spools_v15', 'filamenthub_spools_permanent', 'filamenthub_spools_v13',
       'filamenthub_spools_v9', 'filamenthub_spools_v8', 'filamenthub_spools_v7',
-      'filamenthub_spools_v6', 'filamenthub_spools_v5', 'filamenthub_spools_v3', 'filamenthub_spools_v2'
+      'filamenthub_spools_v6', 'filamenthub_spools_v5'
     ];
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const paramCloud = urlParams.get('cloud');
-    if (paramCloud) {
-      const cleanId = paramCloud.replace('https://api.npoint.io/', '').trim();
-      if (cleanId) localStorage.setItem(CLOUD_ID_STORAGE_KEY, cleanId);
-    }
 
     let currentCloudId = localStorage.getItem(CLOUD_ID_STORAGE_KEY) || '2a75ad089c77e7c35f98';
     function getCloudDbUrl() { return `https://api.npoint.io/${currentCloudId}`; }
 
     let spools = [];
+    let bufferSpools = []; // Der gezielte Zwischenspeicher (z.B. deine 8 Spulen)
     let printHistory = [];
-    let safeSnapshots = [];
     let deletedIds = JSON.parse(localStorage.getItem(DELETED_TOMBSTONES_KEY) || '[]');
     let localUpdatedAt = Number(localStorage.getItem(LOCAL_UPDATED_AT_KEY) || 0);
     let lastUserInteractionTime = 0;
@@ -959,15 +1212,142 @@
     let pendingSync = false;
 
     try {
-      safeSnapshots = JSON.parse(localStorage.getItem(SAFE_SNAPSHOTS_KEY) || '[]');
-    } catch (e) { safeSnapshots = []; }
+      const savedBuf = JSON.parse(localStorage.getItem(BUFFER_STORAGE_KEY) || 'null');
+      if (Array.isArray(savedBuf) && savedBuf.length > 0) {
+        bufferSpools = savedBuf;
+      } else {
+        bufferSpools = JSON.parse(JSON.stringify(DEFAULT_8_SPOOLS_BACKUP));
+        localStorage.setItem(BUFFER_STORAGE_KEY, JSON.stringify(bufferSpools));
+      }
+    } catch (e) {
+      bufferSpools = JSON.parse(JSON.stringify(DEFAULT_8_SPOOLS_BACKUP));
+    }
 
+    function saveBufferSpools(newList) {
+      bufferSpools = Array.isArray(newList) ? JSON.parse(JSON.stringify(newList)) : [];
+      localStorage.setItem(BUFFER_STORAGE_KEY, JSON.stringify(bufferSpools));
+      renderBufferUI();
+    }
+
+    function toggleBufferPreview() {
+      const listEl = document.getElementById('bufferSpoolDetailsList');
+      const chev = document.getElementById('bufferChevron');
+      if (!listEl) return;
+      const isHidden = listEl.classList.contains('hidden');
+      listEl.classList.toggle('hidden', !isHidden);
+      if (chev) chev.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    function renderBufferUI() {
+      const count = bufferSpools.length;
+      const railBadge = document.getElementById('railSnapshotBadge');
+      const countLabel = document.getElementById('vaultSnapshotCountLabel');
+      const titleEl = document.getElementById('bufferPreviewTitle');
+      const listEl = document.getElementById('bufferSpoolDetailsList');
+      const rescueBtn = document.getElementById('browserRescueBtn');
+
+      if (railBadge) railBadge.textContent = count;
+      if (countLabel) countLabel.textContent = `${count} Spulen`;
+      if (titleEl) titleEl.textContent = count > 0 ? `📦 ${count} Spulen im Zwischenspeicher (Klicken zum Ausfahren)` : '📦 Zwischenspeicher ist leer';
+
+      if (rescueBtn) {
+        rescueBtn.disabled = !!appSettings.browserRescueUsed;
+        rescueBtn.textContent = appSettings.browserRescueUsed
+          ? '✓ Browserspeicher bereits gerettet (Erst nach Löschen wieder aktiv)'
+          : '🔍 Alten Browserspeicher durchsuchen & retten';
+      }
+
+      if (!listEl) return;
+      if (!count) {
+        listEl.innerHTML = '<p class="text-[11px] t-muted py-1">Der Zwischenspeicher ist aktuell leer.</p>';
+        return;
+      }
+
+      listEl.innerHTML = bufferSpools.map((s, idx) => `
+        <div class="p-2 rounded-lg t-sub flex items-center justify-between gap-2 text-[11px]">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-3 h-3 rounded-full shrink-0 border border-white/20" style="background-color: ${s.colorHex || '#38bdf8'}"></span>
+            <div class="min-w-0">
+              <p class="font-bold truncate">${idx + 1}. ${s.brand} – ${s.name}</p>
+              <p class="text-[10px] t-muted">${s.material} • ${s.colorName || 'Standard'} • Tara: ${s.emptySpoolWeight ?? 200}g</p>
+            </div>
+          </div>
+          <span class="font-mono-num font-bold text-emerald-400 shrink-0">${s.remainingWeight}g</span>
+        </div>
+      `).join('');
+    }
+
+    function loadBufferNow() {
+      if (!bufferSpools.length) {
+        showToast('⚠️ Der Zwischenspeicher ist leer.');
+        return;
+      }
+      pushUndo();
+      spools = JSON.parse(JSON.stringify(bufferSpools));
+      deletedIds = [];
+      saveState();
+      document.getElementById('vaultTextArea').value = spoolsToReadableText();
+      showToast(`✓ ${spools.length} Spulen aus dem Zwischenspeicher geladen!`);
+    }
+
+    function clearBufferNow() {
+      saveBufferSpools([]);
+      appSettings.browserRescueUsed = false;
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+      renderBufferUI();
+      showToast('🗑️ Zwischenspeicher gelöscht! Du kannst den Browserspeicher bei Bedarf jetzt wieder neu durchsuchen.');
+    }
+
+    // Darf nur 1x gedrückt werden, bis der Zwischenspeicher gelöscht wird!
+    function rescueAllBrowserStorageOnce() {
+      if (appSettings.browserRescueUsed) return;
+
+      let rescued = [];
+      const seenKeys = new Set();
+
+      const addUnique = (item) => {
+        if (!item || !item.name || isUnwantedDefaultCharcoal(item)) return;
+        const sig = `${(item.brand || '').toLowerCase()}|${(item.name || '').toLowerCase()}|${item.remainingWeight}`;
+        if (!seenKeys.has(sig)) {
+          seenKeys.add(sig);
+          rescued.push(item);
+        }
+      };
+
+      ALL_LEGACY_STORAGE_KEYS.forEach(k => {
+        const raw = localStorage.getItem(k);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            const arr = Array.isArray(parsed) ? parsed : (parsed.spools || []);
+            arr.forEach(addUnique);
+          } catch (e) {}
+        }
+      });
+
+      if (!rescued.length) {
+        DEFAULT_8_SPOOLS_BACKUP.forEach(addUnique);
+      }
+
+      saveBufferSpools(rescued);
+      appSettings.browserRescueUsed = true;
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+      renderBufferUI();
+
+      // Öffnet automatisch die Vorschau, damit man sieht, was gerettet wurde
+      document.getElementById('bufferSpoolDetailsList')?.classList.remove('hidden');
+      showToast(`✓ ${rescued.length} Spulen in den Zwischenspeicher geladen! Klicke auf „Jetzt laden“, um sie zu übernehmen.`);
+    }
+
+    // =========================================================================
+    // 4. CLOUD- & LOKAL-SPEICHER
+    // =========================================================================
     ['keydown', 'mousedown', 'touchstart', 'input'].forEach(evt => {
       window.addEventListener(evt, () => { lastUserInteractionTime = Date.now(); }, { passive: true });
     });
 
     function isAnyModalOrInputActive() {
-      const modals = ['spoolModal', 'dataVaultModal', 'historyModal'];
+      const modals = ['spoolModal', 'historyModal'];
       for (const mId of modals) {
         const el = document.getElementById(mId);
         if (el && !el.classList.contains('hidden')) return true;
@@ -978,95 +1358,11 @@
       return false;
     }
 
-    function createSafeSnapshot(reason = 'Automatisch') {
-      if (!spools || !spools.length) return;
-      const snap = {
-        id: 'snap-' + Date.now(),
-        time: new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        reason,
-        count: spools.length,
-        spools: JSON.parse(JSON.stringify(spools))
-      };
-      safeSnapshots.unshift(snap);
-      if (safeSnapshots.length > 12) safeSnapshots.pop();
-      localStorage.setItem(SAFE_SNAPSHOTS_KEY, JSON.stringify(safeSnapshots));
-      renderSnapshotList();
-    }
-
-    function renderSnapshotList() {
-      const badge = document.getElementById('snapshotBadge');
-      if (badge) badge.textContent = safeSnapshots.length;
-      const box = document.getElementById('snapshotListContainer');
-      if (!box) return;
-      if (!safeSnapshots.length) {
-        box.innerHTML = '<p class="text-[10px] text-slate-500">Noch keine Zwischenspeicher-Punkte vorhanden.</p>';
-        return;
-      }
-      box.innerHTML = safeSnapshots.map(sn => `
-        <div class="p-2 rounded-lg bg-surface-900 border border-white/[0.06] flex items-center justify-between text-[11px]">
-          <div>
-            <span class="font-bold text-white">${sn.count} Spulen</span>
-            <span class="text-slate-400"> • ${sn.reason} (${sn.time})</span>
-          </div>
-          <button type="button" onclick="restoreSnapshotById('${sn.id}')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold hover:bg-emerald-500/30 cursor-pointer">Laden</button>
-        </div>
-      `).join('');
-    }
-
-    function restoreSnapshotById(snapId) {
-      const found = safeSnapshots.find(s => s.id === snapId);
-      if (!found) return;
-      pushUndo();
-      spools = JSON.parse(JSON.stringify(found.spools));
-      deletedIds = [];
-      saveState();
-      showToast(`✓ Zwischenspeicher (${found.count} Spulen) wiederhergestellt!`);
-    }
-
-    function restoreLatestSnapshot() {
-      if (!safeSnapshots.length) {
-        rescueAllBrowserStorage();
-        return;
-      }
-      restoreSnapshotById(safeSnapshots[0].id);
-    }
-
     function isUnwantedDefaultCharcoal(spool) {
       if (!spool) return true;
       if (deletedIds.includes(spool.id)) return true;
       const full = `${spool.brand || ''} ${spool.name || ''}`.toLowerCase();
       return full.includes('matte charcoal') || full.includes('made charcoal');
-    }
-
-    function rescueAllBrowserStorage() {
-      let rescued = [...spools];
-      const seenIds = new Set(rescued.map(s => s.id));
-
-      ALL_KNOWN_STORAGE_KEYS.forEach(k => {
-        const raw = localStorage.getItem(k);
-        if (raw) {
-          try {
-            const parsed = JSON.parse(raw);
-            const arr = Array.isArray(parsed) ? parsed : (parsed.spools || []);
-            arr.forEach(item => {
-              if (item && item.name && !isUnwantedDefaultCharcoal(item) && !seenIds.has(item.id)) {
-                seenIds.add(item.id);
-                rescued.push(item);
-              }
-            });
-          } catch (e) {}
-        }
-      });
-
-      if (rescued.length > spools.length) {
-        pushUndo();
-        spools = rescued;
-        deletedIds = [];
-        saveState();
-        showToast(`✓ ${rescued.length} Spulen aus dem Browser-Zwischenspeicher gerettet!`);
-      } else {
-        showToast('Alle verfügbaren Spulen sind bereits geladen.');
-      }
     }
 
     function sanitizeSpools() {
@@ -1080,7 +1376,10 @@
         if (!s.pricePerKg || isNaN(Number(s.pricePerKg))) {
           s.pricePerKg = getDefaultPriceForSpool(s.brand, s.material);
         }
-        if (s.emptySpoolWeight === undefined || isNaN(Number(s.emptySpoolWeight))) s.emptySpoolWeight = 200;
+        if (s.emptySpoolWeight === undefined || isNaN(Number(s.emptySpoolWeight))) {
+          const b = BRAND_DATABASE.find(x => x.name.toLowerCase() === s.brand.toLowerCase());
+          s.emptySpoolWeight = b ? b.tara : 200;
+        }
         if (s.storageMode === 'biqu_bag') s.storageMode = 'ebos_bag';
         if (!s.storageMode || !modes[s.storageMode]) s.storageMode = 'open';
         if (s.bagWeight === undefined || isNaN(Number(s.bagWeight))) {
@@ -1103,7 +1402,7 @@
       const container = document.getElementById('toastContainer');
       if (!container) return;
       const el = document.createElement('div');
-      el.className = 'px-4 py-2.5 rounded-xl bg-surface-900 border border-sky-500/40 text-xs font-semibold text-white shadow-xl transition-all';
+      el.className = 'px-4 py-2.5 rounded-xl t-panel border border-sky-500/40 text-xs font-semibold shadow-xl transition-all';
       el.textContent = msg;
       container.appendChild(el);
       setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2800);
@@ -1116,25 +1415,33 @@
       localStorage.setItem(PERMANENT_HISTORY_KEY, JSON.stringify(printHistory));
       localStorage.setItem(DELETED_TOMBSTONES_KEY, JSON.stringify(deletedIds));
       localStorage.setItem(LOCAL_UPDATED_AT_KEY, String(localUpdatedAt));
+      if (spools.length > 0) {
+        saveBufferSpools(spools);
+      }
     }
 
     async function loadStateFromCloud(manual = false) {
       if (!manual && isAnyModalOrInputActive()) return;
 
       if (spools.length === 0) {
-        for (const k of ALL_KNOWN_STORAGE_KEYS) {
-          const raw = localStorage.getItem(k);
-          if (raw) {
-            try {
-              const parsed = JSON.parse(raw);
-              const arr = Array.isArray(parsed) ? parsed : (parsed.spools || []);
-              const cleaned = arr.filter(s => !isUnwantedDefaultCharcoal(s));
-              if (cleaned.length > 0) {
-                spools = cleaned;
-                createSafeSnapshot('Start-Sicherung');
-                break;
-              }
-            } catch (e) {}
+        const rawCurrent = localStorage.getItem(PERMANENT_SPOOLS_KEY);
+        if (rawCurrent) {
+          try { spools = JSON.parse(rawCurrent).filter(s => !isUnwantedDefaultCharcoal(s)); } catch (e) {}
+        }
+        if (spools.length === 0) {
+          for (const k of ALL_LEGACY_STORAGE_KEYS) {
+            const raw = localStorage.getItem(k);
+            if (raw) {
+              try {
+                const parsed = JSON.parse(raw);
+                const arr = Array.isArray(parsed) ? parsed : (parsed.spools || []);
+                const cleaned = arr.filter(s => !isUnwantedDefaultCharcoal(s));
+                if (cleaned.length > 0) {
+                  spools = cleaned;
+                  break;
+                }
+              } catch (e) {}
+            }
           }
         }
       }
@@ -1162,6 +1469,10 @@
           }
         }
       } catch (e) {}
+
+      if (spools.length === 0 && bufferSpools.length > 0) {
+        spools = JSON.parse(JSON.stringify(bufferSpools));
+      }
 
       renderSpools(true);
       populateCalcSpoolDropdown();
@@ -1206,7 +1517,6 @@
     }
 
     async function forcePullFromCloud() {
-      createSafeSnapshot('Vor Cloud-Abruf');
       localUpdatedAt = 0;
       await loadStateFromCloud(true);
       showToast('✓ Stand aus der Cloud geladen!');
@@ -1222,8 +1532,75 @@
     }
 
     // =========================================================================
-    // 3. SCHLICHT-MODUS & EINSTELLUNGEN
+    // 5. OPTIONEN: HERSTELLER-SPULEN & FILAMENT-HALTBARKEIT PER DROPDOWN ANPASSEN
     // =========================================================================
+    function populateBrandSelects() {
+      const modalSel = document.getElementById('fBrandSelect');
+      const setSel = document.getElementById('settingBrandSelect');
+
+      const optsHtml = BRAND_DATABASE.map(b => `<option value="${b.name}">${b.name} (${b.tara}g Spule • ${Number(b.basePrice).toFixed(2).replace('.', ',')} €)</option>`).join('');
+      if (modalSel) {
+        const cur = modalSel.value;
+        modalSel.innerHTML = optsHtml + `<option value="OTHER">➕ Anderer Hersteller...</option>`;
+        if (cur) modalSel.value = cur;
+      }
+      if (setSel) {
+        const cur = setSel.value || BRAND_DATABASE[0].name;
+        setSel.innerHTML = BRAND_DATABASE.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+        setSel.value = cur;
+      }
+    }
+
+    function loadBrandPresetIntoSettings() {
+      const name = document.getElementById('settingBrandSelect')?.value;
+      const b = BRAND_DATABASE.find(x => x.name === name) || BRAND_DATABASE[0];
+      if (!b) return;
+      document.getElementById('settingBrandTara').value = b.tara;
+      document.getElementById('settingBrandPrice').value = b.basePrice;
+    }
+
+    function saveCurrentBrandPresetFromSettings() {
+      const name = document.getElementById('settingBrandSelect')?.value;
+      const b = BRAND_DATABASE.find(x => x.name === name);
+      if (!b) return;
+      b.tara = parseInt(document.getElementById('settingBrandTara').value) || 0;
+      b.basePrice = parseFloat(document.getElementById('settingBrandPrice').value) || 17.99;
+      localStorage.setItem(CUSTOM_BRANDS_KEY, JSON.stringify(BRAND_DATABASE));
+      populateBrandSelects();
+    }
+
+    function loadMaterialPresetIntoSettings() {
+      const mat = document.getElementById('settingMatSelect')?.value || 'PLA';
+      const p = MATERIAL_PRESETS[mat] || MATERIAL_PRESETS['PLA'];
+      document.getElementById('settingMatOpenDays').value = p.openDays;
+      document.getElementById('settingMatEbosDays').value = p.ebosBagDays;
+      document.getElementById('settingMatOvpDays').value = p.factorySealedDays;
+      document.getElementById('settingMatTemp').value = p.temp;
+      document.getElementById('settingMatHours').value = p.hours;
+    }
+
+    function saveCurrentMaterialPresetFromSettings() {
+      const mat = document.getElementById('settingMatSelect')?.value || 'PLA';
+      if (!MATERIAL_PRESETS[mat]) return;
+      MATERIAL_PRESETS[mat].openDays = parseInt(document.getElementById('settingMatOpenDays').value) || 14;
+      MATERIAL_PRESETS[mat].ebosBagDays = parseInt(document.getElementById('settingMatEbosDays').value) || 90;
+      MATERIAL_PRESETS[mat].factorySealedDays = parseInt(document.getElementById('settingMatOvpDays').value) || 365;
+      MATERIAL_PRESETS[mat].temp = parseInt(document.getElementById('settingMatTemp').value) || 50;
+      MATERIAL_PRESETS[mat].hours = parseInt(document.getElementById('settingMatHours').value) || 5;
+      localStorage.setItem(CUSTOM_MATS_KEY, JSON.stringify(MATERIAL_PRESETS));
+
+      // Aktualisiert bestehende Spulen dieses Materials automatisch mit der neuen Haltbarkeit
+      spools.forEach(s => {
+        if (s.material === mat) {
+          s.dryIntervalDays = getRecommendedDays(mat, s.storageMode || 'open');
+          s.dryTemp = MATERIAL_PRESETS[mat].temp;
+          s.dryHours = MATERIAL_PRESETS[mat].hours;
+        }
+      });
+      saveLocalBackup();
+      renderSpools(true);
+    }
+
     function toggleMinimalMode(forceVal = null) {
       appSettings.minimalMode = typeof forceVal === 'boolean' ? forceVal : !appSettings.minimalMode;
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
@@ -1239,6 +1616,10 @@
     }
 
     function applySettingsToUI() {
+      // Theme auf Body anwenden (inkl. Heller Hintergrund!)
+      document.body.classList.remove('theme-obsidian', 'theme-midnight', 'theme-light', 'theme-soft');
+      document.body.classList.add(`theme-${appSettings.theme || 'obsidian'}`);
+
       const isMin = !!appSettings.minimalMode;
       const btn = document.getElementById('minimalModeToggleBtn');
       const label = document.getElementById('minimalModeLabel');
@@ -1249,13 +1630,13 @@
       if (label) label.textContent = isMin ? 'Schlicht-Modus: AN' : 'Schlicht-Modus: AUS';
       if (btn) {
         btn.className = isMin
-          ? 'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-sky-500 text-surface-950 border border-sky-400 text-xs font-extrabold transition shadow-sm cursor-pointer'
-          : 'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.08] text-xs font-bold transition cursor-pointer';
+          ? 'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-500 text-slate-950 text-xs font-extrabold transition shadow-sm cursor-pointer'
+          : 'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl t-sub text-xs font-bold transition cursor-pointer';
       }
-      if (scannerSec) {
-        scannerSec.classList.toggle('hidden', isMin);
-      }
+      if (scannerSec) scannerSec.classList.toggle('hidden', isMin);
 
+      const themeSel = document.getElementById('settingTheme');
+      if (themeSel) themeSel.value = appSettings.theme || 'obsidian';
       const barSel = document.getElementById('settingBarStyle');
       if (barSel) barSel.value = appSettings.barStyle || 'blue_green';
       const gridSel = document.getElementById('settingGridCols');
@@ -1276,8 +1657,30 @@
       }
     }
 
+    // Liefert das CSS-Inline-Styling für den Fortschrittsbalken (damit Dynamisch & alle Verläufe zu 100% funktionieren!)
+    function getBarInlineStyle(pct) {
+      const style = appSettings.barStyle || 'blue_green';
+      let bg = 'linear-gradient(90deg, #0ea5e9 0%, #10b981 100%)'; // Blau-Türkis-Verlauf (Standard)
+
+      if (style === 'dynamic') {
+        if (pct <= 20) bg = 'linear-gradient(90deg, #e11d48 0%, #fb7185 100%)'; // Rot
+        else if (pct <= 45) bg = 'linear-gradient(90deg, #d97706 0%, #facc15 100%)'; // Orange-Gelb
+        else bg = 'linear-gradient(90deg, #059669 0%, #34d399 100%)'; // Grün
+      } else if (style === 'cyber') {
+        bg = 'linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%)';
+      } else if (style === 'sunset') {
+        bg = 'linear-gradient(90deg, #f97316 0%, #facc15 100%)';
+      } else if (style === 'ocean') {
+        bg = 'linear-gradient(90deg, #2563eb 0%, #38bdf8 100%)';
+      } else if (style === 'emerald') {
+        bg = 'linear-gradient(90deg, #10b981 0%, #059669 100%)';
+      }
+
+      return `width: ${pct}%; background: ${bg};`;
+    }
+
     // =========================================================================
-    // 4. FIREFOX SPRACHAUSGABE (TTS) & SPRACHEINGABE (STT / DIKTAT)
+    // 6. SPRACHAUSGABE & SPRACHEINGABE
     // =========================================================================
     function speakText(text) {
       if (!appSettings.ttsEnabled || !('speechSynthesis' in window)) return;
@@ -1356,7 +1759,7 @@
     }
 
     // =========================================================================
-    // 5. SICHERER DATEI / JSON / TEXT IMPORT & EXPORT
+    // 7. IMPORT / EXPORT (.TXT & .JSON)
     // =========================================================================
     function spoolsToReadableText() {
       if (!spools.length) return '';
@@ -1384,23 +1787,21 @@
             brand: s.brand || 'Bambu Lab',
             name: s.name || `${s.material || 'PLA'} Filament`,
             material: s.material || 'PLA',
-            colorName: s.colorName || 'Standard',
+            colorName: s.colorName || s.color || 'Standard',
             colorHex: s.colorHex || '#38bdf8',
-            initialWeight: Number(s.initialWeight) || 1000,
-            remainingWeight: s.remainingWeight !== undefined ? Number(s.remainingWeight) : 1000,
-            emptySpoolWeight: s.emptySpoolWeight !== undefined ? Number(s.emptySpoolWeight) : 200,
+            initialWeight: Number(s.initialWeight ?? s.weight) || 1000,
+            remainingWeight: Number(s.remainingWeight ?? s.remaining ?? 1000),
+            emptySpoolWeight: Number(s.emptySpoolWeight ?? s.tara ?? 200),
             storageMode: s.storageMode === 'biqu_bag' ? 'ebos_bag' : (s.storageMode || 'open'),
             bagWeight: Number(s.bagWeight) || 0,
             pricePerKg: Number(s.pricePerKg) || getDefaultPriceForSpool(s.brand, s.material),
             productUrl: s.productUrl || '',
             lastDried: s.lastDried || new Date().toISOString(),
-            dryIntervalDays: Number(s.dryIntervalDays) || 30,
+            dryIntervalDays: Number(s.dryIntervalDays) || getRecommendedDays(s.material || 'PLA', s.storageMode || 'open'),
             dryTemp: Number(s.dryTemp) || 50,
             dryHours: Number(s.dryHours) || 5
           }));
-        } catch (e) {
-          showToast('⚠️ JSON-Format fehlerhaft – versuche Text-Analyse...');
-        }
+        } catch (e) {}
       }
 
       const lines = trimmed.split(/\r?\n/);
@@ -1479,16 +1880,6 @@
       return result;
     }
 
-    function openDataVaultModal() {
-      document.getElementById('vaultTextArea').value = spoolsToReadableText();
-      document.getElementById('dataVaultModal').classList.replace('hidden', 'flex');
-      lucide.createIcons();
-    }
-
-    function closeDataVaultModal() {
-      document.getElementById('dataVaultModal').classList.replace('flex', 'hidden');
-    }
-
     function downloadReadableTxtFile() {
       const content = document.getElementById('vaultTextArea')?.value || spoolsToReadableText();
       const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -1514,16 +1905,16 @@
         const rawContent = e.target.result || '';
         const imported = parseReadableTextToSpools(rawContent);
         if (!imported.length) {
-          showToast('⚠️ Datei enthielt keine erkennbaren Filamente – Bestand wurde NICHT verändert!');
+          showToast('⚠️ Datei enthielt keine erkennbaren Filamente!');
           return;
         }
-        createSafeSnapshot('Vor Datei-Import');
+        saveBufferSpools(spools.length ? spools : imported);
         pushUndo();
         spools = imported;
         deletedIds = [];
         saveState();
         document.getElementById('vaultTextArea').value = spoolsToReadableText();
-        showToast(`✓ ${imported.length} Spulen sicher importiert!`);
+        showToast(`✓ ${imported.length} Spulen geladen!`);
       };
       reader.readAsText(file);
       event.target.value = '';
@@ -1533,10 +1924,9 @@
       const raw = document.getElementById('vaultTextArea').value;
       const parsed = parseReadableTextToSpools(raw);
       if (!parsed.length) {
-        showToast('⚠️ Textfeld ist leer oder ungültig – Bestand wurde zum Schutz NICHT gelöscht!');
+        showToast('⚠️ Textfeld ist leer oder ungültig!');
         return;
       }
-      createSafeSnapshot('Vor Text-Übernahme');
       pushUndo();
       deletedIds = [];
       if (mode === 'append') {
@@ -1547,11 +1937,10 @@
         showToast(`✓ ${parsed.length} Spulen übernommen!`);
       }
       saveState();
-      closeDataVaultModal();
     }
 
     // =========================================================================
-    // 6. SMART SCANNER
+    // 8. SMART SCANNER & G-CODE / RECHNER / KI
     // =========================================================================
     function extractEuroPriceFromText(rawText) {
       if (!rawText) return null;
@@ -1595,7 +1984,7 @@
       if (isRefill) detectedTara = 0;
 
       let detectedStorageMode = 'open';
-      if (combined.includes('ebos') || combined.includes('eyebrow') || combined.includes('bag') || combined.includes('beutel') || combined.includes('bq')) {
+      if (combined.includes('ebos') || combined.includes('eibos') || combined.includes('eyebrow') || combined.includes('bag') || combined.includes('beutel') || combined.includes('bq')) {
         detectedStorageMode = 'ebos_bag';
       } else if (combined.includes('vakuum') || combined.includes('vakum') || combined.includes('ovp') || combined.includes('eingeschweißt')) {
         detectedStorageMode = 'factory_sealed';
@@ -1659,64 +2048,6 @@
       const data = parseFilamentQueryOrUrl(val, '');
       input.value = '';
       openSpoolModal(null, data);
-    }
-
-    // =========================================================================
-    // 7. SIDEBAR, G-CODE, RECHNER & KI-AGENT
-    // =========================================================================
-    let sidebarCollapsedDesktop = false;
-
-    function toggleSidebar() {
-      const sidebar = document.getElementById('leftSidebar');
-      const backdrop = document.getElementById('sidebarBackdrop');
-      if (window.innerWidth < 1024) {
-        const isHidden = sidebar.classList.contains('-translate-x-full');
-        sidebar.classList.toggle('-translate-x-full', !isHidden);
-        backdrop.classList.toggle('hidden', !isHidden);
-      } else {
-        sidebarCollapsedDesktop = !sidebarCollapsedDesktop;
-        if (sidebarCollapsedDesktop) {
-          sidebar.classList.add('lg:hidden');
-        } else {
-          sidebar.classList.remove('lg:hidden');
-        }
-      }
-    }
-
-    function closeSidebarOnMobile() {
-      document.getElementById('leftSidebar')?.classList.add('-translate-x-full');
-      document.getElementById('sidebarBackdrop')?.classList.add('hidden');
-    }
-
-    function switchSidebarTab(tabName) {
-      ['ai', 'gcode', 'calc', 'sync', 'settings'].forEach(t => {
-        const panel = document.getElementById(`sidebarPanel-${t}`);
-        const btn = document.getElementById(`tabBtn-${t}`);
-        if (panel) panel.classList.toggle('hidden', t !== tabName);
-        if (btn) {
-          btn.className = t === tabName
-            ? 'py-2 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-1 transition bg-sky-500 text-surface-950 cursor-pointer'
-            : 'py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white cursor-pointer';
-        }
-      });
-      if (tabName === 'sync') renderSidebarQr();
-      if (tabName === 'calc') { populateCalcSpoolDropdown(); calculatePrintCost(); }
-      if (tabName === 'gcode') renderGcodeSpoolSelection();
-      if (tabName === 'settings') renderSnapshotList();
-      lucide.createIcons();
-    }
-
-    function openSidebarTab(tabName) {
-      const sidebar = document.getElementById('leftSidebar');
-      const backdrop = document.getElementById('sidebarBackdrop');
-      if (window.innerWidth < 1024) {
-        sidebar?.classList.remove('-translate-x-full');
-        backdrop?.classList.remove('hidden');
-      } else if (sidebarCollapsedDesktop) {
-        sidebarCollapsedDesktop = false;
-        sidebar?.classList.remove('lg:hidden');
-      }
-      switchSidebarTab(tabName);
     }
 
     let lastParsedGcode = { grams: 0, hours: 0, fileName: '' };
@@ -1795,17 +2126,17 @@
       container.innerHTML = spools.map(s => {
         const cost = ((g / 1000) * (Number(s.pricePerKg) || 17.99)).toFixed(2).replace('.', ',');
         return `
-          <button type="button" onclick="confirmGcodeDeduct('${s.id}')" class="w-full p-2.5 rounded-xl bg-surface-900 hover:bg-sky-500/15 border border-white/[0.07] hover:border-sky-500/50 flex items-center justify-between gap-2 text-left transition cursor-pointer">
+          <button type="button" onclick="confirmGcodeDeduct('${s.id}')" class="w-full p-2.5 rounded-xl t-panel hover:border-sky-500/50 flex items-center justify-between gap-2 text-left transition cursor-pointer">
             <div class="flex items-center gap-2 min-w-0">
               <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${s.colorHex || '#38bdf8'}"></span>
               <div class="min-w-0">
-                <p class="text-xs font-bold text-white truncate">${s.brand} – ${s.name}</p>
-                <p class="text-[10px] text-slate-400">Rest: <strong class="text-emerald-400">${s.remainingWeight}g</strong></p>
+                <p class="text-xs font-bold truncate">${s.brand} – ${s.name}</p>
+                <p class="text-[10px] t-muted">Rest: <strong class="text-emerald-400">${s.remainingWeight}g</strong></p>
               </div>
             </div>
             <div class="text-right shrink-0">
-              <span class="px-2 py-0.5 rounded bg-sky-500 text-surface-950 text-[10px] font-bold block">-${g}g</span>
-              <span class="text-[10px] text-slate-400 font-mono-num">${cost} €</span>
+              <span class="px-2 py-0.5 rounded bg-sky-500 text-slate-950 text-[10px] font-bold block">-${g}g</span>
+              <span class="text-[10px] t-muted font-mono-num">${cost} €</span>
             </div>
           </button>
         `;
@@ -1822,7 +2153,7 @@
     function transferGcodeToCalc() {
       document.getElementById('calcWeightGrams').value = parseFloat(document.getElementById('gcodeParsedGrams')?.value) || 50;
       if (lastParsedGcode.timeHours) document.getElementById('calcHours').value = lastParsedGcode.timeHours;
-      switchSidebarTab('calc');
+      openDrawerTab('calc');
       calculatePrintCost();
     }
 
@@ -1869,7 +2200,7 @@
     let aiMessages = [
       {
         role: 'assistant',
-        text: 'Hallo! Ich lese dir Antworten auf Wunsch auch direkt im **Firefox** vor.\nSchreib oder diktiere z. B.:\n• *"Neue Spule Bambu Lab PETG Basic im eBOS Beutel"*\n• *"Schalte Schlicht-Modus ein"*'
+        text: 'Hallo! Ich bin dein **FilamentHub KI-Agent**.\nSchreib oder diktiere z. B.:\n• *"Neue Spule Bambu Lab PETG Basic im eBOS Beutel"*\n• *"Ziehe 45g von Weiß ab"*\n• *"Wechsle auf hellen Hintergrund"*'
       }
     ];
 
@@ -1878,7 +2209,7 @@
       if (!box) return;
       box.innerHTML = aiMessages.map(m => `
         <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}">
-          <div class="max-w-[90%] rounded-xl px-3 py-2 ${m.role === 'user' ? 'bg-sky-500 text-surface-950 font-semibold' : 'bg-surface-900 border border-white/[0.07] text-slate-200'} whitespace-pre-line">
+          <div class="max-w-[90%] rounded-xl px-3 py-2 ${m.role === 'user' ? 'bg-sky-500 text-slate-950 font-semibold' : 't-panel'} whitespace-pre-line">
             ${m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
           </div>
         </div>
@@ -1889,9 +2220,17 @@
     async function processLocalAiCommand(input) {
       const lower = input.toLowerCase();
 
+      if (lower.includes('hell') || lower.includes('light')) {
+        updateAppSetting('theme', 'light');
+        return '☀️ Ich habe die Darstellung auf den **hellen Hintergrund** umgestellt.';
+      }
+      if (lower.includes('dunkel') || lower.includes('dark')) {
+        updateAppSetting('theme', 'obsidian');
+        return '🌑 Ich habe wieder auf den **dunklen Hintergrund** gewechselt.';
+      }
       if (lower.includes('schlicht') || lower.includes('minimal')) {
         toggleMinimalMode();
-        return `✅ Ich habe den **Schlicht-Modus** ${appSettings.minimalMode ? 'eingeschaltet' : 'ausgeschaltet'}.`;
+        return `✅ **Schlicht-Modus** ist jetzt ${appSettings.minimalMode ? 'aktiv' : 'deaktiviert'}.`;
       }
 
       const deductMatch = input.match(/(?:zieh|abziehen|minus|verbrauch\w*)\s*(\d+)\s*g?\s*(?:von|bei|aus)?\s*(.+)/i);
@@ -1914,7 +2253,7 @@
       const newSpool = { id: 'sp-' + Date.now(), ...parsed, lastDried: new Date().toISOString() };
       spools.unshift(newSpool);
       saveState();
-      return `✅ Neue Spule eingetragen: ${newSpool.brand} ${newSpool.name} mit ${newSpool.remainingWeight} Gramm.`;
+      return `✅ Neue Spule eingetragen: ${newSpool.brand} ${newSpool.name} (${newSpool.remainingWeight}g).`;
     }
 
     async function sendAiMessage() {
@@ -1931,7 +2270,7 @@
     }
 
     // =========================================================================
-    // 8. KARTEN-RENDERING (INKL. SCHLICHT-MODUS & 3 ICONS OBEN RECHTS)
+    // 9. KARTEN-RENDERING (INKL. DYNAMIK-BAR, SCHLICHT-MODUS & 3 ICONS)
     // =========================================================================
     function getDryingStatus(spool) {
       const lastDriedMs = new Date(spool.lastDried || Date.now()).getTime();
@@ -1968,18 +2307,7 @@
       spool.dryIntervalDays = getRecommendedDays(spool.material, newMode);
       spool.lastDried = new Date().toISOString();
       saveState();
-      showToast(`${spool.brand} ${spool.name}: ${modes[newMode].label} (${spool.bagWeight}g Beutel-Tara)`);
-    }
-
-    function getBarColorClass(pct) {
-      if (appSettings.barStyle === 'green') return 'bg-emerald-500';
-      if (appSettings.barStyle === 'blue') return 'bg-sky-500';
-      if (appSettings.barStyle === 'dynamic') {
-        if (pct <= 15) return 'bg-rose-500';
-        if (pct <= 35) return 'bg-amber-500';
-        return 'bg-emerald-500';
-      }
-      return 'bg-gradient-to-r from-sky-500 to-emerald-400';
+      showToast(`${spool.brand} ${spool.name}: ${modes[newMode].label} (${spool.dryIntervalDays}d Haltbarkeit)`);
     }
 
     function renderSpools(force = false) {
@@ -2003,7 +2331,7 @@
       const bar = document.getElementById('materialFilterBar');
       if (bar) {
         bar.innerHTML = ['ALL', 'PLA', 'PLA+', 'PETG', 'TPU', 'ABS', 'ASA', 'PA / Nylon'].map(mat => `
-          <button type="button" onclick="activeMaterialFilter='${mat}';renderSpools(true);" class="px-3 py-1 rounded-xl text-xs font-semibold border transition whitespace-nowrap cursor-pointer ${activeMaterialFilter === mat ? 'bg-sky-500 text-surface-950 border-sky-500 font-bold' : 'bg-surface-950 text-slate-400 border-white/[0.07] hover:text-white'}">
+          <button type="button" onclick="activeMaterialFilter='${mat}';renderSpools(true);" class="px-3 py-1 rounded-xl text-xs font-semibold border transition whitespace-nowrap cursor-pointer ${activeMaterialFilter === mat ? 'bg-sky-500 text-slate-950 border-sky-500 font-bold' : 't-sub t-muted hover:opacity-100'}">
             ${mat === 'ALL' ? `Alle (${spools.length})` : mat}
           </button>
         `).join('');
@@ -2032,7 +2360,7 @@
       if (!grid) return;
 
       if (!filtered.length) {
-        grid.innerHTML = `<div class="col-span-full clean-panel rounded-2xl p-10 text-center text-xs text-slate-400">Keine Spulen angezeigt. Klicke oben auf <strong>„Import / Export“</strong>, <strong>„Zwischenspeicher“</strong> oder <strong>„Neue Spule“</strong>.</div>`;
+        grid.innerHTML = `<div class="col-span-full t-panel rounded-2xl p-10 text-center text-xs t-muted">Keine Spulen angezeigt. Klicke links auf <strong>„Speicher“</strong> und dort auf <strong>„Jetzt laden“</strong>!</div>`;
         return;
       }
 
@@ -2049,52 +2377,52 @@
         const hex = spool.colorHex || '#38bdf8';
         const priceKg = Number(spool.pricePerKg) || 17.99;
         const shopUrl = spool.productUrl || buildVendorUrl(spool.brand, spool.material, spool.colorName || '', spool.name || '', spoolTara === 0);
-        const barClass = getBarColorClass(pct);
+        const barInline = getBarInlineStyle(pct);
         const isScaleOpen = !!openScaleCards[spool.id];
 
         // SCHLICHT-MODUS
         if (isMin) {
           return `
-            <div class="clean-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 flex flex-col justify-between gap-3">
+            <div class="t-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 flex flex-col justify-between gap-3">
               <div class="flex justify-between items-start gap-2">
                 <div class="flex items-center gap-2.5 min-w-0">
-                  <span class="w-4 h-4 rounded-full shrink-0 border border-white/25" style="background-color: ${hex}"></span>
+                  <span class="w-4 h-4 rounded-full shrink-0 border border-slate-500/30" style="background-color: ${hex}"></span>
                   <div class="min-w-0">
                     <div class="flex items-center gap-1.5">
-                      <span class="text-[11px] uppercase font-extrabold tracking-wider text-sky-400">${spool.brand}</span>
-                      <span class="text-[10px] px-1.5 py-0.2 rounded bg-surface-850 text-slate-200 font-bold">${spool.material}</span>
+                      <span class="text-[11px] uppercase font-extrabold tracking-wider text-sky-500">${spool.brand}</span>
+                      <span class="text-[10px] px-1.5 py-0.2 rounded t-sub font-bold">${spool.material}</span>
                     </div>
-                    <h3 class="text-sm font-bold text-white truncate mt-0.5">${spool.name}</h3>
+                    <h3 class="text-sm font-bold truncate mt-0.5">${spool.name}</h3>
                   </div>
                 </div>
 
                 <div class="flex items-center gap-1 shrink-0">
-                  <a href="${shopUrl}" target="_blank" rel="noopener" title="Shop-Link öffnen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-sky-400 transition">
+                  <a href="${shopUrl}" target="_blank" rel="noopener" title="Shop-Link öffnen" class="p-1.5 rounded-lg t-sub text-sky-500 hover:opacity-80 transition">
                     <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                   </a>
-                  <button type="button" onclick="openSpoolModal('${spool.id}')" title="Spule bearbeiten" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-slate-300 hover:text-white transition cursor-pointer">
+                  <button type="button" onclick="openSpoolModal('${spool.id}')" title="Spule bearbeiten" class="p-1.5 rounded-lg t-sub hover:opacity-80 transition cursor-pointer">
                     <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                   </button>
-                  <button type="button" onclick="deleteSpool('${spool.id}')" title="Spule löschen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition cursor-pointer">
+                  <button type="button" onclick="deleteSpool('${spool.id}')" title="Spule löschen" class="p-1.5 rounded-lg t-sub hover:bg-rose-500/20 text-rose-500 transition cursor-pointer">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
               </div>
 
               <div class="space-y-1">
-                <div class="flex justify-between text-[11px] text-slate-400">
+                <div class="flex justify-between text-[11px] t-muted">
                   <span>${spool.colorName || ''}</span>
-                  <span class="font-mono-num font-bold text-white">${remW}g <span class="text-slate-500 font-normal">(${pct}%)</span></span>
+                  <span class="font-mono-num font-bold">${remW}g <span class="opacity-60 font-normal">(${pct}%)</span></span>
                 </div>
-                <div class="w-full h-2.5 rounded-full bg-surface-950 overflow-hidden">
-                  <div class="h-full ${barClass} transition-all" style="width: ${pct}%"></div>
+                <div class="w-full h-2.5 rounded-full t-sub overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-300" style="${barInline}"></div>
                 </div>
               </div>
 
               ${dry.statusLevel !== 'ok' ? `
                 <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-[11px]">
-                  <span class="text-rose-400 font-bold">⚠️ Muss getrocknet werden</span>
-                  <button type="button" onclick="markDried('${spool.id}')" class="text-sky-400 hover:underline font-semibold cursor-pointer">Erledigt</button>
+                  <span class="text-rose-500 font-bold">⚠️ Muss getrocknet werden</span>
+                  <button type="button" onclick="markDried('${spool.id}')" class="text-sky-500 hover:underline font-semibold cursor-pointer">Erledigt</button>
                 </div>
               ` : ''}
             </div>
@@ -2103,77 +2431,77 @@
 
         // KOMPLETTE ANSICHT
         return `
-          <div class="clean-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 sm:p-5 flex flex-col justify-between gap-3.5">
+          <div class="t-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 sm:p-5 flex flex-col justify-between gap-3.5">
             
             <div class="flex justify-between items-start gap-2">
               <div class="flex items-center gap-3 min-w-0">
                 <span class="w-7 h-7 rounded-full border-4 shrink-0 shadow-sm" style="border-color: ${hex}; background-color: ${hex}33;"></span>
                 <div class="min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-[11px] uppercase font-extrabold tracking-wider text-sky-400">${spool.brand}</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded bg-surface-850 text-slate-200 font-bold">${spool.material}</span>
-                    <span class="text-[10px] font-mono-num text-emerald-400 font-semibold">${priceKg.toFixed(2).replace('.', ',')} €/kg</span>
+                    <span class="text-[11px] uppercase font-extrabold tracking-wider text-sky-500">${spool.brand}</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded t-sub font-bold">${spool.material}</span>
+                    <span class="text-[10px] font-mono-num text-emerald-500 font-semibold">${priceKg.toFixed(2).replace('.', ',')} €/kg</span>
                   </div>
-                  <h3 class="text-sm font-bold text-white truncate mt-0.5">${spool.name}</h3>
+                  <h3 class="text-sm font-bold truncate mt-0.5">${spool.name}</h3>
                 </div>
               </div>
 
               <div class="flex items-center gap-1 shrink-0">
-                <a href="${shopUrl}" target="_blank" rel="noopener" title="Produkt-Link öffnen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-sky-400 transition">
+                <a href="${shopUrl}" target="_blank" rel="noopener" title="Produkt-Link öffnen" class="p-1.5 rounded-lg t-sub text-sky-500 hover:opacity-80 transition">
                   <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                 </a>
-                <button type="button" onclick="openSpoolModal('${spool.id}')" title="Spule bearbeiten" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-slate-300 hover:text-white transition cursor-pointer">
+                <button type="button" onclick="openSpoolModal('${spool.id}')" title="Spule bearbeiten" class="p-1.5 rounded-lg t-sub hover:opacity-80 transition cursor-pointer">
                   <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                 </button>
-                <button type="button" onclick="deleteSpool('${spool.id}')" title="Spule löschen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition cursor-pointer">
+                <button type="button" onclick="deleteSpool('${spool.id}')" title="Spule löschen" class="p-1.5 rounded-lg t-sub hover:bg-rose-500/20 text-rose-500 transition cursor-pointer">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
             </div>
 
-            <div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-surface-950 border ${mode !== 'open' ? 'border-sky-500/35' : 'border-white/[0.06]'}">
-              <span class="text-[11px] text-slate-400 font-medium">Beutel / Lagerung:</span>
+            <div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl t-sub ${mode !== 'open' ? 'border-sky-500/35' : ''}">
+              <span class="text-[11px] t-muted font-medium">Lagerung:</span>
               <select
                 onchange="changeCardStorageMode('${spool.id}', this.value)"
-                class="bg-transparent text-xs font-bold ${mode !== 'open' ? 'text-sky-300' : 'text-slate-300'} outline-none cursor-pointer text-right"
+                class="bg-transparent text-xs font-bold ${mode !== 'open' ? 'text-sky-500' : ''} outline-none cursor-pointer text-right"
               >
-                <option value="open" class="bg-surface-900 text-white" ${mode === 'open' ? 'selected' : ''}>🌬️ Offen (0g Beutel)</option>
-                <option value="ebos_bag" class="bg-surface-900 text-white" ${mode === 'ebos_bag' ? 'selected' : ''}>🛡️ eBOS Vakuum-Beutel (+${modes.ebos_bag.bagWeight}g)</option>
-                <option value="factory_sealed" class="bg-surface-900 text-white" ${mode === 'factory_sealed' ? 'selected' : ''}>📦 OVP Vakuumiert (+${modes.factory_sealed.bagWeight}g)</option>
+                <option value="open" class="t-panel" ${mode === 'open' ? 'selected' : ''}>🌬️ Offen (0g Beutel)</option>
+                <option value="ebos_bag" class="t-panel" ${mode === 'ebos_bag' ? 'selected' : ''}>🛡️ eBOS Vakuum-Beutel (+${modes.ebos_bag.bagWeight}g)</option>
+                <option value="factory_sealed" class="t-panel" ${mode === 'factory_sealed' ? 'selected' : ''}>📦 OVP Vakuumiert (+${modes.factory_sealed.bagWeight}g)</option>
               </select>
             </div>
 
             <div class="space-y-1.5">
               <div class="flex justify-between items-baseline text-xs">
-                <span class="text-slate-400">${spool.colorName || 'Standard'}</span>
-                <span class="font-mono-num font-bold text-white">${remW}g <span class="text-slate-500 font-normal">/ ${initW}g (${pct}%)</span></span>
+                <span class="t-muted">${spool.colorName || 'Standard'}</span>
+                <span class="font-mono-num font-bold">${remW}g <span class="t-muted font-normal">/ ${initW}g (${pct}%)</span></span>
               </div>
-              <div class="w-full h-2.5 rounded-full bg-surface-950 overflow-hidden">
-                <div class="h-full ${barClass} transition-all" style="width: ${pct}%"></div>
+              <div class="w-full h-2.5 rounded-full t-sub overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-300" style="${barInline}"></div>
               </div>
-              <div class="flex items-center justify-between pt-1 text-[11px] text-slate-400">
-                <button type="button" onclick="toggleCardScale('${spool.id}')" class="hover:text-emerald-400 transition cursor-pointer">
-                  ⚖️ Waage: ≈ ${scaleNow}g <span class="text-[10px] text-slate-500">(Tara: ${spoolTara}g+${bagTara}g)</span>
+              <div class="flex items-center justify-between pt-1 text-[11px] t-muted">
+                <button type="button" onclick="toggleCardScale('${spool.id}')" class="hover:text-emerald-500 transition cursor-pointer">
+                  ⚖️ Waage: ≈ ${scaleNow}g <span class="text-[10px] opacity-75">(Tara: ${spoolTara}g+${bagTara}g)</span>
                 </button>
-                <span class="text-[10px] font-mono-num text-slate-500">Wert: ${((remW/1000)*priceKg).toFixed(2).replace('.', ',')} €</span>
+                <span class="text-[10px] font-mono-num">Wert: ${((remW/1000)*priceKg).toFixed(2).replace('.', ',')} €</span>
               </div>
 
-              <div id="scale-box-${spool.id}" class="${isScaleOpen ? '' : 'hidden'} pt-2 mt-1 border-t border-white/[0.06] flex gap-1.5">
-                <input id="scale-${spool.id}" type="number" placeholder="Waage Brutto (g)..." onkeydown="if(event.key==='Enter'){applyScaleWeight('${spool.id}');}" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs text-white font-mono-num outline-none" />
-                <button type="button" onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-surface-950 text-xs font-bold cursor-pointer">Setzen</button>
+              <div id="scale-box-${spool.id}" class="${isScaleOpen ? '' : 'hidden'} pt-2 mt-1 border-t border-slate-500/15 flex gap-1.5">
+                <input id="scale-${spool.id}" type="number" placeholder="Waage Brutto (g)..." onkeydown="if(event.key==='Enter'){applyScaleWeight('${spool.id}');}" class="flex-1 px-2.5 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
+                <button type="button" onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 text-xs font-bold cursor-pointer">Setzen</button>
               </div>
             </div>
 
             <div class="flex items-center gap-1.5">
-              <input id="deduct-${spool.id}" type="number" placeholder="Gramm..." onkeydown="if(event.key==='Enter'){deductWeight('${spool.id}');}" class="w-24 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.08] text-xs text-white font-mono-num outline-none focus:border-sky-500" />
-              <button type="button" onclick="deductWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-bold transition cursor-pointer">Abziehen</button>
-              <button type="button" onclick="deductWeight('${spool.id}', 10)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300 cursor-pointer">-10g</button>
-              <button type="button" onclick="deductWeight('${spool.id}', 25)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300 cursor-pointer">-25g</button>
-              <button type="button" onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300 cursor-pointer">-50g</button>
+              <input id="deduct-${spool.id}" type="number" placeholder="Gramm..." onkeydown="if(event.key==='Enter'){deductWeight('${spool.id}');}" class="w-24 px-2.5 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none focus:border-sky-500" />
+              <button type="button" onclick="deductWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold transition cursor-pointer">Abziehen</button>
+              <button type="button" onclick="deductWeight('${spool.id}', 10)" class="px-2 py-1.5 rounded-lg t-sub hover:opacity-80 text-[10px] font-mono-num cursor-pointer">-10g</button>
+              <button type="button" onclick="deductWeight('${spool.id}', 25)" class="px-2 py-1.5 rounded-lg t-sub hover:opacity-80 text-[10px] font-mono-num cursor-pointer">-25g</button>
+              <button type="button" onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg t-sub hover:opacity-80 text-[10px] font-mono-num cursor-pointer">-50g</button>
             </div>
 
-            <div class="flex items-center justify-between pt-2 border-t border-white/[0.06] text-[11px]">
-              <span class="font-mono-num ${dry.isOverdue ? 'text-rose-400 font-bold' : (mode !== 'open' ? 'text-sky-400' : 'text-slate-400')}">
+            <div class="flex items-center justify-between pt-2 border-t border-slate-500/15 text-[11px]">
+              <span class="font-mono-num ${dry.isOverdue ? 'text-rose-500 font-bold' : (mode !== 'open' ? 'text-sky-500' : 't-muted')}">
                 ${dry.isOverdue
                   ? `⚠️ Muss getrocknet werden (seit ${dry.days}d)`
                   : (mode === 'factory_sealed'
@@ -2182,7 +2510,7 @@
                           ? `🛡️ Im eBOS-Beutel (${dry.days}d)`
                           : `🔥 Offen haltbar: ${dry.days}d${dry.hours}h`))}
               </span>
-              <button type="button" onclick="markDried('${spool.id}')" class="text-sky-400 hover:underline font-semibold cursor-pointer">
+              <button type="button" onclick="markDried('${spool.id}')" class="text-sky-500 hover:underline font-semibold cursor-pointer">
                 Getrocknet
               </button>
             </div>
@@ -2195,7 +2523,7 @@
     }
 
     // =========================================================================
-    // 9. AKTIONEN & FEHLERFREIES BEARBEITEN-MODAL
+    // 10. AKTIONEN & MODAL-LOGIK
     // =========================================================================
     let undoStack = [];
     let redoStack = [];
@@ -2238,7 +2566,6 @@
     }
 
     function deleteSpool(id) {
-      createSafeSnapshot('Vor Löschen');
       pushUndo();
       if (!deletedIds.includes(id)) deletedIds.push(id);
       spools = spools.filter(s => s.id !== id);
@@ -2280,7 +2607,7 @@
       const totalTara = spoolTara + bagTara;
 
       if (gross < totalTara) {
-        showToast(`⚠️ ${gross}g ist weniger als Spule + eBOS-Beutel (${totalTara}g)!`);
+        showToast(`⚠️ ${gross}g ist weniger als Spule + Beutel (${totalTara}g)!`);
         return;
       }
       pushUndo();
@@ -2311,7 +2638,7 @@
       let url = input.value.trim();
       box.innerHTML = '';
       if (!url || url.startsWith('file:')) {
-        box.innerHTML = '<span class="text-slate-500">GitHub Pages / Cloudflare URL unten eintragen</span>';
+        box.innerHTML = '<span class="text-slate-500">Online-URL unten eintragen</span>';
         return;
       }
       const sep = url.includes('?') ? '&' : '?';
@@ -2349,7 +2676,7 @@
 
       const infoEl = document.getElementById('modalMaterialStorageInfo');
       if (infoEl) {
-        infoEl.innerHTML = `Haltbarkeit <strong>${mat}</strong>: Offen <strong>${preset.openDays}d</strong> • Im <strong>eBOS Beutel ${preset.ebosBagDays}d</strong> • OVP <strong>${preset.factorySealedDays}d</strong>.`;
+        infoEl.innerHTML = `Standard für <strong>${mat}</strong>: Offen <strong>${preset.openDays}d</strong> • eBOS <strong>${preset.ebosBagDays}d</strong> • OVP <strong>${preset.factorySealedDays}d</strong> (anpassbar in den Optionen).`;
       }
 
       applyModalScale();
@@ -2402,6 +2729,7 @@
     }
 
     function populateModalFields(data) {
+      populateBrandSelects();
       const setVal = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined) el.value = v; };
       setVal('fProductUrl', data.productUrl || '');
       setVal('fName', data.name || '');
@@ -2443,33 +2771,29 @@
 
       if (spoolId) {
         const existing = spools.find(s => String(s.id) === String(spoolId));
-        if (!existing) {
-          showToast('Spule nicht gefunden.');
-          return;
-        }
+        if (!existing) return;
         document.getElementById('modalTitle').textContent = 'Filament-Spule bearbeiten';
         document.getElementById('fId').value = existing.id;
         populateModalFields(existing);
       } else {
         document.getElementById('modalTitle').textContent = 'Neue Filament-Spule eintragen';
         document.getElementById('fId').value = '';
+        const defaultB = BRAND_DATABASE[0];
         populateModalFields({
-          productUrl: '', brand: 'Bambu Lab', name: '', material: 'PLA',
-          colorHex: '#38bdf8', colorName: '', pricePerKg: 19.99,
-          initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 250,
+          productUrl: '', brand: defaultB.name, name: '', material: 'PLA',
+          colorHex: '#38bdf8', colorName: '', pricePerKg: defaultB.basePrice,
+          initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: defaultB.tara,
           storageMode: 'open', bagWeight: 0,
-          dryIntervalDays: 30, dryTemp: 50, dryHours: 5,
+          dryIntervalDays: getRecommendedDays('PLA', 'open'), dryTemp: 50, dryHours: 5,
           lastDried: new Date().toISOString(),
           ...(prefill || {})
         });
       }
-      const modal = document.getElementById('spoolModal');
-      if (modal) modal.classList.replace('hidden', 'flex');
+      document.getElementById('spoolModal')?.classList.replace('hidden', 'flex');
     }
 
     function closeSpoolModal() {
-      const modal = document.getElementById('spoolModal');
-      if (modal) modal.classList.replace('flex', 'hidden');
+      document.getElementById('spoolModal')?.classList.replace('flex', 'hidden');
     }
 
     function saveSpool(e) {
@@ -2526,17 +2850,17 @@
       const list = document.getElementById('historyList');
       if (!list) return;
       list.innerHTML = printHistory.map(h => `
-        <div class="p-2.5 bg-surface-950 border border-white/[0.07] rounded-xl text-xs flex justify-between items-center gap-2">
+        <div class="p-2.5 t-sub rounded-xl text-xs flex justify-between items-center gap-2">
           <div>
-            <p class="font-bold text-white">${h.spoolLabel}</p>
-            <p class="text-[10px] text-slate-400">${new Date(h.timestamp).toLocaleString('de-DE')}</p>
+            <p class="font-bold">${h.spoolLabel}</p>
+            <p class="text-[10px] t-muted">${new Date(h.timestamp).toLocaleString('de-DE')}</p>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-sky-400 font-mono-num font-bold">-${h.grams}g</span>
-            <button type="button" onclick="undoHistory('${h.id}')" class="px-2 py-1 rounded bg-surface-800 hover:bg-surface-850 text-[10px] text-slate-200 cursor-pointer">Rückgängig</button>
+            <span class="text-sky-500 font-mono-num font-bold">-${h.grams}g</span>
+            <button type="button" onclick="undoHistory('${h.id}')" class="px-2 py-1 rounded t-panel text-[10px] cursor-pointer">Rückgängig</button>
           </div>
         </div>
-      `).join('') || '<p class="text-xs text-slate-500 text-center py-4">Noch keine Einträge.</p>';
+      `).join('') || '<p class="text-xs t-muted text-center py-4">Noch keine Einträge.</p>';
       document.getElementById('historyModal').classList.replace('hidden', 'flex');
     }
 
@@ -2558,9 +2882,12 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('cloudIdInput').value = currentCloudId;
+      populateBrandSelects();
+      loadBrandPresetIntoSettings();
+      loadMaterialPresetIntoSettings();
       applySettingsToUI();
       renderAiMessages();
-      renderSnapshotList();
+      renderBufferUI();
       loadStateFromCloud();
       updateUndoRedoButtons();
 
