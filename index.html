@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#090d16" />
-  <title>FilamentHub v17.0 – 3D-Filament Manager</title>
+  <meta name="theme-color" content="#080c14" />
+  <title>FilamentHub v18.0 – 3D-Filament Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -16,7 +16,7 @@
       theme: {
         extend: {
           colors: {
-            surface: { 950: '#090d16', 900: '#101624', 850: '#161e31', 800: '#1e2942' }
+            surface: { 950: '#080c14', 900: '#0f1623', 850: '#162033', 800: '#1e2b45' }
           }
         }
       }
@@ -26,26 +26,27 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #090d16;
+      background-color: #080c14;
       color: #f1f5f9;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
     .font-mono-num { font-family: 'JetBrains Mono', monospace; }
     .clean-panel {
-      background-color: #101624;
+      background-color: #0f1623;
       border: 1px solid rgba(255, 255, 255, 0.07);
     }
     .clean-card {
-      background-color: #101624;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      background-color: #0f1623;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
     }
     .clean-card:hover {
-      border-color: rgba(249, 115, 22, 0.4);
-      box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5);
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 10px 26px -8px rgba(0, 0, 0, 0.55);
     }
     @keyframes pulse-overdue {
-      0%, 100% { border-color: rgba(244, 63, 94, 0.8); }
+      0%, 100% { border-color: rgba(244, 63, 94, 0.85); }
       50% { border-color: rgba(244, 63, 94, 0.25); }
     }
     .overdue-card { animation: pulse-overdue 2.2s infinite; }
@@ -59,54 +60,70 @@
       animation: mic-pulse 1.4s infinite;
     }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #090d16; }
+    ::-webkit-scrollbar-track { background: #080c14; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-orange-500 selection:text-white pb-24 lg:pb-16">
+<body class="min-h-screen w-full flex flex-col selection:bg-sky-500 selection:text-white pb-24 lg:pb-12">
 
-  <!-- ================= SCHLICHTE TOP-NAVIGATION ================= -->
-  <header class="sticky top-0 z-30 bg-surface-950/90 backdrop-blur-xl border-b border-white/[0.07]">
-    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+  <!-- ================= VOLLE BREITE TOP-HEADER (KOMPLETT LINKSBÜNDIG) ================= -->
+  <header class="sticky top-0 z-30 w-full bg-surface-950/95 backdrop-blur-xl border-b border-white/[0.08]">
+    <div class="w-full px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
       
-      <!-- Links: Menü-Button & Logo -->
-      <div class="flex items-center gap-3">
-        <button onclick="toggleSidebar()" class="px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.08] transition flex items-center gap-2 text-xs font-semibold">
-          <i data-lucide="menu" class="w-4 h-4 text-orange-400"></i>
+      <!-- Ganz links: Menü-Toggle & Logo -->
+      <div class="flex items-center gap-2.5">
+        <button onclick="toggleSidebar()" class="px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.09] transition flex items-center gap-2 text-xs font-bold">
+          <i data-lucide="panel-left" class="w-4 h-4 text-sky-400"></i>
           <span>Menü</span>
         </button>
 
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-surface-950 shadow-sm">
-            <i data-lucide="disc-3" class="w-5 h-5 stroke-[2.2]"></i>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-500 to-emerald-500 flex items-center justify-center text-surface-950 shadow-sm">
+            <i data-lucide="disc-3" class="w-5 h-5 stroke-[2.3]"></i>
           </div>
           <span class="text-base sm:text-lg font-extrabold tracking-tight text-white">FilamentHub</span>
         </div>
       </div>
 
-      <!-- Rechts: Klare Direkt-Aktionen -->
+      <!-- Rechts: Schlicht-Schalter, Zwischenspeicher, Import & Neue Spule -->
       <div class="flex flex-wrap items-center gap-2">
+        
+        <!-- SCHALTER: SCHLICHT-MODUS (MINIMAL-ANSICHT) -->
+        <button
+          id="minimalModeToggleBtn"
+          onclick="toggleMinimalMode()"
+          class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold transition"
+          title="Schaltet zwischen kompletter Ansicht und ultra-schlichter Ansicht um"
+        >
+          <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+          <span id="minimalModeLabel">Schlicht-Modus: AUS</span>
+        </button>
+
+        <!-- Undo / Redo -->
         <div class="inline-flex items-center rounded-xl bg-surface-900 border border-white/[0.08]">
           <button id="undoBtn" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:bg-surface-850 text-slate-300 transition disabled:opacity-30">
-            <i data-lucide="undo-2" class="w-4 h-4"></i>
+            <i data-lucide="undo-2" class="w-3.5 h-3.5"></i>
           </button>
           <button id="redoBtn" onclick="redoAction()" title="Vorwärts (Strg+Y)" class="p-2 hover:bg-surface-850 text-slate-300 border-l border-white/[0.08] transition disabled:opacity-30">
-            <i data-lucide="redo-2" class="w-4 h-4"></i>
+            <i data-lucide="redo-2" class="w-3.5 h-3.5"></i>
           </button>
         </div>
 
+        <!-- ZWISCHENSPEICHER / NOTFALL-TRESOR -->
+        <button onclick="openSidebarTab('settings')" title="Zwischenspeicher & Einstellungen öffnen" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-emerald-400 text-xs font-semibold border border-emerald-500/25 transition">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+          <span class="hidden md:inline">Zwischenspeicher</span>
+          <span id="snapshotBadge" class="px-1.5 py-0.2 text-[10px] font-mono-num rounded-full bg-emerald-500/15 text-emerald-300">0</span>
+        </button>
+
+        <!-- Datei / JSON / Text Import & Export -->
         <button onclick="openDataVaultModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 text-xs font-semibold border border-white/[0.08] transition">
-          <i data-lucide="file-text" class="w-3.5 h-3.5 text-sky-400"></i>
-          <span>Datei / Text Import</span>
+          <i data-lucide="folder-sync" class="w-3.5 h-3.5 text-sky-400"></i>
+          <span>Import / Export</span>
         </button>
 
-        <button onclick="openHistoryModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 text-xs font-semibold border border-white/[0.08] transition">
-          <i data-lucide="history" class="w-3.5 h-3.5 text-orange-400"></i>
-          <span class="hidden sm:inline">Verlauf</span>
-          <span id="historyBadge" class="px-1.5 py-0.2 text-[10px] font-mono-num rounded-full bg-surface-800 text-slate-300">0</span>
-        </button>
-
-        <button onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold transition shadow-sm">
+        <!-- Neue Spule -->
+        <button onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold transition shadow-sm">
           <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
           <span>Neue Spule</span>
         </button>
@@ -114,69 +131,80 @@
     </div>
   </header>
 
-  <!-- ================= HAUPT-LAYOUT ================= -->
-  <div class="flex-1 flex relative max-w-[1600px] w-full mx-auto">
+  <!-- ================= HAUPT-LAYOUT (100% VOLLBILD & LINKSBÜNDIG) ================= -->
+  <div class="flex-1 flex w-full relative">
 
     <!-- Mobile Backdrop -->
     <div id="sidebarBackdrop" onclick="closeSidebarOnMobile()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden lg:hidden"></div>
 
-    <!-- ================= LINKES AUSKLAPP-MENÜ (SIDEBAR) ================= -->
-    <aside id="leftSidebar" class="fixed lg:sticky top-0 lg:top-[57px] left-0 z-50 lg:z-20 h-screen lg:h-[calc(100vh-57px)] w-[340px] sm:w-[380px] bg-surface-900 border-r border-white/[0.07] flex flex-col transition-all duration-300 -translate-x-full lg:translate-x-0 shrink-0 overflow-hidden">
+    <!-- ================= LINKES MENÜ (KOMPLETT AM LINKEN RAND) ================= -->
+    <aside id="leftSidebar" class="fixed lg:sticky top-0 lg:top-[53px] left-0 z-50 lg:z-20 h-screen lg:h-[calc(100vh-53px)] w-[340px] sm:w-[370px] bg-surface-900 border-r border-white/[0.08] flex flex-col transition-all duration-200 -translate-x-full lg:translate-x-0 shrink-0 overflow-hidden">
       
-      <div class="p-3 border-b border-white/[0.07] bg-surface-950/40">
+      <!-- Sidebar Navigation (5 Tabs inkl. Einstellungen) -->
+      <div class="p-3 border-b border-white/[0.07] bg-surface-950/50">
         <div class="flex items-center justify-between mb-2 px-1">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Werkzeuge & KI</span>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Menü & Werkzeuge</span>
           <button onclick="toggleSidebar()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-            <i data-lucide="x" class="w-3.5 h-3.5"></i>
-            <span>Schließen</span>
+            <i data-lucide="chevrons-left" class="w-3.5 h-3.5"></i>
+            <span>Einklappen</span>
           </button>
         </div>
 
-        <div class="grid grid-cols-4 gap-1 bg-surface-950 p-1 rounded-xl border border-white/[0.06]">
-          <button id="tabBtn-ai" onclick="switchSidebarTab('ai')" class="py-2 px-1 rounded-lg text-[11px] font-bold flex flex-col items-center gap-1 transition bg-orange-500 text-surface-950">
+        <div class="grid grid-cols-5 gap-1 bg-surface-950 p-1 rounded-xl border border-white/[0.06]">
+          <button id="tabBtn-ai" onclick="switchSidebarTab('ai')" class="py-2 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-1 transition bg-sky-500 text-surface-950">
             <i data-lucide="bot" class="w-4 h-4"></i>
             <span>KI-Agent</span>
           </button>
-          <button id="tabBtn-gcode" onclick="switchSidebarTab('gcode')" class="py-2 px-1 rounded-lg text-[11px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
+          <button id="tabBtn-gcode" onclick="switchSidebarTab('gcode')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
             <i data-lucide="file-code-2" class="w-4 h-4"></i>
             <span>G-Code</span>
           </button>
-          <button id="tabBtn-calc" onclick="switchSidebarTab('calc')" class="py-2 px-1 rounded-lg text-[11px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
+          <button id="tabBtn-calc" onclick="switchSidebarTab('calc')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
             <i data-lucide="calculator" class="w-4 h-4"></i>
             <span>Rechner</span>
           </button>
-          <button id="tabBtn-sync" onclick="switchSidebarTab('sync')" class="py-2 px-1 rounded-lg text-[11px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
+          <button id="tabBtn-sync" onclick="switchSidebarTab('sync')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
             <i data-lucide="smartphone" class="w-4 h-4"></i>
-            <span>Handy</span>
+            <span>Sync</span>
+          </button>
+          <button id="tabBtn-settings" onclick="switchSidebarTab('settings')" class="py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+            <span>Optionen</span>
           </button>
         </div>
       </div>
 
       <div class="flex-1 overflow-y-auto p-4 space-y-4">
 
-        <!-- TAB 1: KI-AGENT -->
+        <!-- TAB 1: KI-AGENT (INKL. FIREFOX SPRACHAUSGABE & DIKTAT) -->
         <div id="sidebarPanel-ai" class="flex flex-col h-full space-y-3">
-          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3">
-            <p class="text-xs font-bold text-white">KI-Assistent & Spracheingabe</p>
-            <p class="text-[11px] text-slate-400 mt-1">
-              Tippe oder sprich ein, z. B.: <em>„Neue Spule Bambu Lab PLA Schwarz einvakuumiert“</em> oder <em>„Ziehe 40g von Marmor ab“</em>.
+          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <p class="text-xs font-bold text-white">KI-Agent & Sprachsteuerung</p>
+              <button onclick="speakText('Sprachausgabe im Firefox und Browser ist bereit.')" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 text-[10px] font-semibold flex items-center gap-1">
+                <i data-lucide="volume-2" class="w-3 h-3"></i>
+                <span>Test-Stimme</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-400">
+              Schreibe oder diktiere z. B.: <em>„Neue Spule Bambu Lab PETG Basic Blau im eBOS Beutel“</em> oder <em>„Ziehe 45g von Marmor ab“</em>.
             </p>
           </div>
 
-          <div id="aiChatMessages" class="flex-1 min-h-[260px] max-h-[420px] overflow-y-auto space-y-2 rounded-xl bg-surface-950 border border-white/[0.06] p-3 text-xs"></div>
+          <div id="aiChatMessages" class="flex-1 min-h-[250px] max-h-[400px] overflow-y-auto space-y-2 rounded-xl bg-surface-950 border border-white/[0.06] p-3 text-xs"></div>
 
           <div class="flex gap-1.5">
-            <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" title="Per Mikrofon einsprechen" class="px-3 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 text-orange-400 border border-white/[0.1] transition">
+            <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" title="Einsprechen (funktioniert auch mit Firefox Diktier-Helfer)" class="px-3 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 text-sky-400 border border-white/[0.1] transition">
               <i data-lucide="mic" class="w-4 h-4"></i>
             </button>
             <input
               id="aiUserInput"
               type="text"
-              placeholder="Schreiben oder Mikrofon drücken..."
-              class="flex-1 px-3 py-2.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-orange-500 text-xs text-white outline-none"
+              placeholder="Befehl eingeben oder diktieren..."
+              class="flex-1 px-3 py-2.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-sky-500 text-xs text-white outline-none"
               onkeydown="if(event.key==='Enter'){ sendAiMessage(); }"
             />
-            <button onclick="sendAiMessage()" class="px-3.5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 font-bold text-xs transition">
+            <button onclick="sendAiMessage()" class="px-3.5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 font-bold text-xs transition">
               <i data-lucide="send" class="w-4 h-4"></i>
             </button>
           </div>
@@ -187,13 +215,13 @@
           <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3">
             <h3 class="text-xs font-bold text-white">G-Code Direkt-Abzug</h3>
             <p class="text-[11px] text-slate-400 mt-1">
-              Lade deinen fertigen G-Code hoch und tippe die Spule an, von der das Gewicht abgezogen werden soll.
+              Fertige `.gcode` Datei reinziehen → Gewicht wird erkannt → Spule antippen und abziehen.
             </p>
           </div>
 
-          <label for="gcodeFileInput" class="cursor-pointer block rounded-xl border border-dashed border-orange-500/40 hover:border-orange-400 bg-surface-950 p-5 text-center transition">
-            <i data-lucide="upload-cloud" class="w-6 h-6 text-orange-400 mx-auto mb-2"></i>
-            <p class="text-xs font-bold text-white">G-Code Datei auswählen (.gcode)</p>
+          <label for="gcodeFileInput" class="cursor-pointer block rounded-xl border border-dashed border-sky-500/40 hover:border-sky-400 bg-surface-950 p-5 text-center transition">
+            <i data-lucide="upload-cloud" class="w-6 h-6 text-sky-400 mx-auto mb-2"></i>
+            <p class="text-xs font-bold text-white">G-Code Datei hochladen (.gcode)</p>
             <p class="text-[11px] text-slate-400 mt-0.5">Bambu Studio, OrcaSlicer, PrusaSlicer, Cura</p>
             <input id="gcodeFileInput" type="file" accept=".gcode,.gco,.txt" class="hidden" onchange="handleGcodeUpload(event, 'deduct')" />
           </label>
@@ -201,7 +229,7 @@
           <div id="gcodeResultBox" class="hidden rounded-xl bg-surface-950 border border-emerald-500/35 p-3.5 space-y-3">
             <div class="flex items-center justify-between border-b border-white/[0.07] pb-2">
               <p id="gcodeFileName" class="text-xs font-bold text-white truncate">Druck.gcode</p>
-              <button onclick="transferGcodeToCalc()" class="text-[11px] text-orange-400 hover:underline font-semibold">→ Im Rechner öffnen</button>
+              <button onclick="transferGcodeToCalc()" class="text-[11px] text-sky-400 hover:underline font-semibold">→ Zum Rechner</button>
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div class="rounded-lg bg-surface-900 p-2.5 border border-white/[0.06]">
@@ -214,7 +242,7 @@
               </div>
             </div>
             <div class="space-y-1.5">
-              <p class="text-[11px] font-bold text-orange-400">Spule antippen zum Abziehen:</p>
+              <p class="text-[11px] font-bold text-sky-400">Spule antippen zum Abziehen:</p>
               <div id="gcodeSpoolSelectionList" class="space-y-1.5 max-h-60 overflow-y-auto"></div>
             </div>
           </div>
@@ -222,12 +250,12 @@
 
         <!-- TAB 3: KOSTENRECHNER -->
         <div id="sidebarPanel-calc" class="hidden space-y-3.5">
-          <label for="calcGcodeInput" class="cursor-pointer flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 border border-dashed border-orange-500/40 transition">
+          <label for="calcGcodeInput" class="cursor-pointer flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 border border-dashed border-sky-500/40 transition">
             <div>
               <p class="text-xs font-bold text-white">Aus G-Code Datei ziehen</p>
               <p id="calcGcodeLabel" class="text-[10px] text-slate-400">Gewicht & Druckzeit automatisch laden</p>
             </div>
-            <span class="px-2 py-1 rounded bg-orange-500/15 text-orange-400 text-[10px] font-bold">Upload</span>
+            <span class="px-2 py-1 rounded bg-sky-500/15 text-sky-400 text-[10px] font-bold">Upload</span>
             <input id="calcGcodeInput" type="file" accept=".gcode,.gco,.txt" class="hidden" onchange="handleGcodeUpload(event, 'calc')" />
           </label>
 
@@ -275,21 +303,18 @@
               <span class="text-xs font-bold text-emerald-400">Gesamtkosten:</span>
               <span id="calcResTotal" class="text-lg font-extrabold font-mono-num text-emerald-400">1,08 €</span>
             </div>
-            <button onclick="deductFromCalculator()" class="w-full py-2 rounded-lg bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold transition">
+            <button onclick="deductFromCalculator()" class="w-full py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-bold transition">
               Gewicht von Spule abziehen
             </button>
           </div>
         </div>
 
-        <!-- TAB 4: HANDY-KOPPLUNG -->
+        <!-- TAB 4: HANDY-KOPPLUNG & GIT-HOSTING -->
         <div id="sidebarPanel-sync" class="hidden space-y-3.5">
           <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-2.5">
-            <h3 class="text-xs font-bold text-white">PC & Handy Synchronisation</h3>
-            <p class="text-[11px] text-slate-400">
-              Beide Geräte greifen auf dieselbe Cloud-ID zu. Du kannst den Stand hier jederzeit manuell senden oder abrufen.
-            </p>
+            <h3 class="text-xs font-bold text-white">PC & Handy Cloud-Sync</h3>
             <div class="grid grid-cols-2 gap-2">
-              <button onclick="forcePushToCloud()" class="py-2 px-2.5 rounded-lg bg-orange-500 text-surface-950 text-[11px] font-bold">
+              <button onclick="forcePushToCloud()" class="py-2 px-2.5 rounded-lg bg-sky-500 text-surface-950 text-[11px] font-bold">
                 ↑ In Cloud senden
               </button>
               <button onclick="forcePullFromCloud()" class="py-2 px-2.5 rounded-lg bg-emerald-500 text-surface-950 text-[11px] font-bold">
@@ -299,7 +324,7 @@
           </div>
 
           <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-2">
-            <label class="block text-[11px] font-bold text-slate-300">Gemeinsame Cloud-ID:</label>
+            <label class="block text-[11px] font-bold text-slate-300">Gemeinsame Cloud-ID (npoint.io):</label>
             <div class="flex gap-1.5">
               <input id="cloudIdInput" type="text" value="2a75ad089c77e7c35f98" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-emerald-400 outline-none" />
               <button onclick="saveCloudId()" class="px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-850 text-white text-xs font-bold">Speichern</button>
@@ -310,43 +335,122 @@
             <label class="block text-[11px] font-bold text-slate-300">QR-Code fürs Handy:</label>
             <div class="flex justify-center">
               <div class="p-2 rounded-xl bg-white">
-                <div id="qrCanvasSidebar" class="w-[140px] h-[140px] flex items-center justify-center text-center text-[11px] text-slate-700 p-2"></div>
+                <div id="qrCanvasSidebar" class="w-[135px] h-[135px] flex items-center justify-center text-center text-[11px] text-slate-700 p-2"></div>
               </div>
             </div>
-            <input id="qrUrlSidebarInput" type="url" placeholder="Deine Online-URL (z.B. GitHub/Netlify)..." oninput="onSidebarQrInput()" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white outline-none" />
+            <input id="qrUrlSidebarInput" type="url" placeholder="Deine GitHub Pages / Cloudflare URL..." oninput="onSidebarQrInput()" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white outline-none" />
           </div>
+        </div>
+
+        <!-- TAB 5: EINSTELLUNGS-MENÜ & ZWISCHENSPEICHER-TRESOR -->
+        <div id="sidebarPanel-settings" class="hidden space-y-4">
+          
+          <!-- 1. Zwischenspeicher & Daten-Rettung -->
+          <div class="rounded-xl bg-surface-950 border border-emerald-500/30 p-3.5 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span>Zwischenspeicher & Notfall-Tresor</span>
+              </h3>
+            </div>
+            <p class="text-[11px] text-slate-400">
+              Jeder Stand wird automatisch zwischengespeichert. Falls mal etwas gelöscht wurde, kannst du es hier sofort zurückholen.
+            </p>
+            <button onclick="rescueAllBrowserStorage()" class="w-full py-2 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition">
+              🔍 Alle alten Browser-Speicher durchsuchen & retten
+            </button>
+            <div id="snapshotListContainer" class="space-y-1.5 max-h-40 overflow-y-auto pt-1"></div>
+          </div>
+
+          <!-- 2. Darstellungs-Optionen -->
+          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-3">
+            <h3 class="text-xs font-bold text-white">Darstellung & Design</h3>
+
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-300">Schlicht-Modus (Minimal-Karten)</span>
+              <input id="settingMinimalToggle" type="checkbox" onchange="toggleMinimalMode(this.checked)" class="w-4 h-4 accent-sky-500 rounded cursor-pointer" />
+            </div>
+
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Farbe der Fortschrittsleiste</label>
+              <select id="settingBarStyle" onchange="updateAppSetting('barStyle', this.value)" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white outline-none">
+                <option value="blue_green">Blau / Türkis Verlauf (Clean)</option>
+                <option value="green">Smaragd-Grün</option>
+                <option value="blue">Tech-Blau</option>
+                <option value="dynamic">Dynamisch (Grün → Gelb → Rot)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Karten pro Zeile (Vollbild)</label>
+              <select id="settingGridCols" onchange="updateAppSetting('gridCols', this.value)" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white outline-none">
+                <option value="auto">Automatisch (3 bis 4 Karten)</option>
+                <option value="3">Maximal 3 Karten pro Zeile</option>
+                <option value="4">4 Karten pro Zeile (Breitbild)</option>
+                <option value="5">5 Karten pro Zeile (Kompakt)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 3. Standardwerte (eBOS Bag, Strom, Sprache) -->
+          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-2.5">
+            <h3 class="text-xs font-bold text-white">Standardwerte & Firefox-Audio</h3>
+
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-300">Sprachausgabe (Antworten vorlesen)</span>
+              <input id="settingTtsEnabled" type="checkbox" onchange="updateAppSetting('ttsEnabled', this.checked)" class="w-4 h-4 accent-sky-500 rounded cursor-pointer" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-1">eBOS Beutel Tara (g)</label>
+                <input id="settingEbosWeight" type="number" value="25" onchange="updateAppSetting('ebosWeight', parseInt(this.value)||25)" class="w-full px-2 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-1">OVP Folie Tara (g)</label>
+                <input id="settingOvpWeight" type="number" value="18" onchange="updateAppSetting('ovpWeight', parseInt(this.value)||18)" class="w-full px-2 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Druck-Verlauf öffnen -->
+          <button onclick="openHistoryModal()" class="w-full py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 border border-white/[0.08] text-xs font-bold text-slate-200 flex items-center justify-center gap-2">
+            <i data-lucide="history" class="w-4 h-4 text-sky-400"></i>
+            <span>Druck-Verlauf anzeigen (<span id="historyBadge">0</span>)</span>
+          </button>
+
         </div>
 
       </div>
     </aside>
 
-    <!-- ================= HAUPT-BEREICH RECHTS ================= -->
-    <main class="flex-1 min-w-0 px-4 sm:px-6 py-5 space-y-5">
+    <!-- ================= HAUPT-BEREICH RECHTS (VOLLE BREITE) ================= -->
+    <main class="flex-1 min-w-0 w-full px-3 sm:px-6 py-4 space-y-4">
 
-      <!-- SCHLICHTE SCHNELL-EINGABE (TEXT, LINK ODER MIKROFON) -->
-      <section class="clean-panel rounded-2xl p-4">
+      <!-- SCHNELL-EINGABE (WIRD IM SCHLICHT-MODUS AUTOMATISCH AUSGEBLENDET) -->
+      <section id="quickScannerSection" class="clean-panel rounded-2xl p-3.5">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div>
-            <h2 class="text-sm font-bold text-white">Schnell-Eintrag (Link, Text oder 🎙️ Spracheingabe)</h2>
-            <p class="text-xs text-slate-400">Erkennt auch direkt „einvakuumiert“, „im BQ Bag“ oder „ohne Spule“</p>
+            <h2 class="text-xs sm:text-sm font-bold text-white">Schnell-Eintrag (Link, Text oder 🎙️ Spracheingabe)</h2>
+            <p class="text-[11px] text-slate-400">Erkennt Marke, Material, Farbe, „im eBOS Beutel“, „einvakuumiert“ oder „ohne Spule“</p>
           </div>
 
           <div class="flex-1 max-w-2xl flex gap-2">
-            <button id="micBtnQuick" type="button" onclick="startVoiceRecognition('quickLinkInput', 'micBtnQuick', false)" title="Filament per Mikrofon einsprechen" class="px-3.5 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 text-orange-400 border border-white/[0.1] transition flex items-center gap-1.5 shrink-0 text-xs font-semibold">
+            <button id="micBtnQuick" type="button" onclick="startVoiceRecognition('quickLinkInput', 'micBtnQuick', false)" title="Filament per Mikrofon einsprechen" class="px-3 py-2 rounded-xl bg-surface-950 hover:bg-surface-850 text-sky-400 border border-white/[0.1] transition flex items-center gap-1.5 shrink-0 text-xs font-semibold">
               <i data-lucide="mic" class="w-4 h-4"></i>
-              <span class="hidden sm:inline">Einsprechen</span>
+              <span class="hidden sm:inline">Diktieren</span>
             </button>
             <input
               id="quickLinkInput"
               type="text"
-              placeholder="z.B. 'Bambu Lab PLA Weiß einvakuumiert' oder Produkt-Link..."
-              class="w-full px-3.5 py-2.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-orange-500 text-xs sm:text-sm text-white outline-none"
+              placeholder="z.B. 'Bambu Lab PETG Basic Blau im eBOS Beutel' oder Link..."
+              class="w-full px-3.5 py-2 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-sky-500 text-xs sm:text-sm text-white outline-none"
               onkeydown="if(event.key==='Enter'){ handleQuickLinkImport(); }"
             />
             <button
               id="quickScanBtn"
               onclick="handleQuickLinkImport()"
-              class="px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 font-bold text-xs sm:text-sm transition whitespace-nowrap"
+              class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 font-bold text-xs sm:text-sm transition whitespace-nowrap"
             >
               Anlegen
             </button>
@@ -354,43 +458,43 @@
         </div>
       </section>
 
-      <!-- ÜBERSICHTLICHE KPI-LEISTE -->
+      <!-- KPI-LEISTE (BLEIBT AUCH IM SCHLICHT-MODUS IMMER SICHTBAR) -->
       <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div class="clean-panel rounded-2xl p-4 flex items-center justify-between">
+        <div class="clean-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-400">Spulen (davon vakuumiert)</p>
-            <p id="statTotalSpools" class="text-2xl font-extrabold text-white font-mono-num mt-0.5">0</p>
+            <p class="text-xs text-slate-400">Spulen im Bestand</p>
+            <p id="statTotalSpools" class="text-xl sm:text-2xl font-extrabold text-white font-mono-num mt-0.5">0</p>
           </div>
-          <i data-lucide="layers" class="w-5 h-5 text-slate-500"></i>
+          <i data-lucide="disc-3" class="w-5 h-5 text-sky-400/70"></i>
         </div>
 
-        <div class="clean-panel rounded-2xl p-4 flex items-center justify-between">
+        <div class="clean-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-400">Netto-Gewicht</p>
-            <p id="statTotalWeight" class="text-2xl font-extrabold text-emerald-400 font-mono-num mt-0.5">0 g</p>
+            <p class="text-xs text-slate-400">Nettogewicht</p>
+            <p id="statTotalWeight" class="text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono-num mt-0.5">0 g</p>
           </div>
-          <i data-lucide="scale" class="w-5 h-5 text-emerald-500/70"></i>
+          <i data-lucide="scale" class="w-5 h-5 text-emerald-400/70"></i>
         </div>
 
-        <div class="clean-panel rounded-2xl p-4 flex items-center justify-between">
+        <div class="clean-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
             <p class="text-xs text-slate-400">Materialwert</p>
-            <p id="statTotalValue" class="text-2xl font-extrabold text-sky-400 font-mono-num mt-0.5">0,00 €</p>
+            <p id="statTotalValue" class="text-xl sm:text-2xl font-extrabold text-sky-400 font-mono-num mt-0.5">0,00 €</p>
           </div>
-          <i data-lucide="badge-euro" class="w-5 h-5 text-sky-500/70"></i>
+          <i data-lucide="badge-euro" class="w-5 h-5 text-sky-400/70"></i>
         </div>
 
-        <div class="clean-panel rounded-2xl p-4 flex items-center justify-between">
+        <div class="clean-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
             <p class="text-xs text-slate-400">Trocknung fällig</p>
-            <p id="statDryingDue" class="text-2xl font-extrabold text-amber-400 font-mono-num mt-0.5">0</p>
+            <p id="statDryingDue" class="text-xl sm:text-2xl font-extrabold text-amber-400 font-mono-num mt-0.5">0</p>
           </div>
-          <i data-lucide="flame" class="w-5 h-5 text-amber-500/70"></i>
+          <i data-lucide="flame" class="w-5 h-5 text-amber-400/70"></i>
         </div>
       </section>
 
-      <!-- FILTER & SORTIERUNG -->
-      <section class="clean-panel rounded-2xl p-3.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      <!-- MATERIAL-FILTER & SUCHE (BLEIBT AUCH IM SCHLICHT-MODUS SICHTBAR) -->
+      <section class="clean-panel rounded-2xl p-3 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
         <div id="materialFilterBar" class="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0"></div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -399,15 +503,15 @@
             <input
               id="searchInput"
               type="text"
-              oninput="renderSpools()"
+              oninput="renderSpools(true)"
               placeholder="Suchen..."
-              class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-surface-950 border border-white/[0.08] focus:border-orange-500 text-xs text-white outline-none"
+              class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-surface-950 border border-white/[0.08] focus:border-sky-500 text-xs text-white outline-none"
             />
           </div>
 
           <select
             id="sortSelect"
-            onchange="renderSpools()"
+            onchange="renderSpools(true)"
             class="px-3 py-1.5 rounded-xl bg-surface-950 border border-white/[0.08] text-xs font-semibold text-slate-200 outline-none"
           >
             <option value="drying_urgent">Sortierung: Trocknung dringend</option>
@@ -420,268 +524,257 @@
         </div>
       </section>
 
-      <!-- SPULEN-RASTER -->
-      <section id="spoolGrid" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4"></section>
+      <!-- SPULEN-RASTER (VOLLE BREITE) -->
+      <section id="spoolGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"></section>
 
     </main>
   </div>
 
   <!-- ================= HANDY BOTTOM-NAV ================= -->
   <nav class="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-surface-950/95 backdrop-blur-xl border-t border-white/[0.08] px-2 py-1.5 grid grid-cols-5 gap-1">
-    <button onclick="closeSidebarOnMobile()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-orange-400">
+    <button onclick="closeSidebarOnMobile()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-sky-400">
       <i data-lucide="disc-3" class="w-4 h-4"></i>
       <span>Bestand</span>
+    </button>
+    <button onclick="toggleMinimalMode()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
+      <i data-lucide="eye" class="w-4 h-4"></i>
+      <span>Schlicht</span>
     </button>
     <button onclick="openSidebarTab('gcode')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
       <i data-lucide="file-code-2" class="w-4 h-4"></i>
       <span>G-Code</span>
     </button>
-    <button onclick="openSidebarTab('calc')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
-      <i data-lucide="calculator" class="w-4 h-4"></i>
-      <span>Rechner</span>
+    <button onclick="openSidebarTab('settings')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
+      <i data-lucide="settings" class="w-4 h-4"></i>
+      <span>Optionen</span>
     </button>
-    <button onclick="openDataVaultModal()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
-      <i data-lucide="file-text" class="w-4 h-4"></i>
-      <span>Import</span>
-    </button>
-    <button onclick="openSpoolModal()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-orange-400">
+    <button onclick="openSpoolModal()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-sky-400">
       <i data-lucide="plus-circle" class="w-4 h-4"></i>
       <span>Neu</span>
     </button>
   </nav>
 
-  <!-- ================= MODAL: DATEI / TEXT IMPORT & DIKTAT ================= -->
+  <!-- ================= MODAL: SICHERER DATEI / JSON / TEXT IMPORT & EXPORT ================= -->
   <div id="dataVaultModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
     <div class="bg-surface-900 border border-white/[0.1] rounded-2xl max-w-3xl w-full p-6 space-y-4 shadow-2xl my-8">
       <div class="flex items-start justify-between border-b border-white/[0.08] pb-3">
         <div>
-          <h3 class="text-base sm:text-lg font-extrabold text-white">Filament-Liste einfügen, diktieren oder als Datei speichern</h3>
-          <p class="text-xs text-slate-400">Unterstützt auch direkt den Verpackungsstatus (Offen, BQ-Bag, OVP) beim Import und Export.</p>
+          <h3 class="text-base sm:text-lg font-extrabold text-white">Sicherer Import / Export & Zwischenspeicher</h3>
+          <p class="text-xs text-slate-400">Vor jedem Import wird dein bisheriger Stand automatisch im Zwischenspeicher gesichert.</p>
         </div>
         <button onclick="closeDataVaultModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">✕</button>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-        <button id="micBtnVault" type="button" onclick="startVoiceRecognition('vaultTextArea', 'micBtnVault', false, true)" class="p-3 rounded-xl bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 flex items-center gap-2.5 text-left transition">
-          <i data-lucide="mic" class="w-5 h-5 text-orange-400 shrink-0"></i>
-          <div>
-            <p class="text-xs font-bold text-white">🎙️ Jetzt diktieren</p>
-            <p class="text-[10px] text-slate-400">Fügt Gesprochenes als neue Zeile ein</p>
-          </div>
-        </button>
-
-        <button onclick="downloadReadableTxtFile()" class="p-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 flex items-center gap-2.5 text-left transition">
-          <i data-lucide="download" class="w-5 h-5 text-sky-400 shrink-0"></i>
-          <div>
-            <p class="text-xs font-bold text-white">.TXT herunterladen</p>
-            <p class="text-[10px] text-slate-400">Lesbares Backup speichern</p>
-          </div>
-        </button>
-
         <label for="vaultFileInput" class="cursor-pointer p-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 flex items-center gap-2.5 text-left transition">
           <i data-lucide="upload" class="w-5 h-5 text-emerald-400 shrink-0"></i>
           <div>
-            <p class="text-xs font-bold text-white">Datei hochladen</p>
-            <p class="text-[10px] text-slate-400">.TXT oder .JSON laden</p>
+            <p class="text-xs font-bold text-white">.JSON / .TXT Datei laden</p>
+            <p class="text-[10px] text-slate-400">In Vorschau prüfen</p>
           </div>
-          <input id="vaultFileInput" type="file" accept=".txt,.csv,.json" class="hidden" onchange="handleVaultFileUpload(event)" />
+          <input id="vaultFileInput" type="file" accept=".json,.txt,.csv" class="hidden" onchange="handleVaultFileUpload(event)" />
         </label>
+
+        <button onclick="downloadReadableTxtFile()" class="p-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 flex items-center gap-2.5 text-left transition">
+          <i data-lucide="file-text" class="w-5 h-5 text-sky-400 shrink-0"></i>
+          <div>
+            <p class="text-xs font-bold text-white">Als .TXT speichern</p>
+            <p class="text-[10px] text-slate-400">Lesbar & bearbeitbar</p>
+          </div>
+        </button>
+
+        <button onclick="downloadJsonBackupFile()" class="p-3 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 flex items-center gap-2.5 text-left transition">
+          <i data-lucide="database" class="w-5 h-5 text-purple-400 shrink-0"></i>
+          <div>
+            <p class="text-xs font-bold text-white">Als .JSON Backup</p>
+            <p class="text-[10px] text-slate-400">Komplett-Sicherung</p>
+          </div>
+        </button>
       </div>
 
       <div class="space-y-1.5">
         <div class="flex justify-between items-center text-[11px] text-slate-400">
-          <span>Format: <code class="text-slate-300">Marke | Name | Material | Farbe | Rest(g) | Voll(g) | Spulen-Tara(g) | Status(open/biqu_bag/factory_sealed) | Bag-Tara(g) | Preis(€)</code></span>
+          <span>Vorschau & Direkt-Editor (<code class="text-slate-300">Marke | Name | Material | Farbe | Rest(g) | Voll(g) | Spulen-Tara | ebos_bag/open/factory_sealed | Bag-Tara | Preis</code>)</span>
+          <button type="button" onclick="startVoiceRecognition('vaultTextArea', 'micBtnVault', false, true)" id="micBtnVault" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 font-semibold">🎙️ Zeile diktieren</button>
         </div>
         <textarea
           id="vaultTextArea"
           rows="10"
-          placeholder="Hier einfach deine Liste einfügen oder diktieren, z.B.:&#10;Bambu Lab | PLA Basic Weiß | PLA | Weiß | 1000g | 1000g | 250g | factory_sealed | 18g | 19.99€&#10;ELEGOO | PLA Marmor | PLA | Marmor | 850g | 1000g | 160g | biqu_bag | 25g | 17.99€"
-          class="w-full p-3.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-orange-500 text-xs font-mono-num text-slate-200 outline-none leading-relaxed"
+          placeholder="Hier Liste oder JSON einfügen..."
+          class="w-full p-3.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-sky-500 text-xs font-mono-num text-slate-200 outline-none leading-relaxed"
         ></textarea>
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/[0.08]">
-        <button onclick="copyVaultText()" class="px-3 py-2 rounded-xl bg-surface-950 hover:bg-surface-850 text-xs font-semibold text-slate-300 border border-white/[0.08]">
-          Text kopieren
+        <button onclick="restoreLatestSnapshot()" class="px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-xs font-bold text-amber-300 border border-amber-500/30">
+          ⏪ Letzten Zwischenspeicher wiederherstellen
         </button>
         <div class="flex flex-wrap gap-2">
           <button onclick="applyVaultText('append')" class="px-4 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
             ➕ Zum Bestand hinzufügen
           </button>
-          <button onclick="applyVaultText('replace')" class="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold">
-            ✓ Als neuen Gesamtbestand speichern
+          <button onclick="applyVaultText('replace')" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold">
+            ✓ Sicher übernehmen
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ================= MODAL: SPULE HINZUFÜGEN / BEARBEITEN (MINIMALISTISCH MIT MEHR ERKLÄRTEXT) ================= -->
+  <!-- ================= MODAL: SPULE BEARBEITEN / NEU (ÜBERSICHTLICH & FEHLERFREI) ================= -->
   <div id="spoolModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-    <div class="bg-surface-900 border border-white/[0.1] rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl my-8 max-h-[93vh] overflow-y-auto">
-      <div class="flex items-start justify-between border-b border-white/[0.08] pb-3.5">
+    <div class="bg-surface-900 border border-white/[0.12] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl my-8">
+      <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
         <div>
-          <h3 id="modalTitle" class="text-base sm:text-lg font-extrabold text-white">Neue Filament-Spule eintragen</h3>
-          <p class="text-xs text-slate-400 mt-0.5">Alle Standardwerte für Leerspule, Vakuum-Beutel und Haltbarkeit werden automatisch passend zu deiner Auswahl geladen.</p>
+          <h3 id="modalTitle" class="text-base font-extrabold text-white">Spule bearbeiten</h3>
+          <p class="text-[11px] text-slate-400">Schnelle & übersichtliche Bearbeitung</p>
         </div>
-        <button onclick="closeSpoolModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">✕</button>
+        <button type="button" onclick="closeSpoolModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">✕</button>
       </div>
 
       <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-4">
         <input type="hidden" id="fId" />
+        <input type="hidden" id="fLastDried" />
 
-        <!-- SCHRITT 1: HERSTELLER, MATERIAL & FARBE -->
-        <div class="space-y-3">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-slate-200 mb-1">1. Hersteller / Marke *</label>
-              <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none">
-                <option value="Bambu Lab">Bambu Lab (Standard-Spule: 250g)</option>
-                <option value="SUNLU">SUNLU (Standard-Spule: 195g)</option>
-                <option value="ELEGOO">ELEGOO (Standard-Spule: 160g)</option>
-                <option value="eSUN">eSUN (Standard-Spule: 220g)</option>
-                <option value="3DJake">3DJake (Standard-Spule: 215g)</option>
-                <option value="Prusament">Prusament (Standard-Spule: 200g)</option>
-                <option value="Extrudr">Extrudr (Standard-Spule: 240g)</option>
-                <option value="Polymaker">Polymaker (Standard-Spule: 140g)</option>
-                <option value="Anycubic">Anycubic (Standard-Spule: 190g)</option>
-                <option value="Creality">Creality (Standard-Spule: 180g)</option>
-                <option value="Eryone">Eryone (Standard-Spule: 200g)</option>
-                <option value="Overture">Overture (Standard-Spule: 145g)</option>
-                <option value="Jayo">Jayo (Standard-Spule: 195g)</option>
-                <option value="Geeetech">Geeetech (Standard-Spule: 195g)</option>
-                <option value="Das Filament">Das Filament (Standard-Spule: 210g)</option>
-                <option value="OTHER">➕ Anderer Hersteller...</option>
-              </select>
-              <input id="fBrandCustom" type="text" placeholder="Hersteller eingeben..." class="w-full mt-2 px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none hidden" />
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-200 mb-1">Bezeichnung / Serie *</label>
-              <input id="fName" type="text" required placeholder="z.B. PLA Basic Weiß" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-slate-200 mb-1">Materialtyp *</label>
-              <select id="fMaterial" onchange="onMaterialOrStorageChangeInModal()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none">
-                <option value="PLA">PLA</option>
-                <option value="PLA+">PLA+ / Tough</option>
-                <option value="PETG">PETG</option>
-                <option value="TPU">TPU (Flex)</option>
-                <option value="ABS">ABS</option>
-                <option value="ASA">ASA</option>
-                <option value="PA / Nylon">PA / Nylon</option>
-                <option value="PC">PC (Polycarbonat)</option>
-                <option value="PET-CF / PA-CF">Carbon (CF)</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-200 mb-1">Farbe *</label>
-              <div class="flex items-center gap-1.5">
-                <input id="fColorHex" type="color" value="#f8fafc" class="w-9 h-9 rounded-xl bg-surface-950 border border-white/[0.1] p-1 cursor-pointer shrink-0" />
-                <input id="fColorName" type="text" required placeholder="z.B. Weiß" oninput="autoMatchHexFromColorInput(this.value)" class="w-full px-2.5 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-emerald-400 mb-1">Spulenpreis (€/kg) *</label>
-              <input id="fPricePerKg" type="number" step="0.01" min="1" max="500" value="19.99" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-emerald-400 font-bold outline-none" />
-            </div>
-          </div>
-        </div>
-
-        <!-- SCHRITT 2: VERPACKUNGS-STATUS (OFFEN / BIQU BAG / HERSTELLER-VAKUUMIERT) -->
-        <div class="rounded-xl bg-surface-950 border border-sky-500/25 p-3.5 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <label class="text-xs font-bold text-white flex items-center gap-1.5">
-              <i data-lucide="package-check" class="w-4 h-4 text-sky-400"></i>
-              <span>2. Ist die Spule eingepackt / vakuumiert?</span>
-            </label>
-            <span id="modalStorageBadge" class="text-[10px] font-mono-num px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 font-semibold">0g Beutel-Tara</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-            <div class="sm:col-span-2">
-              <label class="block text-[11px] text-slate-400 mb-1">Lagerungs-Zustand auswählen (Dropdown)</label>
-              <select id="fStorageMode" onchange="onMaterialOrStorageChangeInModal()" class="w-full px-3 py-2 rounded-xl bg-surface-900 border border-white/[0.1] text-xs text-white font-semibold outline-none focus:border-sky-400">
-                <option value="open">🌬️ Nein – Offen an der Luft / Im Drucker (0g Bag)</option>
-                <option value="biqu_bag">🛡️ Ja – Im BIQU (BQ) Vakuum-Bag (+25g inkl. Silikagel)</option>
-                <option value="factory_sealed">📦 Ja – Original Hersteller-Vakuumiert OVP (+18g Folie)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Beutel-Gewicht (g)</label>
-              <input id="fBagWeight" type="number" min="0" max="200" value="0" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-xl bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-sky-300 font-bold outline-none" />
-            </div>
-          </div>
-
-          <!-- Dynamischer Erklärtext zu Haltbarkeit & Beutelgewicht -->
-          <p id="modalMaterialStorageInfo" class="text-[11px] text-slate-300 bg-surface-900/90 border border-white/[0.05] rounded-lg p-2.5 leading-relaxed"></p>
-        </div>
-
-        <!-- SCHRITT 3: GEWICHT, TARA & KÜCHENWAAGEN-RECHNER -->
-        <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-white flex items-center gap-1.5">
-              <i data-lucide="scale" class="w-4 h-4 text-emerald-400"></i>
-              <span>3. Gewicht & Waagen-Automatik (zieht Spule + Bag ab)</span>
-            </span>
-            <button type="button" onclick="document.getElementById('fEmptySpoolWeight').value=0;applyModalScale();" class="px-2 py-0.5 rounded bg-orange-500/15 text-orange-300 text-[10px] font-semibold">
-              Ohne Spule / Refill (0g Spule)
-            </button>
-          </div>
-
-          <div class="grid grid-cols-3 gap-2.5">
-            <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Startgewicht (g)</label>
-              <input id="fInitialWeight" type="number" value="1000" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-white outline-none" />
-            </div>
-            <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Netto-Rest (g)</label>
-              <input id="fRemainingWeight" type="number" value="1000" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-emerald-500/50 text-xs sm:text-sm font-mono-num text-emerald-400 font-bold outline-none" />
-            </div>
-            <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Leerspule Tara (g)</label>
-              <input id="fEmptySpoolWeight" type="number" value="250" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-slate-300 outline-none" />
-            </div>
-          </div>
-
-          <div class="pt-2 border-t border-white/[0.06] space-y-1.5">
-            <label class="block text-[11px] text-emerald-400 font-semibold">⚖️ Komplett auf die Waage gelegt (Spule + ggf. Vakuum-Bag + Filament in g):</label>
-            <input id="fScaleGross" type="number" placeholder="Bruttogewicht der Waage hier eintippen → Netto-Filament wird berechnet..." oninput="applyModalScale()" class="w-full px-3 py-2 rounded-lg bg-surface-900 border border-emerald-500/30 text-xs font-mono-num text-white outline-none focus:border-emerald-400" />
-            <p id="fScaleHint" class="text-[11px] text-slate-400 leading-relaxed"></p>
-          </div>
-        </div>
-
-        <!-- SCHRITT 4: TROCKNUNGSWERT & SHOP-LINK -->
+        <!-- 1. Marke & Beschreibung -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Shop-Link (optional – sonst automatisch)</label>
-            <input id="fProductUrl" type="text" placeholder="Leer = Auto-Link zum günstigsten Shop" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Marke / Hersteller *</label>
+            <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none">
+              <option value="Bambu Lab">Bambu Lab (250g Spule)</option>
+              <option value="SUNLU">SUNLU (195g Spule)</option>
+              <option value="ELEGOO">ELEGOO (160g Spule)</option>
+              <option value="eSUN">eSUN (220g Spule)</option>
+              <option value="3DJake">3DJake (215g Spule)</option>
+              <option value="Prusament">Prusament (200g Spule)</option>
+              <option value="Extrudr">Extrudr (240g Spule)</option>
+              <option value="Polymaker">Polymaker (140g Spule)</option>
+              <option value="Anycubic">Anycubic (190g Spule)</option>
+              <option value="Creality">Creality (180g Spule)</option>
+              <option value="Eryone">Eryone (200g Spule)</option>
+              <option value="Overture">Overture (145g Spule)</option>
+              <option value="Jayo">Jayo (195g Spule)</option>
+              <option value="Geeetech">Geeetech (195g Spule)</option>
+              <option value="Das Filament">Das Filament (210g Spule)</option>
+              <option value="OTHER">➕ Anderer Hersteller...</option>
+            </select>
+            <input id="fBrandCustom" type="text" placeholder="Hersteller eingeben..." class="w-full mt-2 px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none hidden" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Beschreibung / Serie *</label>
+            <input id="fName" type="text" required placeholder="z.B. PETG Basic" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none" />
+          </div>
+        </div>
+
+        <!-- 2. Material, Farbe & Preis -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Material *</label>
+            <select id="fMaterial" onchange="onMaterialOrStorageChangeInModal()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none">
+              <option value="PLA">PLA</option>
+              <option value="PLA+">PLA+</option>
+              <option value="PETG">PETG</option>
+              <option value="TPU">TPU</option>
+              <option value="ABS">ABS</option>
+              <option value="ASA">ASA</option>
+              <option value="PA / Nylon">PA / Nylon</option>
+              <option value="PC">PC</option>
+              <option value="PET-CF / PA-CF">Carbon (CF)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Farbe *</label>
+            <div class="flex items-center gap-1.5">
+              <input id="fColorHex" type="color" value="#38bdf8" class="w-9 h-9 rounded-xl bg-surface-950 border border-white/[0.1] p-1 cursor-pointer shrink-0" />
+              <input id="fColorName" type="text" required placeholder="z.B. Blau" oninput="autoMatchHexFromColorInput(this.value)" class="w-full px-2.5 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-emerald-400 mb-1">Preis (€/kg)</label>
+            <input id="fPricePerKg" type="number" step="0.01" min="1" max="500" value="18.99" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-emerald-400 font-bold outline-none" />
+          </div>
+        </div>
+
+        <!-- 3. eBOS Vakuum-Beutel / Verpackung -->
+        <div class="rounded-xl bg-surface-950 border border-sky-500/25 p-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-white">Verpackung / eBOS Vakuum-Beutel</label>
+            <span id="modalStorageBadge" class="text-[10px] font-mono-num text-sky-400 font-semibold">0g Beutel</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div class="sm:col-span-2">
+              <select id="fStorageMode" onchange="onMaterialOrStorageChangeInModal()" class="w-full px-3 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white font-semibold outline-none">
+                <option value="open">🌬️ Offen an der Luft (0g Beutel)</option>
+                <option value="ebos_bag">🛡️ Im eBOS Vakuum-Beutel (+25g)</option>
+                <option value="factory_sealed">📦 OVP Hersteller-Vakuumiert (+18g)</option>
+              </select>
+            </div>
+            <div>
+              <input id="fBagWeight" type="number" min="0" max="200" value="0" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-sky-300 font-bold outline-none" title="Beutel-Tara in Gramm" />
+            </div>
+          </div>
+          <p id="modalMaterialStorageInfo" class="text-[11px] text-slate-400"></p>
+        </div>
+
+        <!-- 4. Gewicht & Waage -->
+        <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-white">Gewicht & Waagen-Rechner</span>
+            <button type="button" onclick="document.getElementById('fEmptySpoolWeight').value=0;applyModalScale();" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 text-[10px] font-semibold">
+              Ohne Spule / Refill (0g)
+            </button>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-1">Netto Rest (g)</label>
+              <input id="fRemainingWeight" type="number" value="1000" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-emerald-500/50 text-xs sm:text-sm font-mono-num text-emerald-400 font-bold outline-none" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-1">Start Voll (g)</label>
+              <input id="fInitialWeight" type="number" value="1000" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-white outline-none" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-1">Spulen-Tara (g)</label>
+              <input id="fEmptySpoolWeight" type="number" value="250" oninput="applyModalScale()" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-slate-300 outline-none" />
+            </div>
+          </div>
+          <input id="fScaleGross" type="number" placeholder="⚖️ Auf Waage gewogen (Spule + Beutel + Filament in g)..." oninput="applyModalScale()" class="w-full px-3 py-1.5 rounded-lg bg-surface-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none focus:border-emerald-400" />
+          <p id="fScaleHint" class="text-[10px] text-slate-400"></p>
+        </div>
+
+        <!-- 5. Shop-Link & Trocknung -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">Shop-Link (leer = automatisch)</label>
+            <input id="fProductUrl" type="text" placeholder="https://..." class="w-full px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
           </div>
           <div class="grid grid-cols-3 gap-1.5">
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Haltbar (Tage)</label>
-              <input id="fDryIntervalDays" type="number" value="30" class="w-full px-2 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
+              <label class="block text-[10px] text-slate-400 mb-1">Tage</label>
+              <input id="fDryIntervalDays" type="number" value="30" class="w-full px-2 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
             </div>
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Temp °C</label>
-              <input id="fDryTemp" type="number" value="50" class="w-full px-2 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
+              <label class="block text-[10px] text-slate-400 mb-1">°C</label>
+              <input id="fDryTemp" type="number" value="50" class="w-full px-2 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
             </div>
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Dauer h</label>
-              <input id="fDryHours" type="number" value="5" class="w-full px-2 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
+              <label class="block text-[10px] text-slate-400 mb-1">Std.</label>
+              <input id="fDryHours" type="number" value="5" class="w-full px-2 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
             </div>
           </div>
         </div>
-        <input id="fLastDried" type="hidden" />
 
-        <div class="flex justify-end gap-2 pt-2 border-t border-white/[0.08]">
-          <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl bg-surface-800 text-xs font-semibold text-slate-300">Abbrechen</button>
-          <button type="submit" class="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold">Spule speichern</button>
+        <div class="flex items-center justify-between pt-2 border-t border-white/[0.08]">
+          <button type="button" onclick="document.getElementById('fLastDried').value = new Date().toISOString(); showToast('Auf heute getrocknet gesetzt!');" class="text-xs text-sky-400 hover:underline font-semibold">
+            🔥 Als „Heute getrocknet“ markieren
+          </button>
+          <div class="flex gap-2">
+            <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl bg-surface-800 text-xs font-semibold text-slate-300">Abbrechen</button>
+            <button type="submit" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-extrabold">Speichern</button>
+          </div>
         </div>
       </form>
     </div>
@@ -699,59 +792,62 @@
   </div>
 
   <!-- TOAST MELDUNGEN -->
-  <div id="toastContainer" class="fixed bottom-16 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+  <div id="toastContainer" class="fixed bottom-14 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS -->
   <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-900/95 border border-white/[0.12] shadow-xl text-[11px] text-slate-300 backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-orange-400">v17.0</span>
+    <span class="font-mono-num font-bold text-sky-400">v18.0</span>
     <span class="text-slate-600">|</span>
-    <span class="font-mono-num text-slate-300">19.10.2026, 17:45 Uhr</span>
+    <span class="font-mono-num text-slate-300">19.10.2026, 18:22 Uhr</span>
     <span class="text-slate-600">|</span>
     <span id="syncStatusLabel" class="text-emerald-400 font-semibold">Synchron</span>
   </div>
 
   <script>
     // =========================================================================
-    // 1. RECHERCHIERTE DATENBANKEN: HALTBARKEIT (OFFEN / BQ BAG / OVP) & TARA
+    // 1. EINSTELLUNGEN & eBOS VAKUUM-BEUTEL DATENBANK
     // =========================================================================
-    const STORAGE_MODES = {
-      'open': {
-        label: '🌬️ Offen (Luft)',
-        shortBadge: '🌬️ Offen',
-        bagWeight: 0,
-        desc: 'Offen an der Luft oder im Drucker (0g Beutel-Tara)'
-      },
-      'biqu_bag': {
-        label: '🛡️ BQ Vakuum-Bag',
-        shortBadge: '🛡️ BQ-Bag',
-        bagWeight: 25, // ~20g BIQU Vakuumbeutel + 5g Silikagel
-        desc: 'Wiederverschließbarer BIQU Vakuum-Bag inkl. Silikagel (~25g Beutel-Tara)'
-      },
-      'factory_sealed': {
-        label: '📦 OVP Vakuumiert',
-        shortBadge: '📦 OVP Vakuum',
-        bagWeight: 18, // ~13g Werks-Schweißfolie + 5g Silikagel
-        desc: 'Original vom Hersteller luftdicht verschweißt inkl. Silikagel (~18g Folien-Tara)'
-      }
+    const SETTINGS_KEY = 'filamenthub_settings_v18';
+    let appSettings = {
+      minimalMode: false,
+      barStyle: 'blue_green',
+      gridCols: 'auto',
+      ttsEnabled: true,
+      ebosWeight: 25,
+      ovpWeight: 18
     };
 
+    try {
+      const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+      appSettings = { ...appSettings, ...savedSettings };
+    } catch (e) {}
+
+    function getStorageModes() {
+      return {
+        'open': { label: '🌬️ Offen (Luft)', bagWeight: 0 },
+        'ebos_bag': { label: '🛡️ eBOS Vakuum-Beutel', bagWeight: Number(appSettings.ebosWeight) || 25 },
+        'biqu_bag': { label: '🛡️ eBOS Vakuum-Beutel', bagWeight: Number(appSettings.ebosWeight) || 25 },
+        'factory_sealed': { label: '📦 OVP Vakuumiert', bagWeight: Number(appSettings.ovpWeight) || 18 }
+      };
+    }
+
     const MATERIAL_PRESETS = {
-      'PLA':            { openDays: 30, biquBagDays: 180, factorySealedDays: 365, temp: 50, hours: 5, defaultPrice: 17.99 },
-      'PLA+':           { openDays: 21, biquBagDays: 150, factorySealedDays: 365, temp: 50, hours: 5, defaultPrice: 18.99 },
-      'PETG':           { openDays: 14, biquBagDays: 120, factorySealedDays: 365, temp: 65, hours: 6, defaultPrice: 18.99 },
-      'TPU':            { openDays: 7,  biquBagDays: 90,  factorySealedDays: 365, temp: 55, hours: 6, defaultPrice: 24.99 },
-      'ABS':            { openDays: 14, biquBagDays: 120, factorySealedDays: 365, temp: 70, hours: 6, defaultPrice: 19.99 },
-      'ASA':            { openDays: 14, biquBagDays: 120, factorySealedDays: 365, temp: 70, hours: 6, defaultPrice: 23.99 },
-      'PA / Nylon':     { openDays: 2,  biquBagDays: 45,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 34.99 },
-      'PC':             { openDays: 5,  biquBagDays: 60,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 36.99 },
-      'PET-CF / PA-CF': { openDays: 4,  biquBagDays: 60,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 39.99 }
+      'PLA':            { openDays: 30, ebosBagDays: 180, factorySealedDays: 365, temp: 50, hours: 5, defaultPrice: 17.99 },
+      'PLA+':           { openDays: 21, ebosBagDays: 150, factorySealedDays: 365, temp: 50, hours: 5, defaultPrice: 18.99 },
+      'PETG':           { openDays: 14, ebosBagDays: 120, factorySealedDays: 365, temp: 65, hours: 6, defaultPrice: 18.99 },
+      'TPU':            { openDays: 7,  ebosBagDays: 90,  factorySealedDays: 365, temp: 55, hours: 6, defaultPrice: 24.99 },
+      'ABS':            { openDays: 14, ebosBagDays: 120, factorySealedDays: 365, temp: 70, hours: 6, defaultPrice: 19.99 },
+      'ASA':            { openDays: 14, ebosBagDays: 120, factorySealedDays: 365, temp: 70, hours: 6, defaultPrice: 23.99 },
+      'PA / Nylon':     { openDays: 2,  ebosBagDays: 45,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 34.99 },
+      'PC':             { openDays: 5,  ebosBagDays: 60,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 36.99 },
+      'PET-CF / PA-CF': { openDays: 4,  ebosBagDays: 60,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 39.99 }
     };
 
     function getRecommendedDays(material, storageMode) {
       const p = MATERIAL_PRESETS[material] || MATERIAL_PRESETS['PLA'];
       if (storageMode === 'factory_sealed') return p.factorySealedDays;
-      if (storageMode === 'biqu_bag') return p.biquBagDays;
+      if (storageMode === 'ebos_bag' || storageMode === 'biqu_bag') return p.ebosBagDays;
       return p.openDays;
     }
 
@@ -821,12 +917,7 @@
         else if (matUpper === 'TPU') slug = 'tpu-95a-hf';
         else if (matUpper === 'ASA') slug = 'asa-filament';
         else if (matUpper === 'ABS') slug = 'abs-filament';
-        return `https://eu.store.bambulab.com/de/products/${slug}?color=${encodeURIComponent(colorEn)}&spool=${isRefill ? 'refill' : 'with-spool'}`;
-      }
-
-      if (lowerBrand.includes('sunlu')) {
-        const sunluQ = ['SUNLU', matUpper, colorEn, isRefill ? 'refill' : '', '1.75mm'].filter(Boolean).join(' ');
-        return `https://store.sunlu.com/search?q=${encodeURIComponent(sunluQ)}`;
+        return `https://eu.store.bambulab.com/de/products/${slug}?color=${encodeURIComponent(colorEn)}&spool=${isRefill ? 'refill' : 'with-spool'}`; }  if (lowerBrand.includes('sunlu')) { const sunluQ = ['SUNLU', matUpper, colorEn, isRefill ? 'refill' : '', '1.75mm'].filter(Boolean).join(' '); return `https://store.sunlu.com/search?q=${encodeURIComponent(sunluQ)}`;
       }
 
       if (lowerBrand.includes('elegoo') && (colorName || '').toLowerCase().includes('marmor')) {
@@ -834,52 +925,11 @@
       }
 
       const amzQ = [brand, matUpper, 'Filament 1.75mm', colorName !== 'Standard' ? colorName : '', isRefill ? 'Refill' : '', '1kg'].filter(Boolean).join(' ');
-      return `https://www.amazon.de/s?k=${encodeURIComponent(amzQ)}`;
-    }
-
-    function getBestShopOffer(spool) {
-      const brand = (spool.brand || 'PLA').trim();
-      const mat = spool.material || 'PLA';
-      const color = spool.colorName && spool.colorName !== 'Standard' ? spool.colorName : '';
-      const baseP = Number(spool.pricePerKg) || getDefaultPriceForSpool(brand, mat);
-      const isRefill = Number(spool.emptySpoolWeight) === 0;
-      const url = spool.productUrl || buildVendorUrl(brand, mat, color, spool.name, isRefill);
-
-      let shop = 'Amazon.de (1–2d)';
-      if (url.includes('bambulab')) shop = 'Bambu Store (1–3d)';
-      else if (url.includes('sunlu')) shop = 'SUNLU DE (2–3d)';
-      else if (url.includes('3djake')) shop = '3DJake (1–2d)';
-
-      return { shop, price: baseP, url };
-    }
-
-    // =========================================================================
-    // 2. SPEICHER & UNTERBRECHUNGSFREIER SYNC
-    // =========================================================================
-    const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v17';
-    const PERMANENT_HISTORY_KEY = 'filamenthub_history_v17';
-    const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v17';
-    const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v17';
-    const CLOUD_ID_STORAGE_KEY = 'filamenthub_cloud_id';
-
-    const OLD_KEYS_TO_CLEAN = [
-      'filamenthub_spools_v16', 'filamenthub_spools_v15', 'filamenthub_spools_permanent',
-      'filamenthub_spools_v13', 'filamenthub_spools_v9', 'filamenthub_spools_v8',
-      'filamenthub_spools_v7', 'filamenthub_spools_v5', 'filamenthub_spools_v3'
-    ];
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const paramCloud = urlParams.get('cloud');
-    if (paramCloud) {
-      const cleanId = paramCloud.replace('https://api.npoint.io/', '').trim();
-      if (cleanId) localStorage.setItem(CLOUD_ID_STORAGE_KEY, cleanId);
-    }
-
-    let currentCloudId = localStorage.getItem(CLOUD_ID_STORAGE_KEY) || '2a75ad089c77e7c35f98';
-    function getCloudDbUrl() { return `https://api.npoint.io/${currentCloudId}`; }
+      return `https://www.amazon.de/s?k=${encodeURIComponent(amzQ)}`; }  // ========================================================================= // 2. ZWISCHENSPEICHER-TRESOR & KUGELSICHERE SPEICHERUNG // ========================================================================= const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v18'; const PERMANENT_HISTORY_KEY = 'filamenthub_history_v18'; const SAFE_SNAPSHOTS_KEY = 'filamenthub_safe_snapshots_v18'; const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v18'; const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v18'; const CLOUD_ID_STORAGE_KEY = 'filamenthub_cloud_id';  const ALL_KNOWN_STORAGE_KEYS = [ 'filamenthub_spools_v18', 'filamenthub_spools_v17', 'filamenthub_spools_v16', 'filamenthub_spools_v15', 'filamenthub_spools_permanent', 'filamenthub_spools_v13', 'filamenthub_spools_v9', 'filamenthub_spools_v8', 'filamenthub_spools_v7', 'filamenthub_spools_v6', 'filamenthub_spools_v5', 'filamenthub_spools_v3', 'filamenthub_spools_v2' ];  const urlParams = new URLSearchParams(window.location.search); const paramCloud = urlParams.get('cloud'); if (paramCloud) { const cleanId = paramCloud.replace('https://api.npoint.io/', '').trim(); if (cleanId) localStorage.setItem(CLOUD_ID_STORAGE_KEY, cleanId); }  let currentCloudId = localStorage.getItem(CLOUD_ID_STORAGE_KEY) \vert{}\vert{} '2a75ad089c77e7c35f98'; function getCloudDbUrl() { return `https://api.npoint.io/${currentCloudId}`; }
 
     let spools = [];
     let printHistory = [];
+    let safeSnapshots = [];
     let deletedIds = JSON.parse(localStorage.getItem(DELETED_TOMBSTONES_KEY) || '[]');
     let localUpdatedAt = Number(localStorage.getItem(LOCAL_UPDATED_AT_KEY) || 0);
     let lastUserInteractionTime = 0;
@@ -887,6 +937,10 @@
     let openScaleCards = {};
     let isSyncing = false;
     let pendingSync = false;
+
+    try {
+      safeSnapshots = JSON.parse(localStorage.getItem(SAFE_SNAPSHOTS_KEY) || '[]');
+    } catch (e) { safeSnapshots = []; }
 
     ['keydown', 'mousedown', 'touchstart', 'input'].forEach(evt => {
       window.addEventListener(evt, () => { lastUserInteractionTime = Date.now(); }, { passive: true });
@@ -904,31 +958,128 @@
       return false;
     }
 
-    function isCharcoalOrDeleted(spool) {
-      if (!spool) return true;
-      if (deletedIds.includes(spool.id)) return true;
-      const text = `${spool.id || ''} ${spool.brand || ''} ${spool.name || ''} ${spool.colorName || ''}`.toLowerCase();
-      if (text.includes('charcoal') || spool.id === 'sp-1' || spool.id === 'default-1') return true;
-      return false;
+    // Erstellt automatisch einen sicheren Zwischenspeicher-Punkt (vor Löschen / Import)
+    function createSafeSnapshot(reason = 'Automatisch') {
+      if (!spools || !spools.length) return;
+      const snap = {
+        id: 'snap-' + Date.now(),
+        time: new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        reason,
+        count: spools.length,
+        spools: JSON.parse(JSON.stringify(spools))
+      };
+      safeSnapshots.unshift(snap);
+      if (safeSnapshots.length > 12) safeSnapshots.pop();
+      localStorage.setItem(SAFE_SNAPSHOTS_KEY, JSON.stringify(safeSnapshots));
+      renderSnapshotList();
     }
 
-    function purgeLegacyAndMigrate() {
-      OLD_KEYS_TO_CLEAN.forEach(k => {
+    function renderSnapshotList() {
+      const badge = document.getElementById('snapshotBadge');
+      if (badge) badge.textContent = safeSnapshots.length;
+      const box = document.getElementById('snapshotListContainer');
+      if (!box) return;
+      if (!safeSnapshots.length) {
+        box.innerHTML = '<p class="text-[10px] text-slate-500">Noch keine Zwischenspeicher-Punkte vorhanden.</p>';
+        return;
+      }
+      box.innerHTML = safeSnapshots.map(sn => `
+        <div class="p-2 rounded-lg bg-surface-900 border border-white/[0.06] flex items-center justify-between text-[11px]">
+          <div>
+            <span class="font-bold text-white">${sn.count} Spulen</span>
+            <span class="text-slate-400"> • ${sn.reason} (${sn.time})</span>
+          </div>
+          <button onclick="restoreSnapshotById('${sn.id}')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold hover:bg-emerald-500/30">Laden</button>
+        </div>
+      `).join('');
+    }
+
+    function restoreSnapshotById(snapId) {
+      const found = safeSnapshots.find(s => s.id === snapId);
+      if (!found) return;
+      pushUndo();
+      spools = JSON.parse(JSON.stringify(found.spools));
+      deletedIds = [];
+      saveState();
+      showToast(`✓ Zwischenspeicher (${found.count} Spulen) wiederhergestellt!`);
+    }
+
+    function restoreLatestSnapshot() {
+      if (!safeSnapshots.length) {
+        rescueAllBrowserStorage();
+        return;
+      }
+      restoreSnapshotById(safeSnapshots[0].id);
+    }
+
+    // Durchsucht sämtliche alten Browser-Keys und rettet alle jemals gespeicherten Spulen
+    function rescueAllBrowserStorage() {
+      let rescued = [...spools];
+      const seenIds = new Set(rescued.map(s => s.id));
+
+      ALL_KNOWN_STORAGE_KEYS.forEach(k => {
         const raw = localStorage.getItem(k);
         if (raw) {
           try {
             const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed)) {
-              const clean = parsed.filter(s => !isCharcoalOrDeleted(s));
-              if (!localStorage.getItem(PERMANENT_SPOOLS_KEY) && clean.length > 0) {
-                localStorage.setItem(PERMANENT_SPOOLS_KEY, JSON.stringify(clean));
+            const arr = Array.isArray(parsed) ? parsed : (parsed.spools || []);
+            arr.forEach(item => {
+              if (item && item.name && !item.name.toLowerCase().includes('matte charcoal') && !seenIds.has(item.id)) {
+                seenIds.add(item.id);
+                rescued.push(item);
               }
-            }
+            });
           } catch (e) {}
-          localStorage.removeItem(k);
         }
       });
-      try { window.name = ''; } catch (e) {}
+
+      if (rescued.length > spools.length) {
+        pushUndo();
+        spools = rescued;
+        deletedIds = [];
+        saveState();
+        showToast(`✓ ${rescued.length} Spulen aus dem Browser-Zwischenspeicher gerettet!`);
+      } else {
+        showToast('Alle verfügbaren Spulen sind bereits geladen.');
+      }
+    }
+
+    function is unwantedDefaultCharcoal(spool) {
+      if (!spool) return true;
+      if (deletedIds.includes(spool.id)) return true;
+      const full = `${spool.brand || ''} ${spool.name || ''}`.toLowerCase();
+      if (full.includes('matte charcoal') || full.includes('made charcoal')) return true;
+      return false;
+    }
+
+    function sanitizeSpools() {
+      const modes = getStorageModes();
+      spools = spools.filter(s => !isUnwantedDefaultCharcoal(s));
+      spools.forEach((s, idx) => {
+        if (!s.id) s.id = 'sp-' + Date.now() + '-' + idx;
+        if (!s.brand) s.brand = 'Bambu Lab';
+        if (!s.material) s.material = 'PLA';
+        if (!s.name) s.name = `${s.material} Basic`;
+        if (!s.pricePerKg || isNaN(Number(s.pricePerKg))) {
+          s.pricePerKg = getDefaultPriceForSpool(s.brand, s.material);
+        }
+        if (s.emptySpoolWeight === undefined || isNaN(Number(s.emptySpoolWeight))) s.emptySpoolWeight = 200;
+        if (s.storageMode === 'biqu_bag') s.storageMode = 'ebos_bag';
+        if (!s.storageMode || !modes[s.storageMode]) s.storageMode = 'open';
+        if (s.bagWeight === undefined || isNaN(Number(s.bagWeight))) {
+          s.bagWeight = modes[s.storageMode].bagWeight;
+        }
+        if (!s.productUrl) {
+          s.productUrl = buildVendorUrl(s.brand, s.material, s.colorName || '', s.name || '', Number(s.emptySpoolWeight) === 0);
+        }
+      });
+    }
+
+    function isUnwantedDefaultCharcoal(spool) {
+      if (!spool) return true;
+      if (deletedIds.includes(spool.id)) return true;
+      const full = `${spool.brand || ''} ${spool.name || ''}`.toLowerCase();
+      return full.includes('matte charcoal') || full.includes('made charcoal');
     }
 
     function setSyncStatus(text, isOk = true) {
@@ -940,28 +1091,12 @@
 
     function showToast(msg) {
       const container = document.getElementById('toastContainer');
+      if (!container) return;
       const el = document.createElement('div');
-      el.className = 'px-4 py-2.5 rounded-xl bg-surface-900 border border-orange-500/40 text-xs font-semibold text-white shadow-xl transition-all';
+      el.className = 'px-4 py-2.5 rounded-xl bg-surface-900 border border-sky-500/40 text-xs font-semibold text-white shadow-xl transition-all';
       el.textContent = msg;
       container.appendChild(el);
       setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2800);
-    }
-
-    function sanitizeSpools() {
-      spools = spools.filter(s => !isCharcoalOrDeleted(s));
-      spools.forEach(s => {
-        if (!s.pricePerKg || isNaN(Number(s.pricePerKg))) {
-          s.pricePerKg = getDefaultPriceForSpool(s.brand, s.material);
-        }
-        if (s.emptySpoolWeight === undefined) s.emptySpoolWeight = 200;
-        if (!s.storageMode || !STORAGE_MODES[s.storageMode]) s.storageMode = 'open';
-        if (s.bagWeight === undefined || isNaN(Number(s.bagWeight))) {
-          s.bagWeight = STORAGE_MODES[s.storageMode].bagWeight;
-        }
-        if (!s.productUrl) {
-          s.productUrl = buildVendorUrl(s.brand, s.material, s.colorName || '', s.name || '', Number(s.emptySpoolWeight) === 0);
-        }
-      });
     }
 
     function saveLocalBackup(timestamp = Date.now()) {
@@ -976,9 +1111,23 @@
     async function loadStateFromCloud(manual = false) {
       if (!manual && isAnyModalOrInputActive()) return;
 
-      const localRaw = localStorage.getItem(PERMANENT_SPOOLS_KEY);
-      if (localRaw && spools.length === 0) {
-        try { spools = JSON.parse(localRaw).filter(s => !isCharcoalOrDeleted(s)); } catch (e) {}
+      // Lokale Daten beim Start aus v18 oder früheren Versionen laden
+      if (spools.length === 0) {
+        for (const k of ALL_KNOWN_STORAGE_KEYS) {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            try {
+              const parsed = JSON.parse(raw);
+              const arr = Array.isArray(parsed) ? parsed : (parsed.spools || []);
+              const cleaned = arr.filter(s => !isUnwantedDefaultCharcoal(s));
+              if (cleaned.length > 0) {
+                spools = cleaned;
+                createSafeSnapshot('Start-Sicherung');
+                break;
+              }
+            } catch (e) {}
+          }
+        }
       }
 
       try {
@@ -989,31 +1138,24 @@
             if (Array.isArray(data.deletedIds)) {
               deletedIds = Array.from(new Set([...deletedIds, ...data.deletedIds]));
             }
-            const hadCharcoalInCloud = data.spools.some(s => isCharcoalOrDeleted(s));
-            const cloudCleaned = data.spools.filter(s => !isCharcoalOrDeleted(s));
+            const cloudCleaned = data.spools.filter(s => !isUnwantedDefaultCharcoal(s));
             const cloudTime = Number(data.updatedAt || 0);
 
-            if (manual || cloudTime > localUpdatedAt || !localRaw) {
-              const newHash = JSON.stringify(cloudCleaned);
-              const currentHash = JSON.stringify(spools);
+            // Wichtig: Niemals einen vollen lokalen Bestand durch eine leere Cloud löschen!
+            if ((manual || cloudTime > localUpdatedAt || spools.length === 0) && (cloudCleaned.length > 0 || spools.length === 0)) {
               spools = cloudCleaned;
               printHistory = Array.isArray(data.printHistory) ? data.printHistory : printHistory;
               saveLocalBackup(cloudTime || Date.now());
-
-              if (manual || newHash !== currentHash) {
-                renderSpools(true);
-                populateCalcSpoolDropdown();
-              }
+              renderSpools(true);
+              populateCalcSpoolDropdown();
               setSyncStatus('Synchron', true);
             }
-
-            if (hadCharcoalInCloud) await saveState();
             return;
           }
         }
       } catch (e) {}
 
-      renderSpools();
+      renderSpools(true);
       populateCalcSpoolDropdown();
     }
 
@@ -1056,6 +1198,7 @@
     }
 
     async function forcePullFromCloud() {
+      createSafeSnapshot('Vor Cloud-Abruf');
       localUpdatedAt = 0;
       await loadStateFromCloud(true);
       showToast('✓ Stand aus der Cloud geladen!');
@@ -1071,14 +1214,98 @@
     }
 
     // =========================================================================
-    // 3. SPRACHEINGABE (MIKROFON)
+    // 3. SCHLICHT-MODUS & EINSTELLUNGEN
     // =========================================================================
+    function toggleMinimalMode(forceVal = null) {
+      appSettings.minimalMode = typeof forceVal === 'boolean' ? forceVal : !appSettings.minimalMode;
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+      applySettingsToUI();
+      renderSpools(true);
+    }
+
+    function updateAppSetting(key, val) {
+      appSettings[key] = val;
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+      applySettingsToUI();
+      renderSpools(true);
+    }
+
+    function applySettingsToUI() {
+      const isMin = !!appSettings.minimalMode;
+      const btn = document.getElementById('minimalModeToggleBtn');
+      const label = document.getElementById('minimalModeLabel');
+      const scannerSec = document.getElementById('quickScannerSection');
+      const chk = document.getElementById('settingMinimalToggle');
+
+      if (chk) chk.checked = isMin;
+      if (label) label.textContent = isMin ? 'Schlicht-Modus: AN' : 'Schlicht-Modus: AUS';
+      if (btn) {
+        btn.className = isMin
+          ? 'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-sky-500 text-surface-950 border border-sky-400 text-xs font-extrabold transition shadow-sm'
+          : 'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.08] text-xs font-bold transition';
+      }
+      if (scannerSec) {
+        scannerSec.classList.toggle('hidden', isMin);
+      }
+
+      const barSel = document.getElementById('settingBarStyle');
+      if (barSel) barSel.value = appSettings.barStyle || 'blue_green';
+      const gridSel = document.getElementById('settingGridCols');
+      if (gridSel) gridSel.value = appSettings.gridCols || 'auto';
+      const ttsChk = document.getElementById('settingTtsEnabled');
+      if (ttsChk) ttsChk.checked = !!appSettings.ttsEnabled;
+      const ebosIn = document.getElementById('settingEbosWeight');
+      if (ebosIn) ebosIn.value = appSettings.ebosWeight || 25;
+      const ovpIn = document.getElementById('settingOvpWeight');
+      if (ovpIn) ovpIn.value = appSettings.ovpWeight || 18;
+
+      const grid = document.getElementById('spoolGrid');
+      if (grid) {
+        if (appSettings.gridCols === '3') grid.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4';
+        else if (appSettings.gridCols === '4') grid.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4';
+        else if (appSettings.gridCols === '5') grid.className = 'grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-3.5';
+        else grid.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4';
+      }
+    }
+
+    // =========================================================================
+    // 4. FIREFOX SPRACHAUSGABE (TTS) & SPRACHEINGABE (STT / DIKTAT)
+    // =========================================================================
+    function speakText(text) {
+      if (!appSettings.ttsEnabled || !('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const clean = text.replace(/[*#_`~]/g, '');
+        const utter = new SpeechSynthesisUtterance(clean);
+        utter.lang = 'de-DE';
+        utter.rate = 1.05;
+        window.speechSynthesis.speak(utter);
+      } catch (e) {}
+    }
+
     let activeRecognition = null;
 
     function startVoiceRecognition(targetInputId, btnId, autoSendAi = false, appendNewLine = false) {
+      const inputEl = document.getElementById(targetInputId);
+      const btn = document.getElementById(btnId);
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      // Falls der Browser (z. B. Standard-Firefox ohne Flag) keine WebSpeech-STT hat:
+      // Sofortiger Fokus + Sprachausgabe-Hinweis für Windows+H / macOS Diktat!
       if (!SpeechRec) {
-        showToast('⚠️ Bitte nutze Chrome, Edge oder Safari für Spracheingabe.');
+        if (inputEl) {
+          inputEl.focus();
+          const spoken = prompt('🎙️ Firefox Direkt-Diktat (Tipp: Drücke Windows+H oder nutze dein Mikrofon und bestätige mit Enter):');
+          if (spoken && spoken.trim()) {
+            if (appendNewLine) {
+              inputEl.value = (inputEl.value ? inputEl.value.trim() + '\n' : '') + spoken.trim();
+            } else {
+              inputEl.value = spoken.trim();
+            }
+            speakText(`Erkannt: ${spoken}`);
+            if (autoSendAi) sendAiMessage();
+          }
+        }
         return;
       }
 
@@ -1088,15 +1315,13 @@
         return;
       }
 
-      const btn = document.getElementById(btnId);
-      const inputEl = document.getElementById(targetInputId);
       const rec = new SpeechRec();
       activeRecognition = rec;
       rec.lang = 'de-DE';
       rec.interimResults = false;
 
       if (btn) btn.classList.add('mic-active');
-      showToast('🎙️ Ich höre zu... Sprich jetzt dein Filament ein!');
+      showToast('🎙️ Mikrofon aktiv – sprich jetzt!');
 
       rec.onresult = function(event) {
         const transcript = event.results[0][0].transcript;
@@ -1125,15 +1350,16 @@
     }
 
     // =========================================================================
-    // 4. DATEI / TEXT IMPORT & EXPORT (.TXT INKL. VAKUUM-STATUS)
+    // 5. SICHERER DATEI / JSON / TEXT IMPORT & EXPORT (KEIN DATENVERLUST!)
     // =========================================================================
     function spoolsToReadableText() {
       if (!spools.length) return '';
+      const modes = getStorageModes();
       return spools.map(s => {
         const p = (Number(s.pricePerKg) || 17.99).toFixed(2);
         const mode = s.storageMode || 'open';
-        const bagW = s.bagWeight ?? STORAGE_MODES[mode].bagWeight;
-        return `${s.brand} | ${s.name} | ${s.material} | ${s.colorName || 'Standard'} | ${s.remainingWeight}g | ${s.initialWeight}g | ${s.emptySpoolWeight ?? 200}g | ${mode} | ${bagW}g | ${p}€ | ${s.colorHex || '#f97316'} | ${s.productUrl || ''}`;
+        const bagW = s.bagWeight ?? (modes[mode] ? modes[mode].bagWeight : 0);
+        return `${s.brand} | ${s.name} | ${s.material} | ${s.colorName || 'Standard'} | ${s.remainingWeight}g | ${s.initialWeight}g | ${s.emptySpoolWeight ?? 200}g | ${mode} | ${bagW}g | ${p}€ | ${s.colorHex || '#38bdf8'} | ${s.productUrl || ''}`;
       }).join('\n');
     }
 
@@ -1141,16 +1367,41 @@
       const trimmed = (rawText || '').trim();
       if (!trimmed) return [];
 
+      // 1. Sichere JSON-Erkennung (unterstützt alle Backup-Formate!)
       if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
         try {
           const parsedJson = JSON.parse(trimmed);
-          if (Array.isArray(parsedJson)) return parsedJson.filter(s => !isCharcoalOrDeleted(s));
-          if (parsedJson && Array.isArray(parsedJson.spools)) return parsedJson.spools.filter(s => !isCharcoalOrDeleted(s));
-        } catch (e) {}
+          const rawList = Array.isArray(parsedJson)
+            ? parsedJson
+            : (Array.isArray(parsedJson.spools) ? parsedJson.spools : []);
+          return rawList.filter(Boolean).map((s, idx) => ({
+            id: s.id || ('sp-json-' + Date.now() + '-' + idx),
+            brand: s.brand || 'Bambu Lab',
+            name: s.name || `${s.material || 'PLA'} Filament`,
+            material: s.material || 'PLA',
+            colorName: s.colorName || 'Standard',
+            colorHex: s.colorHex || '#38bdf8',
+            initialWeight: Number(s.initialWeight) || 1000,
+            remainingWeight: s.remainingWeight !== undefined ? Number(s.remainingWeight) : 1000,
+            emptySpoolWeight: s.emptySpoolWeight !== undefined ? Number(s.emptySpoolWeight) : 200,
+            storageMode: s.storageMode === 'biqu_bag' ? 'ebos_bag' : (s.storageMode || 'open'),
+            bagWeight: Number(s.bagWeight) || 0,
+            pricePerKg: Number(s.pricePerKg) || getDefaultPriceForSpool(s.brand, s.material),
+            productUrl: s.productUrl || '',
+            lastDried: s.lastDried || new Date().toISOString(),
+            dryIntervalDays: Number(s.dryIntervalDays) || 30,
+            dryTemp: Number(s.dryTemp) || 50,
+            dryHours: Number(s.dryHours) || 5
+          }));
+        } catch (e) {
+          showToast('⚠️ JSON-Format fehlerhaft – versuche Text-Analyse...');
+        }
       }
 
+      // 2. Text-Zeilen-Erkennung
       const lines = trimmed.split(/\r?\n/);
       const result = [];
+      const modes = getStorageModes();
 
       lines.forEach((line, idx) => {
         const clean = line.trim();
@@ -1166,16 +1417,16 @@
           const initW = parseInt((parts[5] || '1000').replace(/[^\d]/g, '')) || 1000;
           const taraW = parseInt((parts[6] || '200').replace(/[^\d]/g, ''));
 
-          // Unterstützt sowohl neues 12-Spalten-Format (mit Vakuum) als auch bisheriges 10-Spalten-Format
           let storageMode = 'open';
           let bagWeight = 0;
           let price = getDefaultPriceForSpool(brand, material);
           let hex = '';
           let url = '';
 
-          if (parts[7] && ['open', 'biqu_bag', 'factory_sealed'].includes(parts[7].toLowerCase())) {
-            storageMode = parts[7].toLowerCase();
-            bagWeight = parseInt((parts[8] || '0').replace(/[^\d]/g, '')) || STORAGE_MODES[storageMode].bagWeight;
+          const p7 = (parts[7] || '').toLowerCase();
+          if (['open', 'ebos_bag', 'biqu_bag', 'factory_sealed'].includes(p7)) {
+            storageMode = p7 === 'biqu_bag' ? 'ebos_bag' : p7;
+            bagWeight = parseInt((parts[8] || '0').replace(/[^\d]/g, '')) || modes[storageMode].bagWeight;
             price = parseFloat((parts[9] || '17.99').replace(',', '.').replace(/[^\d.]/g, '')) || price;
             hex = parts[10] || '';
             url = parts[11] || '';
@@ -1187,7 +1438,7 @@
 
           if (!hex.startsWith('#')) {
             const foundC = COLOR_MAP.find(c => c.name.toLowerCase() === colorName.toLowerCase());
-            hex = foundC ? foundC.hex : '#f97316';
+            hex = foundC ? foundC.hex : '#38bdf8';
           }
           if (!url) url = buildVendorUrl(brand, material, colorName, name, taraW === 0);
           const preset = MATERIAL_PRESETS[material] || MATERIAL_PRESETS['PLA'];
@@ -1197,8 +1448,7 @@
             brand, name, material, colorName, colorHex: hex,
             remainingWeight: remW, initialWeight: initW,
             emptySpoolWeight: isNaN(taraW) ? 200 : taraW,
-            storageMode,
-            bagWeight,
+            storageMode, bagWeight,
             pricePerKg: price, productUrl: url,
             lastDried: new Date().toISOString(),
             dryIntervalDays: getRecommendedDays(material, storageMode),
@@ -1242,46 +1492,63 @@
       a.href = URL.createObjectURL(blob);
       a.download = `FilamentHub-Bestand-${new Date().toISOString().slice(0, 10)}.txt`;
       a.click();
-      showToast('Datei gespeichert!');
     }
 
+    function downloadJsonBackupFile() {
+      const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), spools, printHistory }, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `FilamentHub-Backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+    }
+
+    // Datei-Upload schreibt erst sicher in den Zwischenspeicher und lädt dann die Spulen!
     function handleVaultFileUpload(event) {
       const file = event.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        const imported = parseReadableTextToSpools(e.target.result || '');
+        const rawContent = e.target.result || '';
+        const imported = parseReadableTextToSpools(rawContent);
+        if (!imported.length) {
+          showToast('⚠️ Datei enthielt keine erkennbaren Filamente – Bestand wurde NICHT verändert!');
+          return;
+        }
+        createSafeSnapshot('Vor Datei-Import');
         pushUndo();
         spools = imported;
+        deletedIds = [];
         saveState();
         document.getElementById('vaultTextArea').value = spoolsToReadableText();
-        showToast(`✓ ${imported.length} Filamente geladen!`);
+        showToast(`✓ ${imported.length} Spulen sicher importiert (alter Stand im Zwischenspeicher)!`);
       };
       reader.readAsText(file);
+      event.target.value = '';
     }
 
     function applyVaultText(mode = 'replace') {
       const raw = document.getElementById('vaultTextArea').value;
       const parsed = parseReadableTextToSpools(raw);
+      if (!parsed.length) {
+        showToast('⚠️ Textfeld ist leer oder ungültig – Bestand wurde zum Schutz NICHT gelöscht!');
+        return;
+      }
+      createSafeSnapshot('Vor Text-Übernahme');
       pushUndo();
+      deletedIds = [];
       if (mode === 'append') {
         spools = [...parsed, ...spools];
-        showToast(`✓ ${parsed.length} Filamente hinzugefügt!`);
+        showToast(`✓ ${parsed.length} Spulen hinzugefügt!`);
       } else {
         spools = parsed;
-        showToast(`✓ Bestand gespeichert (${parsed.length} Spulen)!`);
+        showToast(`✓ ${parsed.length} Spulen übernommen!`);
       }
       saveState();
       closeDataVaultModal();
     }
 
-    function copyVaultText() {
-      navigator.clipboard?.writeText(document.getElementById('vaultTextArea').value);
-      showToast('In die Zwischenablage kopiert!');
-    }
-
     // =========================================================================
-    // 5. SMART SCANNER (ERKENNT AUCH "EINVAKUUMIERT" & "BQ BAG")
+    // 6. SMART SCANNER (ERKENNT eBOS BEUTEL / EYEBROWS / VAKUUM)
     // =========================================================================
     function extractEuroPriceFromText(rawText) {
       if (!rawText) return null;
@@ -1297,7 +1564,8 @@
       const lower = (val || '').toLowerCase();
       for (const c of COLOR_MAP) {
         if (c.keys.some(k => lower.includes(k)) || c.name.toLowerCase().includes(lower)) {
-          document.getElementById('fColorHex').value = c.hex;
+          const hexEl = document.getElementById('fColorHex');
+          if (hexEl) hexEl.value = c.hex;
           break;
         }
       }
@@ -1308,6 +1576,7 @@
       const isUrl = /^https?:\/\//i.test(trimmed);
       const extractedPrice = extractEuroPriceFromText(`${trimmed} ${rawPageText}`);
       const combined = `${trimmed} ${rawPageText}`.toLowerCase();
+      const modes = getStorageModes();
 
       let detectedBrand = 'Bambu Lab';
       let detectedTara = 250;
@@ -1322,18 +1591,18 @@
       const isRefill = combined.includes('ohne spule') || combined.includes('refill');
       if (isRefill) detectedTara = 0;
 
-      // Erkennt automatisch BQ Bag oder Hersteller-Vakuumierung aus Text/Sprache
+      // Erkennt eBOS ("ebos", "eyebrows", "beutel", "bag") & OVP
       let detectedStorageMode = 'open';
-      if (combined.includes('bq') || combined.includes('biqu') || combined.includes('bag') || combined.includes('beutel')) {
-        detectedStorageMode = 'biqu_bag';
-      } else if (combined.includes('vakuum') || combined.includes('vakum') || combined.includes('eingeschweißt') || combined.includes('ovp') || combined.includes('neu')) {
+      if (combined.includes('ebos') || combined.includes('eyebrow') || combined.includes('bag') || combined.includes('beutel') || combined.includes('bq')) {
+        detectedStorageMode = 'ebos_bag';
+      } else if (combined.includes('vakuum') || combined.includes('vakum') || combined.includes('ovp') || combined.includes('eingeschweißt')) {
         detectedStorageMode = 'factory_sealed';
       }
-      const detectedBagWeight = STORAGE_MODES[detectedStorageMode].bagWeight;
+      const detectedBagWeight = modes[detectedStorageMode].bagWeight;
 
       let detectedMaterial = 'PLA';
       if (combined.includes('pla+') || combined.includes('pla plus')) detectedMaterial = 'PLA+';
-      else if (combined.includes('petg')) detectedMaterial = 'PETG';
+      else if (combined.includes('petg') || combined.includes('ptg')) detectedMaterial = 'PETG';
       else if (combined.includes('tpu')) detectedMaterial = 'TPU';
       else if (combined.includes('asa')) detectedMaterial = 'ASA';
       else if (combined.includes('abs')) detectedMaterial = 'ABS';
@@ -1351,12 +1620,12 @@
         }
       }
 
-      let variantAdd = '';
+      let variantAdd = 'Basic ';
       if (combined.includes('matte') || combined.includes('matt')) variantAdd = 'Matte ';
       else if (combined.includes('silk')) variantAdd = 'Silk ';
-      else if (detectedBrand === 'Bambu Lab' && detectedMaterial === 'PLA') variantAdd = 'Basic ';
+      else if (combined.includes('hf')) variantAdd = 'HF ';
 
-      const refillSuffix = isRefill ? ' (Ohne Spule)' : '';
+      const refillSuffix = isRefill ? ' (Refill)' : '';
       const cleanTitle = `${detectedMaterial} ${variantAdd}${detectedColorName}${refillSuffix}`.replace(/\s+/g, ' ').trim();
       const finalUrl = isUrl ? trimmed : buildVendorUrl(detectedBrand, detectedMaterial, detectedColorName, trimmed, isRefill);
       const preset = MATERIAL_PRESETS[detectedMaterial] || MATERIAL_PRESETS['PLA'];
@@ -1391,7 +1660,7 @@
     }
 
     // =========================================================================
-    // 6. SIDEBAR, G-CODE, RECHNER & KI-AGENT
+    // 7. SIDEBAR, G-CODE, RECHNER & KI-AGENT
     // =========================================================================
     let sidebarCollapsedDesktop = false;
 
@@ -1406,34 +1675,34 @@
         sidebarCollapsedDesktop = !sidebarCollapsedDesktop;
         if (sidebarCollapsedDesktop) {
           sidebar.classList.add('lg:w-0', 'lg:border-r-0', 'lg:-translate-x-full');
-          sidebar.classList.remove('sm:w-[380px]');
+          sidebar.classList.remove('sm:w-[370px]');
         } else {
           sidebar.classList.remove('lg:w-0', 'lg:border-r-0', 'lg:-translate-x-full');
-          sidebar.classList.add('sm:w-[380px]');
+          sidebar.classList.add('sm:w-[370px]');
         }
       }
     }
 
     function closeSidebarOnMobile() {
-      document.getElementById('leftSidebar').classList.add('-translate-x-full');
-      document.getElementById('sidebarBackdrop').classList.add('hidden');
+      document.getElementById('leftSidebar')?.classList.add('-translate-x-full');
+      document.getElementById('sidebarBackdrop')?.classList.add('hidden');
     }
 
     function switchSidebarTab(tabName) {
-      ['ai', 'gcode', 'calc', 'sync'].forEach(t => {
+      ['ai', 'gcode', 'calc', 'sync', 'settings'].forEach(t => {
         const panel = document.getElementById(`sidebarPanel-${t}`);
         const btn = document.getElementById(`tabBtn-${t}`);
-        if (t === tabName) {
-          panel.classList.remove('hidden');
-          btn.className = 'py-2 px-1 rounded-lg text-[11px] font-bold flex flex-col items-center gap-1 transition bg-orange-500 text-surface-950';
-        } else {
-          panel.classList.add('hidden');
-          btn.className = 'py-2 px-1 rounded-lg text-[11px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white';
+        if (panel) panel.classList.toggle('hidden', t !== tabName);
+        if (btn) {
+          btn.className = t === tabName
+            ? 'py-2 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-1 transition bg-sky-500 text-surface-950'
+            : 'py-2 px-1 rounded-lg text-[10px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white';
         }
       });
       if (tabName === 'sync') renderSidebarQr();
       if (tabName === 'calc') { populateCalcSpoolDropdown(); calculatePrintCost(); }
       if (tabName === 'gcode') renderGcodeSpoolSelection();
+      if (tabName === 'settings') renderSnapshotList();
       lucide.createIcons();
     }
 
@@ -1441,24 +1710,23 @@
       const sidebar = document.getElementById('leftSidebar');
       const backdrop = document.getElementById('sidebarBackdrop');
       if (window.innerWidth < 1024) {
-        sidebar.classList.remove('-translate-x-full');
-        backdrop.classList.remove('hidden');
+        sidebar?.classList.remove('-translate-x-full');
+        backdrop?.classList.remove('hidden');
       } else if (sidebarCollapsedDesktop) {
         toggleSidebar();
       }
       switchSidebarTab(tabName);
     }
 
-    // G-Code Upload
     let lastParsedGcode = { grams: 0, hours: 0, fileName: '' };
 
     function parseGcodeContent(text, fileName) {
       let grams = 0;
       let timeHours = 0;
       const weightPatterns = [
-        /;\s*total filament used \[g\]\s*=\s*([\d.,\s]+)/i,
-        /;\s*filament used \[g\]\s*=\s*([\d.,\s]+)/i,
-        /;\s*total filament weight \[g\]\s*:\s*([\d.,\s]+)/i,
+        /;\s*total filament used [g]\s*=\s*([\d.,\s]+)/i,
+        /;\s*filament used [g]\s*=\s*([\d.,\s]+)/i,
+        /;\s*total filament weight [g]\s*:\s*([\d.,\s]+)/i,
         /;\s*Filament weight\s*=\s*([\d.,\s]+)/i
       ];
       for (const regex of weightPatterns) {
@@ -1469,7 +1737,7 @@
         }
       }
       if (!grams || grams <= 0) {
-        const mmMatch = text.match(/;\s*filament used \[mm\]\s*=\s*([\d.,]+)/i);
+        const mmMatch = text.match(/;\s*filament used [mm]\s*=\s*([\d.,]+)/i);
         const mMatch = text.match(/;Filament used:\s*([\d.]+)\s*m/i);
         if (mmMatch) grams = (parseFloat(mmMatch[1]) / 1000) * 2.98;
         else if (mMatch) grams = parseFloat(mMatch[1]) * 2.98;
@@ -1526,16 +1794,16 @@
       container.innerHTML = spools.map(s => {
         const cost = ((g / 1000) * (Number(s.pricePerKg) || 17.99)).toFixed(2).replace('.', ',');
         return `
-          <button onclick="confirmGcodeDeduct('${s.id}')" class="w-full p-2.5 rounded-xl bg-surface-900 hover:bg-orange-500/15 border border-white/[0.07] hover:border-orange-500/50 flex items-center justify-between gap-2 text-left transition">
+          <button onclick="confirmGcodeDeduct('${s.id}')" class="w-full p-2.5 rounded-xl bg-surface-900 hover:bg-sky-500/15 border border-white/[0.07] hover:border-sky-500/50 flex items-center justify-between gap-2 text-left transition">
             <div class="flex items-center gap-2 min-w-0">
-              <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${s.colorHex || '#f97316'}"></span>
+              <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${s.colorHex || '#38bdf8'}"></span>
               <div class="min-w-0">
                 <p class="text-xs font-bold text-white truncate">${s.brand} – ${s.name}</p>
                 <p class="text-[10px] text-slate-400">Rest: <strong class="text-emerald-400">${s.remainingWeight}g</strong></p>
               </div>
             </div>
             <div class="text-right shrink-0">
-              <span class="px-2 py-0.5 rounded bg-orange-500 text-surface-950 text-[10px] font-bold block">-${g}g</span>
+              <span class="px-2 py-0.5 rounded bg-sky-500 text-surface-950 text-[10px] font-bold block">-${g}g</span>
               <span class="text-[10px] text-slate-400 font-mono-num">${cost} €</span>
             </div>
           </button>
@@ -1597,11 +1865,10 @@
       if (spoolId && g > 0) deductWeight(spoolId, g);
     }
 
-    // KI-Agent
     let aiMessages = [
       {
         role: 'assistant',
-        text: 'Hallo! Tippe oder drücke auf das **🎙️ Mikrofon**, um mir Filamente zu diktieren:\n• *"Neue Spule Bambu Lab PLA Schwarz einvakuumiert"*\n• *"SUNLU PETG im BQ Bag"*\n• *"Ziehe 45g von Marmor ab"*'
+        text: 'Hallo! Ich lese dir Antworten auf Wunsch auch direkt im **Firefox** vor.\nSchreib oder diktiere z. B.:\n• *"Neue Spule Bambu Lab PETG Basic im eBOS Beutel"*\n• *"Schalte Schlicht-Modus ein"*'
       }
     ];
 
@@ -1610,7 +1877,7 @@
       if (!box) return;
       box.innerHTML = aiMessages.map(m => `
         <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}">
-          <div class="max-w-[90%] rounded-xl px-3 py-2 ${m.role === 'user' ? 'bg-orange-500 text-surface-950 font-semibold' : 'bg-surface-900 border border-white/[0.07] text-slate-200'} whitespace-pre-line">
+          <div class="max-w-[90%] rounded-xl px-3 py-2 ${m.role === 'user' ? 'bg-sky-500 text-surface-950 font-semibold' : 'bg-surface-900 border border-white/[0.07] text-slate-200'} whitespace-pre-line">
             ${m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
           </div>
         </div>
@@ -1619,6 +1886,13 @@
     }
 
     async function processLocalAiCommand(input) {
+      const lower = input.toLowerCase();
+
+      if (lower.includes('schlicht') || lower.includes('minimal')) {
+        toggleMinimalMode();
+        return `✅ Ich habe den **Schlicht-Modus** ${appSettings.minimalMode ? 'eingeschaltet' : 'ausgeschaltet'}.`;
+      }
+
       const deductMatch = input.match(/(?:zieh|abziehen|minus|verbrauch\w*)\s*(\d+)\s*g?\s*(?:von|bei|aus)?\s*(.+)/i);
       if (deductMatch) {
         const g = parseInt(deductMatch[1]);
@@ -1626,7 +1900,7 @@
         const spool = spools.find(s => `${s.brand} ${s.name} ${s.colorName}`.toLowerCase().includes(target)) || spools[0];
         if (spool && g > 0) {
           deductWeight(spool.id, g);
-          return `✅ **${g}g** von **${spool.brand} ${spool.name}** abgezogen! Rest: **${spool.remainingWeight}g**.`;
+          return `✅ ${g} Gramm von ${spool.brand} ${spool.name} abgezogen. Restgewicht: ${spool.remainingWeight} Gramm.`;
         }
       }
 
@@ -1639,8 +1913,7 @@
       const newSpool = { id: 'sp-' + Date.now(), ...parsed, lastDried: new Date().toISOString() };
       spools.unshift(newSpool);
       saveState();
-      const modeInfo = STORAGE_MODES[newSpool.storageMode].label;
-      return `✅ Eingetragen: **${newSpool.brand} – ${newSpool.name}** (${newSpool.remainingWeight}g • ${modeInfo} • ${newSpool.dryIntervalDays}d Haltbarkeit).`;
+      return `✅ Neue Spule eingetragen: ${newSpool.brand} ${newSpool.name} mit ${newSpool.remainingWeight} Gramm.`;
     }
 
     async function sendAiMessage() {
@@ -1653,10 +1926,11 @@
       const reply = await processLocalAiCommand(text);
       aiMessages.push({ role: 'assistant', text: reply });
       renderAiMessages();
+      speakText(reply);
     }
 
     // =========================================================================
-    // 7. SCHLICHTES KARTEN-RENDERING INKL. VAKUUM- & BQ-BAG DROPDOWN
+    // 8. KARTEN-RENDERING (INKL. ULTRA-SAUBEREM SCHLICHT-MODUS)
     // =========================================================================
     function getDryingStatus(spool) {
       const lastDriedMs = new Date(spool.lastDried || Date.now()).getTime();
@@ -1668,7 +1942,7 @@
 
       let statusLevel = 'ok';
       if (isOverdue) statusLevel = 'overdue';
-      else if (diffMs < 3 * 86400000) statusLevel = 'soon';
+      else if (diffMs < 2 * 86400000) statusLevel = 'soon';
 
       return {
         diffMs, isOverdue, statusLevel,
@@ -1683,38 +1957,58 @@
       if (box) box.classList.toggle('hidden', !openScaleCards[spoolId]);
     }
 
-    // Direktes Umschalten des Verpackungsstatus (Offen / BQ Bag / OVP) auf der Karte!
     function changeCardStorageMode(spoolId, newMode) {
+      const modes = getStorageModes();
       const spool = spools.find(s => s.id === spoolId);
-      if (!spool || !STORAGE_MODES[newMode]) return;
+      if (!spool || !modes[newMode]) return;
       pushUndo();
       spool.storageMode = newMode;
-      spool.bagWeight = STORAGE_MODES[newMode].bagWeight;
+      spool.bagWeight = modes[newMode].bagWeight;
       spool.dryIntervalDays = getRecommendedDays(spool.material, newMode);
-      // Wenn frisch vakuumiert oder frisch geöffnet wird, startet das neue Intervall ab jetzt
       spool.lastDried = new Date().toISOString();
       saveState();
-      showToast(`${spool.brand} ${spool.name}: ${STORAGE_MODES[newMode].label} (${spool.dryIntervalDays} Tage Haltbarkeit, ${spool.bagWeight}g Bag-Tara)`);
+      showToast(`${spool.brand} ${spool.name}: ${modes[newMode].label} (${spool.bagWeight}g Beutel-Tara)`);
+    }
+
+    function getBarColorClass(pct) {
+      if (appSettings.barStyle === 'green') return 'bg-emerald-500';
+      if (appSettings.barStyle === 'blue') return 'bg-sky-500';
+      if (appSettings.barStyle === 'dynamic') {
+        if (pct <= 15) return 'bg-rose-500';
+        if (pct <= 35) return 'bg-amber-500';
+        return 'bg-emerald-500';
+      }
+      return 'bg-gradient-to-r from-sky-500 to-emerald-400';
     }
 
     function renderSpools(force = false) {
       sanitizeSpools();
+      const modes = getStorageModes();
+      const isMin = !!appSettings.minimalMode;
 
-      const sealedCount = spools.filter(s => s.storageMode && s.storageMode !== 'open').length;
-      document.getElementById('statTotalSpools').innerHTML = `${spools.length} <span class="text-xs font-normal text-sky-400">(${sealedCount} verpackt)</span>`;
+      // KPIs oben
+      const statSpools = document.getElementById('statTotalSpools');
+      if (statSpools) statSpools.textContent = spools.length;
       const totalGrams = spools.reduce((sum, s) => sum + (Number(s.remainingWeight) || 0), 0);
-      document.getElementById('statTotalWeight').textContent = `${totalGrams.toLocaleString('de-DE')} g`;
+      const statWeight = document.getElementById('statTotalWeight');
+      if (statWeight) statWeight.textContent = `${totalGrams.toLocaleString('de-DE')} g`;
       const totalValue = spools.reduce((sum, s) => sum + (((Number(s.remainingWeight) || 0) / 1000) * (Number(s.pricePerKg) || 17.99)), 0);
-      document.getElementById('statTotalValue').textContent = `${totalValue.toFixed(2).replace('.', ',')} €`;
-      document.getElementById('statDryingDue').textContent = spools.filter(s => getDryingStatus(s).statusLevel !== 'ok').length;
-      document.getElementById('historyBadge').textContent = printHistory.length;
+      const statVal = document.getElementById('statTotalValue');
+      if (statVal) statVal.textContent = `${totalValue.toFixed(2).replace('.', ',')} €`;
+      const statDry = document.getElementById('statDryingDue');
+      if (statDry) statDry.textContent = spools.filter(s => getDryingStatus(s).statusLevel !== 'ok').length;
+      const histBadge = document.getElementById('historyBadge');
+      if (histBadge) histBadge.textContent = printHistory.length;
 
+      // Material-Filter
       const bar = document.getElementById('materialFilterBar');
-      bar.innerHTML = ['ALL', 'PLA', 'PLA+', 'PETG', 'TPU', 'ABS', 'ASA', 'PA / Nylon'].map(mat => `
-        <button onclick="activeMaterialFilter='${mat}';renderSpools(true);" class="px-3 py-1 rounded-xl text-xs font-semibold border transition whitespace-nowrap ${activeMaterialFilter === mat ? 'bg-orange-500 text-surface-950 border-orange-500 font-bold' : 'bg-surface-950 text-slate-400 border-white/[0.07] hover:text-white'}">
-          ${mat === 'ALL' ? `Alle (${spools.length})` : mat}
-        </button>
-      `).join('');
+      if (bar) {
+        bar.innerHTML = ['ALL', 'PLA', 'PLA+', 'PETG', 'TPU', 'ABS', 'ASA', 'PA / Nylon'].map(mat => `
+          <button onclick="activeMaterialFilter='${mat}';renderSpools(true);" class="px-3 py-1 rounded-xl text-xs font-semibold border transition whitespace-nowrap ${activeMaterialFilter === mat ? 'bg-sky-500 text-surface-950 border-sky-500 font-bold' : 'bg-surface-950 text-slate-400 border-white/[0.07] hover:text-white'}">
+            ${mat === 'ALL' ? `Alle (${spools.length})` : mat}
+          </button>
+        `).join('');
+      }
 
       const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
       const sortBy = document.getElementById('sortSelect')?.value || 'drying_urgent';
@@ -1736,8 +2030,10 @@
       });
 
       const grid = document.getElementById('spoolGrid');
+      if (!grid) return;
+
       if (!filtered.length) {
-        grid.innerHTML = `<div class="col-span-full clean-panel rounded-2xl p-10 text-center text-xs text-slate-400">Dein Bestand ist leer. Klicke oben auf <strong>„Datei / Text Import“</strong> oder <strong>„Neue Spule“</strong>, um deine Filamente einzutragen.</div>`;
+        grid.innerHTML = `<div class="col-span-full clean-panel rounded-2xl p-10 text-center text-xs text-slate-400">Keine Spulen angezeigt. Klicke oben auf <strong>„Import / Export“</strong>, <strong>„Zwischenspeicher“</strong> oder <strong>„Neue Spule“</strong>.</div>`;
         return;
       }
 
@@ -1746,113 +2042,162 @@
         const remW = Number(spool.remainingWeight) || 0;
         const spoolTara = Number(spool.emptySpoolWeight) || 0;
         const mode = spool.storageMode || 'open';
-        const bagTara = Number(spool.bagWeight ?? STORAGE_MODES[mode].bagWeight) || 0;
+        const bagTara = Number(spool.bagWeight ?? (modes[mode] ? modes[mode].bagWeight : 0)) || 0;
         const totalTara = spoolTara + bagTara;
         const scaleNow = remW + totalTara;
         const pct = Math.max(0, Math.min(100, Math.round((remW / initW) * 100)));
         const dry = getDryingStatus(spool);
-        const hex = spool.colorHex || '#f97316';
+        const hex = spool.colorHex || '#38bdf8';
         const priceKg = Number(spool.pricePerKg) || 17.99;
-        const offer = getBestShopOffer(spool);
+        const shopUrl = spool.productUrl || buildVendorUrl(spool.brand, spool.material, spool.colorName || '', spool.name || '', spoolTara === 0);
+        const barClass = getBarColorClass(pct);
         const isScaleOpen = !!openScaleCards[spool.id];
 
-        let barColor = 'bg-emerald-500';
-        if (pct <= 15) barColor = 'bg-rose-500';
-        else if (pct <= 35) barColor = 'bg-amber-500';
+        // ===============================================================
+        // VARIANTE A: SCHLICHT-MODUS (NUR MARKE, MATERIAL, NAME, BAR & TROCKNUNGS-WARNUNG + 3 ICONS)
+        // ===============================================================
+        if (isMin) {
+          return `
+            <div class="clean-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 flex flex-col justify-between gap-3">
+              <div class="flex justify-between items-start gap-2">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-4 h-4 rounded-full shrink-0 border border-white/25" style="background-color: ${hex}"></span>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-[11px] uppercase font-extrabold tracking-wider text-sky-400">${spool.brand}</span>
+                      <span class="text-[10px] px-1.5 py-0.2 rounded bg-surface-850 text-slate-200 font-bold">${spool.material}</span>
+                    </div>
+                    <h3 class="text-sm font-bold text-white truncate mt-0.5">${spool.name}</h3>
+                  </div>
+                </div>
 
+                <!-- 3 ICONS OBEN RECHTS: 1. LINK, 2. BEARBEITEN, 3. LÖSCHEN -->
+                <div class="flex items-center gap-1 shrink-0">
+                  <a href="${shopUrl}" target="_blank" rel="noopener" title="Shop-Link öffnen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-sky-400 transition">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                  </a>
+                  <button type="button" onclick="openSpoolModal('${spool.id}')" title="Spule bearbeiten" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-slate-300 hover:text-white transition">
+                    <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                  </a>
+                  <button type="button" onclick="deleteSpool('${spool.id}')" title="Spule löschen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Fortschrittsleiste (Blau/Grün) -->
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] text-slate-400">
+                  <span>${spool.colorName || ''}</span>
+                  <span class="font-mono-num font-bold text-white">${remW}g <span class="text-slate-500 font-normal">(${pct}%)</span></span>
+                </div>
+                <div class="w-full h-2.5 rounded-full bg-surface-950 overflow-hidden">
+                  <div class="h-full ${barClass} transition-all" style="width: ${pct}%"></div>
+                </div>
+              </div>
+
+              <!-- NUR ANZEIGEN, WENN TROCKNUNG FÄLLIG IST -->
+              ${dry.statusLevel !== 'ok' ? `
+                <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-[11px]">
+                  <span class="text-rose-400 font-bold">⚠️ Muss getrocknet werden</span>
+                  <button type="button" onclick="markDried('${spool.id}')" class="text-sky-400 hover:underline font-semibold">Erledigt</button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+
+        // ===============================================================
+        // VARIANTE B: KOMPLETTE ANSICHT (MIT eBOS BEUTEL, WAAGE & ABZUG)
+        // ===============================================================
         return `
-          <div class="clean-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-5 flex flex-col justify-between gap-3.5">
+          <div class="clean-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 sm:p-5 flex flex-col justify-between gap-3.5">
             
-            <!-- 1. Kopfzeile -->
+            <!-- 1. Kopfzeile + 3 Icons oben rechts (Link, Bearbeiten, Löschen) -->
             <div class="flex justify-between items-start gap-2">
               <div class="flex items-center gap-3 min-w-0">
-                <span class="w-8 h-8 rounded-full border-4 shrink-0 shadow-sm" style="border-color: ${hex}; background-color: ${hex}33;"></span>
+                <span class="w-7 h-7 rounded-full border-4 shrink-0 shadow-sm" style="border-color: ${hex}; background-color: ${hex}33;"></span>
                 <div class="min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-[11px] uppercase font-bold tracking-wider text-orange-400">${spool.brand}</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded bg-surface-850 text-slate-200 font-semibold">${spool.material}</span>
+                    <span class="text-[11px] uppercase font-extrabold tracking-wider text-sky-400">${spool.brand}</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-surface-850 text-slate-200 font-bold">${spool.material}</span>
                     <span class="text-[10px] font-mono-num text-emerald-400 font-semibold">${priceKg.toFixed(2).replace('.', ',')} €/kg</span>
                   </div>
                   <h3 class="text-sm font-bold text-white truncate mt-0.5">${spool.name}</h3>
                 </div>
               </div>
 
+              <!-- 3 ICONS OBEN RECHTS: LINK | BEARBEITEN | LÖSCHEN -->
               <div class="flex items-center gap-1 shrink-0">
-                <button onclick="openSpoolModal('${spool.id}')" title="Bearbeiten" class="p-1.5 rounded-lg hover:bg-surface-850 text-slate-400 hover:text-white transition">
+                <a href="${shopUrl}" target="_blank" rel="noopener" title="Produkt-Link öffnen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-sky-400 transition">
+                  <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+                <button type="button" onclick="openSpoolModal('${spool.id}')" title="Spule bearbeiten" class="p-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-slate-300 hover:text-white transition">
                   <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                 </button>
-                <button onclick="deleteSpool('${spool.id}')" title="Löschen" class="p-1.5 rounded-lg hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition">
+                <button type="button" onclick="deleteSpool('${spool.id}')" title="Spule löschen" class="p-1.5 rounded-lg bg-surface-950 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
             </div>
 
-            <!-- 2. VAKUUM / VERPACKUNGS-DROPDOWN DIREKT AUF DER KARTE -->
+            <!-- 2. eBOS Vakuum-Beutel Dropdown -->
             <div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-surface-950 border ${mode !== 'open' ? 'border-sky-500/35' : 'border-white/[0.06]'}">
-              <span class="text-[11px] text-slate-400 font-medium">Lagerung:</span>
+              <span class="text-[11px] text-slate-400 font-medium">Beutel / Lagerung:</span>
               <select
                 onchange="changeCardStorageMode('${spool.id}', this.value)"
                 class="bg-transparent text-xs font-bold ${mode !== 'open' ? 'text-sky-300' : 'text-slate-300'} outline-none cursor-pointer text-right"
               >
-                <option value="open" class="bg-surface-900 text-white" ${mode === 'open' ? 'selected' : ''}>🌬️ Offen an der Luft (0g Bag)</option>
-                <option value="biqu_bag" class="bg-surface-900 text-white" ${mode === 'biqu_bag' ? 'selected' : ''}>🛡️ Im BQ Vakuum-Bag (+25g)</option>
-                <option value="factory_sealed" class="bg-surface-900 text-white" ${mode === 'factory_sealed' ? 'selected' : ''}>📦 OVP Vakuumiert (+18g)</option>
+                <option value="open" class="bg-surface-900 text-white" ${mode === 'open' ? 'selected' : ''}>🌬️ Offen (0g Beutel)</option>
+                <option value="ebos_bag" class="bg-surface-900 text-white" ${mode === 'ebos_bag' ? 'selected' : ''}>🛡️ eBOS Vakuum-Beutel (+${modes.ebos_bag.bagWeight}g)</option>
+                <option value="factory_sealed" class="bg-surface-900 text-white" ${mode === 'factory_sealed' ? 'selected' : ''}>📦 OVP Vakuumiert (+${modes.factory_sealed.bagWeight}g)</option>
               </select>
             </div>
 
-            <!-- 3. Gewicht, Balken & Waage (inkl. Spule + Beutel-Abzug) -->
+            <!-- 3. Gewicht, Blaue/Grüne Bar & Waage -->
             <div class="space-y-1.5">
               <div class="flex justify-between items-baseline text-xs">
                 <span class="text-slate-400">${spool.colorName || 'Standard'}</span>
                 <span class="font-mono-num font-bold text-white">${remW}g <span class="text-slate-500 font-normal">/ ${initW}g (${pct}%)</span></span>
               </div>
-              <div class="w-full h-2 rounded-full bg-surface-950 overflow-hidden">
-                <div class="h-full ${barColor} transition-all" style="width: ${pct}%"></div>
+              <div class="w-full h-2.5 rounded-full bg-surface-950 overflow-hidden">
+                <div class="h-full ${barClass} transition-all" style="width: ${pct}%"></div>
               </div>
               <div class="flex items-center justify-between pt-1 text-[11px] text-slate-400">
-                <button onclick="toggleCardScale('${spool.id}')" class="hover:text-emerald-400 transition">
+                <button type="button" onclick="toggleCardScale('${spool.id}')" class="hover:text-emerald-400 transition">
                   ⚖️ Waage: ≈ ${scaleNow}g <span class="text-[10px] text-slate-500">(Tara: ${spoolTara}g+${bagTara}g)</span>
                 </button>
-                <a href="${offer.url}" target="_blank" rel="noopener" class="text-orange-400 hover:underline font-semibold flex items-center gap-1">
-                  <span>${offer.shop}</span>
-                  <i data-lucide="external-link" class="w-3 h-3"></i>
-                </a>
+                <span class="text-[10px] font-mono-num text-slate-500">Wert: ${((remW/1000)*priceKg).toFixed(2).replace('.', ',')} €</span>
               </div>
 
-              <!-- Aufklappbare Waage (zieht Spule + Bag automatisch ab) -->
-              <div id="scale-box-${spool.id}" class="${isScaleOpen ? '' : 'hidden'} pt-2 mt-1 border-t border-white/[0.06] space-y-1.5">
-                <div class="text-[10px] text-slate-400 flex justify-between">
-                  <span>Abzug: Spule (${spoolTara}g) + Bag (${bagTara}g) = <strong>${totalTara}g Tara</strong></span>
-                </div>
-                <div class="flex gap-1.5">
-                  <input id="scale-${spool.id}" type="number" placeholder="Gewicht auf Waage (g)..." onkeydown="if(event.key==='Enter'){applyScaleWeight('${spool.id}');}" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs text-white font-mono-num outline-none" />
-                  <button onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-surface-950 text-xs font-bold">Übernehmen</button>
-                </div>
+              <div id="scale-box-${spool.id}" class="${isScaleOpen ? '' : 'hidden'} pt-2 mt-1 border-t border-white/[0.06] flex gap-1.5">
+                <input id="scale-${spool.id}" type="number" placeholder="Waage Brutto (g)..." onkeydown="if(event.key==='Enter'){applyScaleWeight('${spool.id}');}" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs text-white font-mono-num outline-none" />
+                <button type="button" onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-surface-950 text-xs font-bold">Setzen</button>
               </div>
             </div>
 
             <!-- 4. Schnell-Abzug -->
             <div class="flex items-center gap-1.5">
-              <input id="deduct-${spool.id}" type="number" placeholder="Gramm..." onkeydown="if(event.key==='Enter'){deductWeight('${spool.id}');}" class="w-24 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.08] text-xs text-white font-mono-num outline-none focus:border-orange-500" />
-              <button onclick="deductWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold transition">Abziehen</button>
-              <button onclick="deductWeight('${spool.id}', 10)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-10g</button>
-              <button onclick="deductWeight('${spool.id}', 25)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-25g</button>
-              <button onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-50g</button>
+              <input id="deduct-${spool.id}" type="number" placeholder="Gramm..." onkeydown="if(event.key==='Enter'){deductWeight('${spool.id}');}" class="w-24 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.08] text-xs text-white font-mono-num outline-none focus:border-sky-500" />
+              <button type="button" onclick="deductWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-surface-950 text-xs font-bold transition">Abziehen</button>
+              <button type="button" onclick="deductWeight('${spool.id}', 10)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-10g</button>
+              <button type="button" onclick="deductWeight('${spool.id}', 25)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-25g</button>
+              <button type="button" onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-50g</button>
             </div>
 
             <!-- 5. Trocknungs-Status -->
-            <div class="flex items-center justify-between pt-2.5 border-t border-white/[0.06] text-[11px]">
+            <div class="flex items-center justify-between pt-2 border-t border-white/[0.06] text-[11px]">
               <span class="font-mono-num ${dry.isOverdue ? 'text-rose-400 font-bold' : (mode !== 'open' ? 'text-sky-400' : 'text-slate-400')}">
                 ${dry.isOverdue
-                  ? `⚠️ Trocknung fällig (seit ${dry.days}d)`
+                  ? `⚠️ Muss getrocknet werden (seit ${dry.days}d)`
                   : (mode === 'factory_sealed'
-                      ? `📦 OVP geschützt (${dry.days}d Puffer)`
-                      : (mode === 'biqu_bag'
-                          ? `🛡️ Im BQ-Bag geschützt (${dry.days}d)`
-                          : `🔥 Offen haltbar: noch ${dry.days}d${dry.hours}h`))}
+                      ? `📦 OVP geschützt (${dry.days}d)`
+                      : (mode === 'ebos_bag'
+                          ? `🛡️ Im eBOS-Beutel (${dry.days}d)`
+                          : `🔥 Offen haltbar: ${dry.days}d${dry.hours}h`))}
               </span>
-              <button onclick="markDried('${spool.id}')" class="text-orange-400 hover:underline font-semibold">
-                Frisch getrocknet
+              <button type="button" onclick="markDried('${spool.id}')" class="text-sky-400 hover:underline font-semibold">
+                Getrocknet
               </button>
             </div>
 
@@ -1864,7 +2209,7 @@
     }
 
     // =========================================================================
-    // 8. AKTIONEN & MODAL-STEUERUNG MIT ERKLÄRTEXTEN
+    // 9. AKTIONEN & FEHLERFREIES BEARBEITEN-MODAL
     // =========================================================================
     let undoStack = [];
     let redoStack = [];
@@ -1907,11 +2252,12 @@
     }
 
     function deleteSpool(id) {
+      createSafeSnapshot('Vor Löschen');
       pushUndo();
       if (!deletedIds.includes(id)) deletedIds.push(id);
       spools = spools.filter(s => s.id !== id);
       saveState();
-      showToast('Spule gelöscht.');
+      showToast('Spule gelöscht (Rückgängig oben möglich).');
     }
 
     function deductWeight(id, presetGrams = null) {
@@ -1934,8 +2280,8 @@
       showToast(`-${g}g abgezogen.`);
     }
 
-    // Waage zieht sowohl Leerspule als auch Beutel (BQ Bag / OVP Folie) automatisch ab!
     function applyScaleWeight(id) {
+      const modes = getStorageModes();
       const input = document.getElementById(`scale-${id}`);
       const gross = parseFloat(input?.value);
       if (!input || isNaN(gross) || gross <= 0) return;
@@ -1944,18 +2290,18 @@
 
       const spoolTara = Number(spool.emptySpoolWeight) || 0;
       const mode = spool.storageMode || 'open';
-      const bagTara = Number(spool.bagWeight ?? STORAGE_MODES[mode].bagWeight) || 0;
+      const bagTara = Number(spool.bagWeight ?? (modes[mode] ? modes[mode].bagWeight : 0)) || 0;
       const totalTara = spoolTara + bagTara;
 
       if (gross < totalTara) {
-        showToast(`⚠️ ${gross}g ist weniger als Spule + Verpackung (${totalTara}g)!`);
+        showToast(`⚠️ ${gross}g ist weniger als Spule + eBOS-Beutel (${totalTara}g)!`);
         return;
       }
       pushUndo();
       spool.remainingWeight = Math.round(gross - totalTara);
       input.value = '';
       saveState();
-      showToast(`Waage übernommen: ${gross}g − ${spoolTara}g Spule − ${bagTara}g Bag = ${spool.remainingWeight}g Netto!`);
+      showToast(`Waage übernommen: ${spool.remainingWeight}g Netto!`);
     }
 
     function markDried(id) {
@@ -1979,84 +2325,86 @@
       let url = input.value.trim();
       box.innerHTML = '';
       if (!url || url.startsWith('file:')) {
-        box.innerHTML = '<span class="text-slate-500">Online-URL unten eintragen</span>';
+        box.innerHTML = '<span class="text-slate-500">GitHub Pages / Cloudflare URL unten eintragen</span>';
         return;
       }
       const sep = url.includes('?') ? '&' : '?';
       const pairedUrl = `${url}${sep}cloud=${encodeURIComponent(currentCloudId)}`;
       if (typeof QRCode !== 'undefined') {
-        new QRCode(box, { text: pairedUrl, width: 125, height: 125, colorDark: '#090d16', colorLight: '#ffffff' });
+        new QRCode(box, { text: pairedUrl, width: 120, height: 120, colorDark: '#080c14', colorLight: '#ffffff' });
       }
     }
 
     function onSidebarQrInput() {
-      const url = document.getElementById('qrUrlSidebarInput').value.trim();
+      const url = document.getElementById('qrUrlSidebarInput')?.value.trim();
       if (url) localStorage.setItem(QR_URL_KEY, url);
       renderSidebarQr();
     }
 
-    // Aktualisiert im Modal automatisch Beutel-Tara, Trocknungs-Intervall und den Erklärtext
     function onMaterialOrStorageChangeInModal(keepCustomBagWeight = false) {
-      const mat = document.getElementById('fMaterial').value || 'PLA';
-      const mode = document.getElementById('fStorageMode').value || 'open';
+      const modes = getStorageModes();
+      const mat = document.getElementById('fMaterial')?.value || 'PLA';
+      const mode = document.getElementById('fStorageMode')?.value || 'open';
       const preset = MATERIAL_PRESETS[mat] || MATERIAL_PRESETS['PLA'];
-      const modeInfo = STORAGE_MODES[mode] || STORAGE_MODES['open'];
+      const modeInfo = modes[mode] || modes['open'];
 
-      if (!keepCustomBagWeight) {
-        document.getElementById('fBagWeight').value = modeInfo.bagWeight;
+      const bagInput = document.getElementById('fBagWeight');
+      if (bagInput && !keepCustomBagWeight) {
+        bagInput.value = modeInfo.bagWeight;
       }
 
       const recDays = getRecommendedDays(mat, mode);
-      document.getElementById('fDryIntervalDays').value = recDays;
-      document.getElementById('fDryTemp').value = preset.temp;
-      document.getElementById('fDryHours').value = preset.hours;
-
-      const bagW = parseInt(document.getElementById('fBagWeight').value) || 0;
-      document.getElementById('modalStorageBadge').textContent = `${bagW}g Beutel-Tara`;
+      const intEl = document.getElementById('fDryIntervalDays');
+      const tempEl = document.getElementById('fDryTemp');
+      const hrsEl = document.getElementById('fDryHours');
+      if (intEl) intEl.value = recDays;
+      if (tempEl) tempEl.value = preset.temp;
+      if (hrsEl) hrsEl.value = preset.hours;
 
       const infoEl = document.getElementById('modalMaterialStorageInfo');
       if (infoEl) {
-        infoEl.innerHTML = `
-          <strong>Richtwerte für ${mat}:</strong> Offen an der Luft ca. <strong>${preset.openDays} Tage</strong> haltbar • Im <strong>BIQU Vakuum-Bag ca. ${preset.biquBagDays} Tage</strong> • Original <strong>Hersteller-Vakuumiert ca. ${preset.factorySealedDays} Tage</strong>.<br>
-          <span class="text-sky-300">→ Aktuell gewählt: <strong>${recDays} Tage Haltbarkeit</strong> (Trocknung bei Bedarf: ${preset.temp}°C für ${preset.hours}h).</span>
-        `;
+        infoEl.innerHTML = `Haltbarkeit <strong>${mat}</strong>: Offen <strong>${preset.openDays}d</strong> • Im <strong>eBOS Beutel ${preset.ebosBagDays}d</strong> • OVP <strong>${preset.factorySealedDays}d</strong>.`;
       }
 
       applyModalScale();
     }
 
     function applyModalScale() {
-      const grossVal = document.getElementById('fScaleGross').value;
+      const grossVal = document.getElementById('fScaleGross')?.value;
       const hint = document.getElementById('fScaleHint');
-      const spoolTara = parseInt(document.getElementById('fEmptySpoolWeight').value) || 0;
-      const bagTara = parseInt(document.getElementById('fBagWeight').value) || 0;
+      const badge = document.getElementById('modalStorageBadge');
+      const spoolTara = parseInt(document.getElementById('fEmptySpoolWeight')?.value) || 0;
+      const bagTara = parseInt(document.getElementById('fBagWeight')?.value) || 0;
       const totalTara = spoolTara + bagTara;
 
-      document.getElementById('modalStorageBadge').textContent = `${bagTara}g Beutel-Tara`;
+      if (badge) badge.textContent = `${bagTara}g Beutel`;
+      if (!hint) return;
 
       if (!grossVal || isNaN(parseFloat(grossVal))) {
-        hint.innerHTML = `Standard-Abzug beim Wiegen: <strong>${spoolTara}g Leerspule + ${bagTara}g Verpackung/Bag = ${totalTara}g Gesamt-Tara</strong>.`;
+        hint.textContent = `Gesamt-Tara beim Wiegen: ${spoolTara}g Spule + ${bagTara}g Beutel = ${totalTara}g.`;
         return;
       }
       const gross = parseFloat(grossVal);
       const net = Math.round(gross - totalTara);
       if (net >= 0) {
-        document.getElementById('fRemainingWeight').value = net;
-        hint.innerHTML = `<span class="text-emerald-400 font-semibold">✓ Berechnet: ${gross}g (Waage) − ${spoolTara}g (Spule) − ${bagTara}g (Bag) = <strong>${net}g Netto-Filament</strong>.</span>`;
+        const remEl = document.getElementById('fRemainingWeight');
+        if (remEl) remEl.value = net;
+        hint.textContent = `✓ ${gross}g − ${spoolTara}g Spule − ${bagTara}g Beutel = ${net}g Netto-Filament.`;
       } else {
-        hint.innerHTML = `<span class="text-rose-400">⚠️ ${gross}g ist weniger als das Tara-Gewicht (${totalTara}g)!</span>`;
+        hint.textContent = `⚠️ ${gross}g ist weniger als Spule + Beutel (${totalTara}g)!`;
       }
     }
 
     function handleBrandDropdownChange() {
       const select = document.getElementById('fBrandSelect');
       const customInput = document.getElementById('fBrandCustom');
+      if (!select || !customInput) return;
       if (select.value === 'OTHER') {
         customInput.classList.remove('hidden');
         customInput.focus();
       } else {
         customInput.classList.add('hidden');
-        if (!document.getElementById('fId').value) {
+        if (!document.getElementById('fId')?.value) {
           const b = BRAND_DATABASE.find(x => x.name === select.value);
           if (b) {
             document.getElementById('fEmptySpoolWeight').value = b.tara;
@@ -2068,42 +2416,51 @@
     }
 
     function populateModalFields(data) {
-      if (data.productUrl !== undefined) document.getElementById('fProductUrl').value = data.productUrl || '';
-      if (data.name !== undefined) document.getElementById('fName').value = data.name || '';
-      if (data.material !== undefined) document.getElementById('fMaterial').value = data.material || 'PLA';
-      if (data.colorHex !== undefined) document.getElementById('fColorHex').value = data.colorHex || '#f8fafc';
-      if (data.colorName !== undefined) document.getElementById('fColorName').value = data.colorName || '';
-      if (data.pricePerKg !== undefined) document.getElementById('fPricePerKg').value = data.pricePerKg || 19.99;
-      if (data.initialWeight !== undefined) document.getElementById('fInitialWeight').value = data.initialWeight;
-      if (data.remainingWeight !== undefined) document.getElementById('fRemainingWeight').value = data.remainingWeight;
-      if (data.emptySpoolWeight !== undefined) document.getElementById('fEmptySpoolWeight').value = data.emptySpoolWeight;
-      if (data.storageMode !== undefined) document.getElementById('fStorageMode').value = data.storageMode || 'open';
-      if (data.bagWeight !== undefined) document.getElementById('fBagWeight').value = data.bagWeight;
-      if (data.dryIntervalDays !== undefined) document.getElementById('fDryIntervalDays').value = data.dryIntervalDays;
-      if (data.dryTemp !== undefined) document.getElementById('fDryTemp').value = data.dryTemp;
-      if (data.dryHours !== undefined) document.getElementById('fDryHours').value = data.dryHours;
-      if (data.lastDried !== undefined) document.getElementById('fLastDried').value = data.lastDried;
+      const setVal = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined) el.value = v; };
+      setVal('fProductUrl', data.productUrl || '');
+      setVal('fName', data.name || '');
+      setVal('fMaterial', data.material || 'PLA');
+      setVal('fColorHex', data.colorHex || '#38bdf8');
+      setVal('fColorName', data.colorName || '');
+      setVal('fPricePerKg', data.pricePerKg || 18.99);
+      setVal('fInitialWeight', data.initialWeight ?? 1000);
+      setVal('fRemainingWeight', data.remainingWeight ?? 1000);
+      setVal('fEmptySpoolWeight', data.emptySpoolWeight ?? 250);
+      setVal('fStorageMode', data.storageMode === 'biqu_bag' ? 'ebos_bag' : (data.storageMode || 'open'));
+      setVal('fBagWeight', data.bagWeight ?? 0);
+      setVal('fDryIntervalDays', data.dryIntervalDays ?? 30);
+      setVal('fDryTemp', data.dryTemp ?? 50);
+      setVal('fDryHours', data.dryHours ?? 5);
+      setVal('fLastDried', data.lastDried || new Date().toISOString());
 
       if (data.brand) {
         const select = document.getElementById('fBrandSelect');
-        const match = Array.from(select.options).find(o => o.value.toLowerCase() === data.brand.toLowerCase());
-        if (match) {
-          select.value = match.value;
-          document.getElementById('fBrandCustom').classList.add('hidden');
-        } else {
-          select.value = 'OTHER';
-          document.getElementById('fBrandCustom').classList.remove('hidden');
-          document.getElementById('fBrandCustom').value = data.brand;
+        const custom = document.getElementById('fBrandCustom');
+        if (select && custom) {
+          const match = Array.from(select.options).find(o => o.value.toLowerCase() === data.brand.toLowerCase());
+          if (match) {
+            select.value = match.value;
+            custom.classList.add('hidden');
+          } else {
+            select.value = 'OTHER';
+            custom.classList.remove('hidden');
+            custom.value = data.brand;
+          }
         }
       }
       onMaterialOrStorageChangeInModal(data.bagWeight !== undefined);
     }
 
     function openSpoolModal(spoolId = null, prefill = null) {
-      document.getElementById('fScaleGross').value = '';
+      const scaleGross = document.getElementById('fScaleGross');
+      if (scaleGross) scaleGross.value = '';
+
       if (spoolId) {
-        const existing = spools.find(s => s.id === spoolId);
-        if (!existing) return;
+        const existing = spools.find(s => String(s.id) === String(spoolId));
+        if (!existing) {
+          showToast('Spule nicht gefunden.');
+          return;
+        }
         document.getElementById('modalTitle').textContent = 'Filament-Spule bearbeiten';
         document.getElementById('fId').value = existing.id;
         populateModalFields(existing);
@@ -2112,7 +2469,7 @@
         document.getElementById('fId').value = '';
         populateModalFields({
           productUrl: '', brand: 'Bambu Lab', name: '', material: 'PLA',
-          colorHex: '#f8fafc', colorName: '', pricePerKg: 19.99,
+          colorHex: '#38bdf8', colorName: '', pricePerKg: 19.99,
           initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 250,
           storageMode: 'open', bagWeight: 0,
           dryIntervalDays: 30, dryTemp: 50, dryHours: 5,
@@ -2120,16 +2477,18 @@
           ...(prefill || {})
         });
       }
-      document.getElementById('spoolModal').classList.replace('hidden', 'flex');
-      lucide.createIcons();
+      const modal = document.getElementById('spoolModal');
+      if (modal) modal.classList.replace('hidden', 'flex');
     }
 
     function closeSpoolModal() {
-      document.getElementById('spoolModal').classList.replace('flex', 'hidden');
+      const modal = document.getElementById('spoolModal');
+      if (modal) modal.classList.replace('flex', 'hidden');
     }
 
     function saveSpool(e) {
       e.preventDefault();
+      const modes = getStorageModes();
       const existingId = document.getElementById('fId').value;
       const selectVal = document.getElementById('fBrandSelect').value;
       const customVal = document.getElementById('fBrandCustom').value.trim();
@@ -2157,7 +2516,7 @@
         remainingWeight: parseInt(document.getElementById('fRemainingWeight').value) || 0,
         emptySpoolWeight: isNaN(emptyW) ? 200 : emptyW,
         storageMode,
-        bagWeight: isNaN(bagW) ? STORAGE_MODES[storageMode].bagWeight : bagW,
+        bagWeight: isNaN(bagW) ? modes[storageMode].bagWeight : bagW,
         productUrl: urlVal,
         lastDried: document.getElementById('fLastDried').value || new Date().toISOString(),
         dryIntervalDays: parseInt(document.getElementById('fDryIntervalDays').value) || getRecommendedDays(mat, storageMode),
@@ -2167,7 +2526,7 @@
 
       pushUndo();
       if (existingId) {
-        const idx = spools.findIndex(s => s.id === existingId);
+        const idx = spools.findIndex(s => String(s.id) === String(existingId));
         if (idx !== -1) spools[idx] = spoolData;
       } else {
         spools.unshift(spoolData);
@@ -2179,6 +2538,7 @@
 
     function openHistoryModal() {
       const list = document.getElementById('historyList');
+      if (!list) return;
       list.innerHTML = printHistory.map(h => `
         <div class="p-2.5 bg-surface-950 border border-white/[0.07] rounded-xl text-xs flex justify-between items-center gap-2">
           <div>
@@ -2186,7 +2546,7 @@
             <p class="text-[10px] text-slate-400">${new Date(h.timestamp).toLocaleString('de-DE')}</p>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-orange-400 font-mono-num font-bold">-${h.grams}g</span>
+            <span class="text-sky-400 font-mono-num font-bold">-${h.grams}g</span>
             <button onclick="undoHistory('${h.id}')" class="px-2 py-1 rounded bg-surface-800 hover:bg-surface-850 text-[10px] text-slate-200">Rückgängig</button>
           </div>
         </div>
@@ -2207,13 +2567,14 @@
     }
 
     function closeHistoryModal() {
-      document.getElementById('historyModal').classList.replace('flex', 'hidden');
+      document.getElementById('historyModal')?.classList.replace('flex', 'hidden');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      purgeLegacyAndMigrate();
       document.getElementById('cloudIdInput').value = currentCloudId;
+      applySettingsToUI();
       renderAiMessages();
+      renderSnapshotList();
       loadStateFromCloud();
       updateUndoRedoButtons();
 
