@@ -6,6 +6,7 @@
   <title>FilamentHub – 3D-Druck Filament-Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -44,6 +45,20 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
+        <div class="inline-flex items-center rounded-xl border border-slate-700 overflow-hidden">
+          <button id="undoBtn" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-slate-800">
+            <i data-lucide="undo-2" class="w-3.5 h-3.5 text-sky-400"></i>
+            <span class="hidden sm:inline">Rückgängig</span>
+          </button>
+          <button id="redoBtn" onclick="redoAction()" title="Vorwärts (Strg+Y)" class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border-l border-slate-700 transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-slate-800">
+            <i data-lucide="redo-2" class="w-3.5 h-3.5 text-sky-400"></i>
+            <span class="hidden sm:inline">Vorwärts</span>
+          </button>
+        </div>
+        <button onclick="openQrModal()" title="QR-Code zum Öffnen auf dem Handy" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+          <i data-lucide="qr-code" class="w-3.5 h-3.5 text-orange-400"></i>
+          <span class="hidden sm:inline">QR-Code</span>
+        </button>
         <button onclick="loadStateFromCloud(true)" title="Jetzt mit Cloud synchronisieren" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span>Sync</span>
@@ -350,6 +365,32 @@
     </div>
   </div>
 
+  <!-- MODAL: QR-CODE -->
+  <div id="qrModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 space-y-3 shadow-2xl">
+      <div class="flex justify-between items-start border-b border-slate-800 pb-2.5">
+        <div>
+          <h3 class="text-base font-bold text-white">Auf dem Handy öffnen</h3>
+          <p class="text-[11px] text-slate-400">QR-Code mit der Handy-Kamera scannen</p>
+        </div>
+        <button onclick="closeQrModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div class="flex justify-center">
+        <div class="p-3 rounded-xl bg-white">
+          <div id="qrCanvas" class="w-[220px] h-[220px] flex items-center justify-center text-center text-xs text-slate-700"></div>
+        </div>
+      </div>
+      <p id="qrWarning" class="hidden text-[11px] text-amber-400"></p>
+      <div class="space-y-1">
+        <label class="block text-[11px] text-slate-400">Adresse im QR-Code</label>
+        <div class="flex gap-2">
+          <input id="qrUrlInput" type="text" oninput="onQrUrlInput()" class="flex-1 min-w-0 px-2.5 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white outline-none focus:border-orange-500" />
+          <button onclick="copyQrUrl()" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 whitespace-nowrap">Kopieren</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: DRUCK-VERLAUF -->
   <div id="historyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl">
@@ -367,7 +408,7 @@
   <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS -->
   <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/95 border border-slate-700/80 shadow-lg text-[11px] text-slate-300 backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-orange-400">v12.1</span>
+    <span class="font-mono-num font-bold text-orange-400">v12.2</span>
     <span class="text-slate-500">|</span>
     <span>19.10.2026</span>
     <span class="text-slate-500">|</span>
@@ -622,22 +663,29 @@
       }
     }
 
+    let pendingSync = false;
+
     async function saveState() {
       saveLocalBackup();
       renderSpools();
-      if (isSyncing) return;
+      if (isSyncing) { pendingSync = true; return; }
 
+      isSyncing = true;
       try {
-        isSyncing = true;
-        setSyncStatus('Speichere...', false);
-        const res = await fetch(cloudDbUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ updatedAt: Date.now(), spools, printHistory })
-        });
-        if (res.ok) setSyncStatus('Cloud gespeichert', true);
-      } catch (e) {
-        setSyncStatus('Lokal gespeichert', false);
+        do {
+          pendingSync = false;
+          setSyncStatus('Speichere...', false);
+          try {
+            const res = await fetch(cloudDbUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ updatedAt: Date.now(), spools, printHistory })
+            });
+            if (res.ok) setSyncStatus('Cloud gespeichert', true);
+          } catch (e) {
+            setSyncStatus('Lokal gespeichert', false);
+          }
+        } while (pendingSync);
       } finally {
         isSyncing = false;
       }
@@ -997,10 +1045,136 @@
       }
     }
 
+    // 5b. RÜCKGÄNGIG / VORWÄRTS (gilt für alle Änderungen an Spulen und Verlauf)
+    const MAX_UNDO_STEPS = 50;
+    let undoStack = [];
+    let redoStack = [];
+
+    function snapshotState() {
+      return JSON.stringify({ spools, printHistory });
+    }
+
+    // Vor jeder Änderung aufrufen: merkt sich den Zustand davor
+    function pushUndo() {
+      undoStack.push(snapshotState());
+      if (undoStack.length > MAX_UNDO_STEPS) undoStack.shift();
+      redoStack = [];
+      updateUndoRedoButtons();
+    }
+
+    function restoreSnapshot(json) {
+      const data = JSON.parse(json);
+      spools = Array.isArray(data.spools) ? data.spools : [];
+      printHistory = Array.isArray(data.printHistory) ? data.printHistory : [];
+      saveState();
+      updateUndoRedoButtons();
+    }
+
+    function undoAction() {
+      if (!undoStack.length) return;
+      redoStack.push(snapshotState());
+      restoreSnapshot(undoStack.pop());
+      showToast('Rückgängig gemacht.');
+    }
+
+    function redoAction() {
+      if (!redoStack.length) return;
+      undoStack.push(snapshotState());
+      restoreSnapshot(redoStack.pop());
+      showToast('Wiederhergestellt (vorwärts).');
+    }
+
+    function updateUndoRedoButtons() {
+      const u = document.getElementById('undoBtn');
+      const r = document.getElementById('redoBtn');
+      if (u) { u.disabled = !undoStack.length; u.title = `Rückgängig (Strg+Z) – ${undoStack.length} Schritt(e)`; }
+      if (r) { r.disabled = !redoStack.length; r.title = `Vorwärts (Strg+Y) – ${redoStack.length} Schritt(e)`; }
+    }
+
+    // 5c. QR-CODE (Seite per Handy-Scan öffnen)
+    const QR_URL_KEY = 'filamenthub_qr_url';
+
+    function defaultQrUrl() {
+      const current = location.href.split('#')[0];
+      // Lokal geöffnete Datei: zuletzt eingetragene Online-Adresse verwenden
+      if (location.protocol === 'file:') {
+        try { return localStorage.getItem(QR_URL_KEY) || ''; } catch (e) { return ''; }
+      }
+      return current;
+    }
+
+    function openQrModal() {
+      document.getElementById('qrUrlInput').value = defaultQrUrl();
+      document.getElementById('qrModal').classList.replace('hidden', 'flex');
+      renderQr();
+    }
+
+    function closeQrModal() {
+      document.getElementById('qrModal').classList.replace('flex', 'hidden');
+    }
+
+    function onQrUrlInput() {
+      const url = document.getElementById('qrUrlInput').value.trim();
+      try { if (url) localStorage.setItem(QR_URL_KEY, url); } catch (e) {}
+      renderQr();
+    }
+
+    function renderQr() {
+      const url = document.getElementById('qrUrlInput').value.trim();
+      const box = document.getElementById('qrCanvas');
+      const warn = document.getElementById('qrWarning');
+      box.innerHTML = '';
+      warn.classList.add('hidden');
+
+      if (!url) {
+        box.textContent = 'Bitte die Online-Adresse der Seite eintragen.';
+        warn.textContent = 'Diese Seite ist lokal geöffnet (file://). Das Handy kann so nicht darauf zugreifen – trag unten die Adresse ein, unter der die Seite online erreichbar ist.';
+        warn.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const u = new URL(url);
+        if (u.protocol === 'file:') {
+          warn.textContent = 'Eine lokale Datei (file://) kann das Handy nicht öffnen – die Seite muss online gehostet sein.';
+          warn.classList.remove('hidden');
+        } else if (['localhost', '127.0.0.1', '::1'].includes(u.hostname)) {
+          warn.textContent = 'localhost funktioniert nur auf diesem Gerät. Nimm stattdessen die WLAN-Adresse des Rechners (z. B. http://192.168.x.x:PORT) oder die Online-Adresse.';
+          warn.classList.remove('hidden');
+        }
+      } catch (e) {}
+
+      if (typeof QRCode === 'undefined') {
+        box.textContent = 'QR-Bibliothek konnte nicht geladen werden (Internetverbindung prüfen).';
+        return;
+      }
+      new QRCode(box, {
+        text: url,
+        width: 220,
+        height: 220,
+        colorDark: '#0b111e',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+
+    async function copyQrUrl() {
+      const url = document.getElementById('qrUrlInput').value.trim();
+      if (!url) return;
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast('Adresse kopiert.');
+      } catch (e) {
+        document.getElementById('qrUrlInput').select();
+        showToast('Zum Kopieren bitte Strg+C drücken.');
+      }
+    }
+
     // 6. AKTIONEN: KOPIEREN, BEARBEITEN, LÖSCHEN, GEWICHT ABZIEHEN, WAAGE
     function duplicateSpool(id) {
       const orig = spools.find(s => s.id === id);
       if (!orig) return;
+      pushUndo();
       const copy = {
         ...orig,
         id: 'sp-' + Date.now(),
@@ -1015,10 +1189,10 @@
     function deleteSpool(id) {
       const spool = spools.find(s => s.id === id);
       if (!spool) return;
-      if (!confirm(`Möchtest du „${spool.brand} – ${spool.name}“ wirklich löschen?`)) return;
+      pushUndo();
       spools = spools.filter(s => s.id !== id);
       saveState();
-      showToast('Spule gelöscht.');
+      showToast('Spule gelöscht – oben auf „Rückgängig“ tippen zum Wiederherstellen.');
     }
 
     function deductWeight(id, presetGrams = null) {
@@ -1027,6 +1201,7 @@
       if (!g || g <= 0) return;
       const spool = spools.find(s => s.id === id);
       if (!spool) return;
+      pushUndo();
       spool.remainingWeight = Math.max(0, (Number(spool.remainingWeight) || 0) - g);
       printHistory.unshift({
         id: 'log-' + Date.now(),
@@ -1077,6 +1252,7 @@
         return;
       }
 
+      pushUndo();
       const newRemaining = Math.round(gross - tara);
       const oldRemaining = Number(spool.remainingWeight) || 0;
       const used = oldRemaining - newRemaining;
@@ -1102,6 +1278,7 @@
     function markDried(id) {
       const spool = spools.find(s => s.id === id);
       if (!spool) return;
+      pushUndo();
       spool.lastDried = new Date().toISOString();
       saveState();
       showToast(`${spool.brand} ${spool.name} als getrocknet markiert!`);
@@ -1271,6 +1448,7 @@
         dryHours: parseInt(document.getElementById('fDryHours').value) || preset.hours
       };
 
+      pushUndo();
       if (existingId) {
         const index = spools.findIndex(s => s.id === existingId);
         if (index !== -1) spools[index] = spoolData;
@@ -1307,6 +1485,7 @@
       if (idx === -1) return;
       const entry = printHistory[idx];
       const spool = spools.find(s => s.id === entry.spoolId);
+      pushUndo();
       if (spool) spool.remainingWeight = (Number(spool.remainingWeight) || 0) + (Number(entry.grams) || 0);
       printHistory.splice(idx, 1);
       saveState();
@@ -1328,7 +1507,19 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       loadStateFromCloud();
-      setInterval(() => loadStateFromCloud(false), 15000);
+      updateUndoRedoButtons();
+      // Auto-Sync nicht während eines laufenden Speicherns (sonst könnte eine Änderung überschrieben werden)
+      setInterval(() => { if (!isSyncing && !pendingSync) loadStateFromCloud(false); }, 15000);
+
+      // Tastenkürzel: Strg+Z = Rückgängig, Strg+Y bzw. Strg+Umschalt+Z = Vorwärts (nicht beim Tippen in Feldern)
+      document.addEventListener('keydown', e => {
+        const tag = e.target && e.target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (!(e.ctrlKey || e.metaKey)) return;
+        const k = e.key.toLowerCase();
+        if (k === 'z' && !e.shiftKey) { e.preventDefault(); undoAction(); }
+        else if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); redoAction(); }
+      });
     });
   </script>
 </body>
