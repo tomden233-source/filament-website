@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#070a12" />
-  <title>FilamentHub v14.0 – Smart 3D-Filament Manager</title>
+  <meta name="theme-color" content="#090d16" />
+  <title>FilamentHub v16.0 – 3D-Filament Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -16,121 +16,101 @@
       theme: {
         extend: {
           colors: {
-            obsidian: { 950: '#070a12', 900: '#0c111d', 850: '#111827', 800: '#1a2336' }
+            surface: { 950: '#090d16', 900: '#101624', 850: '#161e31', 800: '#1e2942' }
           }
         }
       }
     };
   </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #070a12;
-      background-image:
-        radial-gradient(at 15% 0%, rgba(249, 115, 22, 0.08) 0px, transparent 45%),
-        radial-gradient(at 85% 5%, rgba(56, 189, 248, 0.07) 0px, transparent 45%);
-      background-attachment: fixed;
+      font-family: 'Inter', sans-serif;
+      background-color: #090d16;
       color: #f1f5f9;
+      -webkit-font-smoothing: antialiased;
     }
     .font-mono-num { font-family: 'JetBrains Mono', monospace; }
-    .glass-panel {
-      background: rgba(15, 21, 35, 0.82);
-      backdrop-filter: blur(16px);
+    .clean-panel {
+      background-color: #101624;
       border: 1px solid rgba(255, 255, 255, 0.07);
     }
-    .glass-card {
-      background: linear-gradient(180deg, rgba(18, 25, 42, 0.9) 0%, rgba(12, 17, 29, 0.95) 100%);
+    .clean-card {
+      background-color: #101624;
       border: 1px solid rgba(255, 255, 255, 0.07);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .glass-card:hover {
-      border-color: rgba(249, 115, 22, 0.35);
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.6), 0 0 20px -5px rgba(249, 115, 22, 0.12);
+    .clean-card:hover {
+      border-color: rgba(249, 115, 22, 0.4);
+      box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5);
     }
     @keyframes pulse-overdue {
-      0%, 100% { border-color: rgba(244, 63, 94, 0.75); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.2); }
-      50% { border-color: rgba(244, 63, 94, 0.25); box-shadow: 0 0 18px 2px rgba(244, 63, 94, 0.15); }
+      0%, 100% { border-color: rgba(244, 63, 94, 0.8); }
+      50% { border-color: rgba(244, 63, 94, 0.25); }
     }
-    .overdue-card { animation: pulse-overdue 2.4s infinite; }
+    .overdue-card { animation: pulse-overdue 2.2s infinite; }
+    @keyframes mic-pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+      50% { transform: scale(1.06); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    }
+    .mic-active {
+      background-color: #ef4444 !important;
+      color: #ffffff !important;
+      animation: mic-pulse 1.4s infinite;
+    }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #070a12; }
+    ::-webkit-scrollbar-track { background: #090d16; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #334155; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-orange-500 selection:text-white pb-24 lg:pb-14">
+<body class="min-h-screen flex flex-col selection:bg-orange-500 selection:text-white pb-24 lg:pb-16">
 
-  <!-- ================= TOP NAVBAR (CLEAN & SLEEK) ================= -->
-  <header class="sticky top-0 z-30 backdrop-blur-xl bg-obsidian-950/85 border-b border-white/[0.07]">
-    <div class="max-w-[1640px] mx-auto px-3 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+  <!-- ================= SCHLICHTE TOP-NAVIGATION ================= -->
+  <header class="sticky top-0 z-30 bg-surface-950/90 backdrop-blur-xl border-b border-white/[0.07]">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       
-      <!-- Links: Sidebar-Toggle & Brand -->
+      <!-- Links: Menü-Button & Logo -->
       <div class="flex items-center gap-3">
-        <button onclick="toggleSidebar()" title="Smart-Menü links ein-/ausklappen" class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-orange-500/15 text-orange-400 border border-white/[0.08] hover:border-orange-500/40 transition flex items-center gap-2">
-          <i data-lucide="panel-left" class="w-4 h-4"></i>
-          <span class="text-xs font-bold hidden sm:inline text-slate-200">Tools & KI</span>
+        <button onclick="toggleSidebar()" class="px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 border border-white/[0.08] transition flex items-center gap-2 text-xs font-semibold">
+          <i data-lucide="menu" class="w-4 h-4 text-orange-400"></i>
+          <span>Menü</span>
         </button>
 
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center shadow-lg shadow-orange-500/20">
-            <i data-lucide="disc-3" class="w-5 h-5 text-obsidian-950 stroke-[2.3]"></i>
+          <div class="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-surface-950 shadow-sm">
+            <i data-lucide="disc-3" class="w-5 h-5 stroke-[2.2]"></i>
           </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">Filament<span class="text-orange-400">Hub</span></h1>
-              <button onclick="openSidebarTab('sync')" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/20 transition flex items-center gap-1.5">
-                <span id="topSyncDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="topSyncText">Live-Sync</span>
-              </button>
-            </div>
-          </div>
+          <span class="text-base sm:text-lg font-extrabold tracking-tight text-white">FilamentHub</span>
         </div>
       </div>
 
-      <!-- Rechts: Aufgeräumte Aktionsleiste inkl. Datei Import/Export -->
-      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-        <!-- Schnell-Tabs für die wichtigsten Tools -->
-        <div class="hidden xl:flex items-center bg-white/[0.03] p-1 rounded-xl border border-white/[0.06] mr-1">
-          <button onclick="openSidebarTab('gcode')" class="px-2.5 py-1.5 rounded-lg hover:bg-white/[0.06] text-slate-300 hover:text-orange-400 text-xs font-semibold transition flex items-center gap-1.5">
-            <i data-lucide="file-code-2" class="w-3.5 h-3.5 text-orange-400"></i>
-            <span>G-Code Abzug</span>
+      <!-- Rechts: Klare Direkt-Aktionen -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Rückgängig / Vorwärts -->
+        <div class="inline-flex items-center rounded-xl bg-surface-900 border border-white/[0.08]">
+          <button id="undoBtn" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:bg-surface-850 text-slate-300 transition disabled:opacity-30">
+            <i data-lucide="undo-2" class="w-4 h-4"></i>
           </button>
-          <button onclick="openSidebarTab('calc')" class="px-2.5 py-1.5 rounded-lg hover:bg-white/[0.06] text-slate-300 hover:text-emerald-400 text-xs font-semibold transition flex items-center gap-1.5">
-            <i data-lucide="calculator" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span>Kostenrechner</span>
-          </button>
-          <button onclick="openSidebarTab('ai')" class="px-2.5 py-1.5 rounded-lg hover:bg-white/[0.06] text-slate-300 hover:text-purple-400 text-xs font-semibold transition flex items-center gap-1.5">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-400"></i>
-            <span>KI-Agent</span>
+          <button id="redoBtn" onclick="redoAction()" title="Vorwärts (Strg+Y)" class="p-2 hover:bg-surface-850 text-slate-300 border-l border-white/[0.08] transition disabled:opacity-30">
+            <i data-lucide="redo-2" class="w-4 h-4"></i>
           </button>
         </div>
 
-        <!-- Undo / Redo -->
-        <div class="inline-flex items-center rounded-xl bg-white/[0.03] border border-white/[0.07] overflow-hidden">
-          <button id="undoBtn" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:bg-white/[0.06] text-slate-300 transition disabled:opacity-30">
-            <i data-lucide="undo-2" class="w-3.5 h-3.5 text-sky-400"></i>
-          </button>
-          <button id="redoBtn" onclick="redoAction()" title="Vorwärts (Strg+Y)" class="p-2 hover:bg-white/[0.06] text-slate-300 border-l border-white/[0.07] transition disabled:opacity-30">
-            <i data-lucide="redo-2" class="w-3.5 h-3.5 text-sky-400"></i>
-          </button>
-        </div>
-
-        <!-- NEU: LESBARER DATEI EXPORT / IMPORT & MASSEN-IMPORT -->
-        <button onclick="openDataVaultModal()" title="Alle Filamente als lesbare Textdatei exportieren, bearbeiten oder importieren" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-bold border border-sky-500/25 transition">
-          <i data-lucide="file-Spreadsheet" class="w-3.5 h-3.5 text-sky-400"></i>
-          <span>Datei Import / Export</span>
+        <!-- Datei / Text Import & Export -->
+        <button onclick="openDataVaultModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 text-xs font-semibold border border-white/[0.08] transition">
+          <i data-lucide="file-text" class="w-3.5 h-3.5 text-sky-400"></i>
+          <span>Datei / Text Import</span>
         </button>
 
-        <!-- Verlauf -->
-        <button onclick="openHistoryModal()" title="Druck-Verlauf" class="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 text-xs font-semibold border border-white/[0.07] transition">
+        <!-- Druck-Verlauf -->
+        <button onclick="openHistoryModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 text-xs font-semibold border border-white/[0.08] transition">
           <i data-lucide="history" class="w-3.5 h-3.5 text-orange-400"></i>
-          <span id="historyBadge" class="px-1.5 py-0.2 text-[10px] font-mono-num rounded-full bg-white/[0.08] text-slate-300">0</span>
+          <span class="hidden sm:inline">Verlauf</span>
+          <span id="historyBadge" class="px-1.5 py-0.2 text-[10px] font-mono-num rounded-full bg-surface-800 text-slate-300">0</span>
         </button>
 
         <!-- Neue Spule -->
-        <button onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-obsidian-950 text-xs font-extrabold shadow-lg shadow-orange-500/20 transition">
+        <button onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold transition shadow-sm">
           <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
           <span>Neue Spule</span>
         </button>
@@ -138,31 +118,28 @@
     </div>
   </header>
 
-  <!-- ================= HAUPT-WRAPPER ================= -->
-  <div class="flex-1 flex relative max-w-[1640px] w-full mx-auto">
+  <!-- ================= HAUPT-LAYOUT ================= -->
+  <div class="flex-1 flex relative max-w-[1600px] w-full mx-auto">
 
-    <!-- MOBILE BACKDROP -->
-    <div id="sidebarBackdrop" onclick="closeSidebarOnMobile()" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+    <!-- Mobile Backdrop -->
+    <div id="sidebarBackdrop" onclick="closeSidebarOnMobile()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden lg:hidden"></div>
 
     <!-- ================= LINKES AUSKLAPP-MENÜ (SIDEBAR) ================= -->
-    <aside id="leftSidebar" class="fixed lg:sticky top-0 lg:top-[61px] left-0 z-50 lg:z-20 h-screen lg:h-[calc(100vh-61px)] w-[340px] sm:w-[390px] bg-obsidian-900/95 backdrop-blur-2xl border-r border-white/[0.07] flex flex-col transition-all duration-300 -translate-x-full lg:translate-x-0 shrink-0 overflow-hidden shadow-2xl">
+    <aside id="leftSidebar" class="fixed lg:sticky top-0 lg:top-[57px] left-0 z-50 lg:z-20 h-screen lg:h-[calc(100vh-57px)] w-[340px] sm:w-[380px] bg-surface-900 border-r border-white/[0.07] flex flex-col transition-all duration-300 -translate-x-full lg:translate-x-0 shrink-0 overflow-hidden">
       
-      <!-- Sidebar Navigation -->
-      <div class="p-3 border-b border-white/[0.07] bg-obsidian-950/50">
-        <div class="flex items-center justify-between mb-2.5 px-1">
-          <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <i data-lucide="terminal" class="w-3.5 h-3.5 text-orange-400"></i>
-            <span>Command Center</span>
-          </span>
-          <button onclick="toggleSidebar()" class="px-2 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-400 hover:text-white text-[11px] flex items-center gap-1 transition">
-            <i data-lucide="chevrons-left" class="w-3.5 h-3.5"></i>
-            <span>Ausblenden</span>
+      <!-- Sidebar Tabs -->
+      <div class="p-3 border-b border-white/[0.07] bg-surface-950/40">
+        <div class="flex items-center justify-between mb-2 px-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Werkzeuge</span>
+          <button onclick="toggleSidebar()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            <span>Schließen</span>
           </button>
         </div>
 
-        <div class="grid grid-cols-4 gap-1 bg-obsidian-950 p-1 rounded-xl border border-white/[0.06]">
-          <button id="tabBtn-ai" onclick="switchSidebarTab('ai')" class="py-2 px-1 rounded-lg text-[11px] font-bold flex flex-col items-center gap-1 transition bg-gradient-to-b from-orange-500 to-amber-500 text-obsidian-950 shadow">
-            <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <div class="grid grid-cols-4 gap-1 bg-surface-950 p-1 rounded-xl border border-white/[0.06]">
+          <button id="tabBtn-ai" onclick="switchSidebarTab('ai')" class="py-2 px-1 rounded-lg text-[11px] font-bold flex flex-col items-center gap-1 transition bg-orange-500 text-surface-950">
+            <i data-lucide="bot" class="w-4 h-4"></i>
             <span>KI-Agent</span>
           </button>
           <button id="tabBtn-gcode" onclick="switchSidebarTab('gcode')" class="py-2 px-1 rounded-lg text-[11px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white">
@@ -180,215 +157,168 @@
         </div>
       </div>
 
-      <!-- Sidebar Panels -->
       <div class="flex-1 overflow-y-auto p-4 space-y-4">
 
-        <!-- TAB 1: KI-AGENT -->
+        <!-- TAB 1: KI-AGENT (INKL. SPRACHEINGABE) -->
         <div id="sidebarPanel-ai" class="flex flex-col h-full space-y-3">
-          <div class="rounded-xl bg-white/[0.03] border border-white/[0.07] p-3">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-orange-400"></span>
-                <span>KI-Assistent & Bestands-Steuerung</span>
-              </span>
-              <button onclick="toggleAiKeyConfig()" class="text-[10px] text-slate-400 hover:text-orange-400 transition">API-Key</button>
-            </div>
-            <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">
-              Steuere deinen Bestand per Text, lege Spulen an oder frage nach dem günstigsten Shop.
+          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3">
+            <p class="text-xs font-bold text-white">KI-Assistent & Sprachsteuerung</p>
+            <p class="text-[11px] text-slate-400 mt-1">
+              Tippe oder diktiere per Mikrofon, z. B.: <em>„Neue Spule Bambu Lab PLA Schwarz 1000g“</em> oder <em>„Ziehe 40g von Marmor ab“</em>.
             </p>
-            <div id="aiKeyBox" class="hidden mt-2 pt-2 border-t border-white/[0.07] space-y-1.5">
-              <input id="geminiApiKeyInput" type="password" placeholder="Optional: Gemini API-Key (AIzaSy...)" class="w-full px-2.5 py-1.5 rounded-lg bg-obsidian-950 border border-white/[0.1] text-xs text-white outline-none" />
-              <button onclick="saveGeminiKey()" class="w-full py-1.5 rounded-lg bg-orange-500 text-obsidian-950 text-xs font-bold">Key speichern</button>
-            </div>
           </div>
 
-          <div class="flex flex-wrap gap-1.5">
-            <button onclick="runAiQuickPrompt('Welche Spulen müssen getrocknet werden?')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.07] text-[11px] text-slate-300 transition">🔥 Trocknung prüfen</button>
-            <button onclick="runAiQuickPrompt('Wo kaufe ich meine Filamente am günstigsten nach?')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.07] text-[11px] text-slate-300 transition">💶 Bestpreise</button>
-            <button onclick="runAiQuickPrompt('Wie viel ist mein Bestand aktuell wert?')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.07] text-[11px] text-slate-300 transition">📊 Gesamtwert</button>
-          </div>
+          <div id="aiChatMessages" class="flex-1 min-h-[260px] max-h-[420px] overflow-y-auto space-y-2 rounded-xl bg-surface-950 border border-white/[0.06] p-3 text-xs"></div>
 
-          <div id="aiChatMessages" class="flex-1 min-h-[260px] max-h-[420px] overflow-y-auto space-y-2.5 rounded-xl bg-obsidian-950/80 border border-white/[0.06] p-3 text-xs"></div>
-
-          <div class="flex gap-2">
+          <div class="flex gap-1.5">
+            <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" title="Per Mikrofon einsprechen" class="px-3 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 text-orange-400 border border-white/[0.1] transition">
+              <i data-lucide="mic" class="w-4 h-4"></i>
+            </button>
             <input
               id="aiUserInput"
               type="text"
-              placeholder="z.B. 'Zieh 45g von Marmor ab'..."
-              class="flex-1 px-3 py-2.5 rounded-xl bg-obsidian-950 border border-white/[0.1] focus:border-orange-500 text-xs text-white outline-none"
+              placeholder="Schreiben oder Mikrofon drücken..."
+              class="flex-1 px-3 py-2.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-orange-500 text-xs text-white outline-none"
               onkeydown="if(event.key==='Enter'){ sendAiMessage(); }"
             />
-            <button onclick="sendAiMessage()" class="px-3.5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-obsidian-950 font-bold text-xs transition">
+            <button onclick="sendAiMessage()" class="px-3.5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 font-bold text-xs transition">
               <i data-lucide="send" class="w-4 h-4"></i>
             </button>
           </div>
         </div>
 
-        <!-- TAB 2: G-CODE UPLOAD & 1-KLICK ABZUG -->
+        <!-- TAB 2: G-CODE UPLOAD & DIREKT-ABZUG -->
         <div id="sidebarPanel-gcode" class="hidden space-y-4">
-          <div class="rounded-xl bg-white/[0.03] border border-white/[0.07] p-3">
-            <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
-              <i data-lucide="file-code-2" class="w-4 h-4 text-orange-400"></i>
-              <span>G-Code Direkt-Abzug</span>
-            </h3>
+          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3">
+            <h3 class="text-xs font-bold text-white">G-Code Direkt-Abzug</h3>
             <p class="text-[11px] text-slate-400 mt-1">
-              Lade deinen fertigen `.gcode` hoch → Gewicht wird ausgelesen → Spule antippen und sofort abziehen.
+              Lade deinen fertigen G-Code hoch und wähle die Spule aus, von der das Gewicht abgezogen werden soll.
             </p>
           </div>
 
-          <label for="gcodeFileInput" class="cursor-pointer block rounded-2xl border border-dashed border-orange-500/40 hover:border-orange-400 bg-orange-500/[0.04] hover:bg-orange-500/[0.08] p-5 text-center transition group">
-            <div class="w-11 h-11 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center mx-auto mb-2 text-orange-400 group-hover:scale-105 transition">
-              <i data-lucide="upload-cloud" class="w-5 h-5"></i>
-            </div>
-            <p class="text-xs font-bold text-white">G-Code Datei auswählen</p>
+          <label for="gcodeFileInput" class="cursor-pointer block rounded-xl border border-dashed border-orange-500/40 hover:border-orange-400 bg-surface-950 p-5 text-center transition">
+            <i data-lucide="upload-cloud" class="w-6 h-6 text-orange-400 mx-auto mb-2"></i>
+            <p class="text-xs font-bold text-white">G-Code Datei auswählen (.gcode)</p>
             <p class="text-[11px] text-slate-400 mt-0.5">Bambu Studio, OrcaSlicer, PrusaSlicer, Cura</p>
             <input id="gcodeFileInput" type="file" accept=".gcode,.gco,.txt" class="hidden" onchange="handleGcodeUpload(event, 'deduct')" />
           </label>
 
-          <div id="gcodeResultBox" class="hidden rounded-2xl bg-obsidian-950 border border-emerald-500/35 p-3.5 space-y-3">
+          <div id="gcodeResultBox" class="hidden rounded-xl bg-surface-950 border border-emerald-500/35 p-3.5 space-y-3">
             <div class="flex items-center justify-between border-b border-white/[0.07] pb-2">
-              <div class="min-w-0">
-                <span class="text-[10px] font-bold uppercase text-emerald-400">Erfolgreich ausgelesen</span>
-                <p id="gcodeFileName" class="text-xs font-bold text-white truncate">model.gcode</p>
-              </div>
-              <button onclick="transferGcodeToCalc()" class="px-2.5 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-[11px] text-orange-400 font-semibold">
-                → Im Rechner öffnen
-              </button>
+              <p id="gcodeFileName" class="text-xs font-bold text-white truncate">Druck.gcode</p>
+              <button onclick="transferGcodeToCalc()" class="text-[11px] text-orange-400 hover:underline font-semibold">→ Im Rechner öffnen</button>
             </div>
-
             <div class="grid grid-cols-2 gap-2">
-              <div class="rounded-xl bg-white/[0.03] p-2.5 border border-white/[0.06]">
-                <span class="text-[10px] text-slate-400 block">Druckgewicht</span>
-                <div class="flex items-center gap-1 mt-0.5">
-                  <input id="gcodeParsedGrams" type="number" step="0.1" oninput="renderGcodeSpoolSelection()" class="w-20 bg-transparent text-base font-extrabold text-emerald-400 font-mono-num outline-none border-b border-white/20" />
-                  <span class="text-xs font-bold text-emerald-400">g</span>
-                </div>
+              <div class="rounded-lg bg-surface-900 p-2.5 border border-white/[0.06]">
+                <span class="text-[10px] text-slate-400 block">Gewicht (g)</span>
+                <input id="gcodeParsedGrams" type="number" step="0.1" oninput="renderGcodeSpoolSelection()" class="w-full bg-transparent text-base font-extrabold text-emerald-400 font-mono-num outline-none" />
               </div>
-              <div class="rounded-xl bg-white/[0.03] p-2.5 border border-white/[0.06]">
+              <div class="rounded-lg bg-surface-900 p-2.5 border border-white/[0.06]">
                 <span class="text-[10px] text-slate-400 block">Druckzeit</span>
                 <p id="gcodeParsedTime" class="text-sm font-bold text-white font-mono-num mt-1">—</p>
               </div>
             </div>
-
             <div class="space-y-1.5">
               <p class="text-[11px] font-bold text-orange-400">Spule antippen zum Abziehen:</p>
-              <div id="gcodeSpoolSelectionList" class="space-y-1.5 max-h-64 overflow-y-auto pr-1"></div>
+              <div id="gcodeSpoolSelectionList" class="space-y-1.5 max-h-60 overflow-y-auto"></div>
             </div>
           </div>
         </div>
 
         <!-- TAB 3: KOSTENRECHNER -->
         <div id="sidebarPanel-calc" class="hidden space-y-3.5">
-          <div class="rounded-xl bg-white/[0.03] border border-white/[0.07] p-3">
-            <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
-              <i data-lucide="calculator" class="w-4 h-4 text-emerald-400"></i>
-              <span>Druck-Kostenrechner</span>
-            </h3>
-            <p class="text-[11px] text-slate-400 mt-1">
-              Berechnet Material-, Strom- und Verschleißkosten aus G-Code oder per manueller Eingabe.
-            </p>
-          </div>
-
-          <label for="calcGcodeInput" class="cursor-pointer flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-obsidian-950 hover:bg-white/[0.04] border border-dashed border-orange-500/40 transition">
-            <div class="flex items-center gap-2.5">
-              <i data-lucide="file-up" class="w-4 h-4 text-orange-400"></i>
-              <div>
-                <p class="text-xs font-bold text-white">Aus G-Code Datei ziehen</p>
-                <p id="calcGcodeLabel" class="text-[10px] text-slate-400">Gewicht & Druckzeit automatisch laden</p>
-              </div>
+          <label for="calcGcodeInput" class="cursor-pointer flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 border border-dashed border-orange-500/40 transition">
+            <div>
+              <p class="text-xs font-bold text-white">Aus G-Code Datei ziehen</p>
+              <p id="calcGcodeLabel" class="text-[10px] text-slate-400">Gewicht & Druckzeit automatisch laden</p>
             </div>
-            <span class="px-2 py-1 rounded-lg bg-orange-500/15 text-orange-400 text-[10px] font-bold">Upload</span>
+            <span class="px-2 py-1 rounded bg-orange-500/15 text-orange-400 text-[10px] font-bold">Upload</span>
             <input id="calcGcodeInput" type="file" accept=".gcode,.gco,.txt" class="hidden" onchange="handleGcodeUpload(event, 'calc')" />
           </label>
 
-          <div class="space-y-2.5 rounded-xl bg-obsidian-950 border border-white/[0.07] p-3">
+          <div class="space-y-2.5 rounded-xl bg-surface-950 border border-white/[0.07] p-3">
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Filament / Spule wählen</label>
-              <select id="calcSpoolSelect" onchange="onCalcSpoolChange()" class="w-full px-3 py-2 rounded-xl bg-obsidian-900 border border-white/[0.1] text-xs text-white outline-none"></select>
+              <label class="block text-[11px] text-slate-400 mb-1">Filament wählen</label>
+              <select id="calcSpoolSelect" onchange="onCalcSpoolChange()" class="w-full px-3 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white outline-none"></select>
             </div>
-
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Filamentpreis (€/kg)</label>
-                <input id="calcPricePerKg" type="number" step="0.01" value="17.99" oninput="calculatePrintCost()" class="w-full px-2.5 py-2 rounded-lg bg-obsidian-900 border border-white/[0.1] text-xs font-mono-num text-emerald-400 font-bold outline-none" />
+                <label class="block text-[11px] text-slate-400 mb-1">Preis (€/kg)</label>
+                <input id="calcPricePerKg" type="number" step="0.01" value="17.99" oninput="calculatePrintCost()" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-emerald-400 font-bold outline-none" />
               </div>
               <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Gewicht (Gramm)</label>
-                <input id="calcWeightGrams" type="number" step="0.1" value="50" oninput="calculatePrintCost()" class="w-full px-2.5 py-2 rounded-lg bg-obsidian-900 border border-orange-500/40 text-xs font-mono-num text-white font-bold outline-none" />
+                <label class="block text-[11px] text-slate-400 mb-1">Gewicht (g)</label>
+                <input id="calcWeightGrams" type="number" step="0.1" value="50" oninput="calculatePrintCost()" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-white font-bold outline-none" />
               </div>
             </div>
-
             <div class="grid grid-cols-3 gap-2 pt-1">
               <div>
-                <label class="block text-[10px] text-slate-400 mb-1">Dauer (Std.)</label>
-                <input id="calcHours" type="number" step="0.1" value="2.0" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
+                <label class="block text-[10px] text-slate-400 mb-1">Dauer (h)</label>
+                <input id="calcHours" type="number" step="0.1" value="2.0" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg bg-surface-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
               </div>
               <div>
-                <label class="block text-[10px] text-slate-400 mb-1">Drucker (W)</label>
-                <input id="calcWatts" type="number" value="120" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
+                <label class="block text-[10px] text-slate-400 mb-1">Watt</label>
+                <input id="calcWatts" type="number" value="120" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg bg-surface-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
               </div>
               <div>
-                <label class="block text-[10px] text-slate-400 mb-1">Strom (€/kWh)</label>
-                <input id="calcKwhPrice" type="number" step="0.01" value="0.32" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
+                <label class="block text-[10px] text-slate-400 mb-1">€/kWh</label>
+                <input id="calcKwhPrice" type="number" step="0.01" value="0.32" oninput="calculatePrintCost()" class="w-full px-2 py-1.5 rounded-lg bg-surface-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
               </div>
             </div>
           </div>
 
-          <div class="rounded-2xl bg-obsidian-950 border border-emerald-500/30 p-3.5 space-y-2">
+          <div class="rounded-xl bg-surface-950 border border-emerald-500/30 p-3.5 space-y-2">
             <div class="flex justify-between text-xs text-slate-400">
               <span>Materialkosten:</span>
               <span id="calcResMaterial" class="font-mono-num font-bold text-white">0,90 €</span>
             </div>
             <div class="flex justify-between text-xs text-slate-400">
-              <span>Stromkosten:</span>
-              <span id="calcResPower" class="font-mono-num font-bold text-white">0,08 €</span>
-            </div>
-            <div class="flex justify-between text-xs text-slate-400">
-              <span>Verschleiß (10%):</span>
-              <span id="calcResWear" class="font-mono-num font-bold text-white">0,10 €</span>
+              <span>Strom + Verschleiß:</span>
+              <span id="calcResPower" class="font-mono-num font-bold text-white">0,18 €</span>
             </div>
             <div class="border-t border-white/[0.08] pt-2 flex justify-between items-center">
-              <span class="text-xs font-extrabold uppercase text-emerald-400">Gesamtkosten:</span>
+              <span class="text-xs font-bold text-emerald-400">Gesamtkosten:</span>
               <span id="calcResTotal" class="text-lg font-extrabold font-mono-num text-emerald-400">1,08 €</span>
             </div>
-            <button onclick="deductFromCalculator()" class="w-full mt-1 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-obsidian-950 text-xs font-extrabold transition">
-              Gewicht jetzt von Spule abziehen
+            <button onclick="deductFromCalculator()" class="w-full py-2 rounded-lg bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold transition">
+              Gewicht von Spule abziehen
             </button>
           </div>
         </div>
 
-        <!-- TAB 4: HANDY-APP & SYNC -->
+        <!-- TAB 4: HANDY-KOPPLUNG -->
         <div id="sidebarPanel-sync" class="hidden space-y-3.5">
-          <div class="rounded-xl bg-obsidian-950 border border-white/[0.07] p-3.5 space-y-2.5">
-            <h3 class="text-xs font-bold text-orange-400 flex items-center gap-1.5">
-              <i data-lucide="smartphone" class="w-4 h-4"></i>
-              <span>Handy-App & Echtzeit-Kopplung</span>
-            </h3>
-            <p class="text-[11px] text-slate-300 leading-relaxed">
-              Lade dir die App-Datei fürs Handy herunter (und schicke sie per WhatsApp/Mail aufs Handy) oder hoste sie online für den QR-Scanner. Beide Geräte nutzen denselben Cloud-Tresor!
+          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-2.5">
+            <h3 class="text-xs font-bold text-white">PC & Handy Synchronisation</h3>
+            <p class="text-[11px] text-slate-400">
+              Beide Geräte greifen auf dieselbe Cloud-ID zu. Du kannst den Stand hier jederzeit manuell senden oder abrufen.
             </p>
-            <button onclick="downloadMobileAppFile()" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-obsidian-950 text-xs font-extrabold flex items-center justify-center gap-2 shadow-lg">
-              <i data-lucide="download" class="w-4 h-4"></i>
-              <span>Handy-App Datei (.html) speichern</span>
-            </button>
-          </div>
-
-          <div class="rounded-xl bg-obsidian-950 border border-white/[0.07] p-3 space-y-2">
-            <label class="block text-[11px] font-bold text-slate-300">🔗 Gemeinsame Cloud-ID (PC & Handy):</label>
-            <div class="flex gap-1.5">
-              <input id="cloudIdInput" type="text" value="2a75ad089c77e7c35f98" class="flex-1 px-2.5 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.1] text-xs font-mono-num text-emerald-400 outline-none" />
-              <button onclick="saveCloudId()" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-obsidian-950 text-xs font-bold">Sync</button>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="forcePushToCloud()" class="py-2 px-2.5 rounded-lg bg-orange-500 text-surface-950 text-[11px] font-bold">
+                ↑ In Cloud senden
+              </button>
+              <button onclick="forcePullFromCloud()" class="py-2 px-2.5 rounded-lg bg-emerald-500 text-surface-950 text-[11px] font-bold">
+                ↓ Cloud abrufen
+              </button>
             </div>
           </div>
 
-          <div class="rounded-xl bg-obsidian-950 border border-white/[0.07] p-3 space-y-2">
-            <label class="block text-[11px] font-bold text-slate-300">📷 QR-Code (für Online-URL):</label>
+          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-2">
+            <label class="block text-[11px] font-bold text-slate-300">Gemeinsame Cloud-ID:</label>
+            <div class="flex gap-1.5">
+              <input id="cloudIdInput" type="text" value="2a75ad089c77e7c35f98" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-emerald-400 outline-none" />
+              <button onclick="saveCloudId()" class="px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-850 text-white text-xs font-bold">Speichern</button>
+            </div>
+          </div>
+
+          <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-2">
+            <label class="block text-[11px] font-bold text-slate-300">QR-Code fürs Handy:</label>
             <div class="flex justify-center">
-              <div class="p-2.5 rounded-xl bg-white">
-                <div id="qrCanvasSidebar" class="w-[155px] h-[155px] flex items-center justify-center text-center text-[11px] text-slate-700 p-2"></div>
+              <div class="p-2 rounded-xl bg-white">
+                <div id="qrCanvasSidebar" class="w-[140px] h-[140px] flex items-center justify-center text-center text-[11px] text-slate-700 p-2"></div>
               </div>
             </div>
-            <input id="qrUrlSidebarInput" type="url" placeholder="Online-URL hier eintragen..." oninput="onSidebarQrInput()" class="w-full px-2.5 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.1] text-xs text-white outline-none" />
+            <input id="qrUrlSidebarInput" type="url" placeholder="Deine Online-URL (z.B. GitHub/Netlify)..." oninput="onSidebarQrInput()" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.1] text-xs text-white outline-none" />
           </div>
         </div>
 
@@ -396,100 +326,76 @@
     </aside>
 
     <!-- ================= HAUPT-BEREICH RECHTS ================= -->
-    <main class="flex-1 min-w-0 px-3 sm:px-6 py-5 space-y-5">
+    <main class="flex-1 min-w-0 px-4 sm:px-6 py-5 space-y-5">
 
-      <!-- TOP OMNI-BAR: SMART LINK & TEXT SCANNER -->
-      <section class="glass-panel rounded-2xl p-4 sm:p-5 shadow-xl relative overflow-hidden">
-        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-          <div class="space-y-0.5">
-            <div class="inline-flex items-center gap-1.5 text-orange-400 text-[11px] font-extrabold uppercase tracking-wider">
-              <i data-lucide="wand-2" class="w-3.5 h-3.5"></i>
-              <span>Smart-Scanner & Bestpreis-Finder</span>
-            </div>
-            <h2 class="text-sm sm:text-base font-bold text-white">Produkt-Link ODER Namen eingeben (z. B. „Bambu Lab PLA Weiß ohne Spule“)</h2>
-            <p class="text-xs text-slate-400">Erkennt Marke, Material, Farbe, Tara & Preis automatisch und verknüpft den günstigsten Shop (1–3 Tage Versand).</p>
+      <!-- SCHLICHTE SCHNELL-EINGABE (TEXT, LINK ODER MIKROFON) -->
+      <section class="clean-panel rounded-2xl p-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-bold text-white">Schnell-Eintrag (Link, Text oder 🎙️ Spracheingabe)</h2>
+            <p class="text-xs text-slate-400">z. B. „Bambu Lab PLA Weiß ohne Spule“ oder Amazon-Link einfügen</p>
           </div>
 
-          <div class="flex-1 max-w-2xl">
-            <div class="flex flex-col sm:flex-row gap-2">
-              <div class="relative flex-1">
-                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-                <input
-                  id="quickLinkInput"
-                  type="text"
-                  placeholder="Link (Amazon/Bambu/SUNLU) oder Text wie 'esun petg schwarz'..."
-                  class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-obsidian-950/90 border border-white/[0.1] focus:border-orange-500 text-xs sm:text-sm text-white outline-none transition"
-                  onkeydown="if(event.key==='Enter'){ handleQuickLinkImport(); }"
-                />
-              </div>
-              <button
-                id="quickScanBtn"
-                onclick="handleQuickLinkImport()"
-                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-obsidian-950 font-extrabold text-xs sm:text-sm transition whitespace-nowrap shadow-lg shadow-orange-500/15"
-              >
-                <i data-lucide="sparkles" class="w-4 h-4"></i>
-                <span>Erkennen & Anlegen</span>
-              </button>
-            </div>
+          <div class="flex-1 max-w-2xl flex gap-2">
+            <button id="micBtnQuick" type="button" onclick="startVoiceRecognition('quickLinkInput', 'micBtnQuick', false)" title="Filament per Mikrofon einsprechen" class="px-3.5 py-2.5 rounded-xl bg-surface-950 hover:bg-surface-850 text-orange-400 border border-white/[0.1] transition flex items-center gap-1.5 shrink-0 text-xs font-semibold">
+              <i data-lucide="mic" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Einsprechen</span>
+            </button>
+            <input
+              id="quickLinkInput"
+              type="text"
+              placeholder="Name diktieren, eintippen oder Produkt-Link einfügen..."
+              class="w-full px-3.5 py-2.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-orange-500 text-xs sm:text-sm text-white outline-none"
+              onkeydown="if(event.key==='Enter'){ handleQuickLinkImport(); }"
+            />
+            <button
+              id="quickScanBtn"
+              onclick="handleQuickLinkImport()"
+              class="px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 font-bold text-xs sm:text-sm transition whitespace-nowrap"
+            >
+              Anlegen
+            </button>
           </div>
         </div>
       </section>
 
-      <!-- KPI-LEISTE (KOMPAKT & TECHY) -->
-      <section class="grid grid-cols-2 lg:grid-cols-5 gap-3">
-        <div class="glass-panel rounded-2xl p-3.5 flex items-center justify-between">
+      <!-- ÜBERSICHTLICHE KPI-LEISTE -->
+      <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="clean-panel rounded-2xl p-4 flex items-center justify-between">
           <div>
-            <p class="text-[11px] text-slate-400 font-medium">Spulen Lagernd</p>
-            <p id="statTotalSpools" class="text-xl font-extrabold text-white font-mono-num mt-0.5">0</p>
+            <p class="text-xs text-slate-400">Spulen im Bestand</p>
+            <p id="statTotalSpools" class="text-2xl font-extrabold text-white font-mono-num mt-0.5">0</p>
           </div>
-          <div class="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-            <i data-lucide="disc-3" class="w-4 h-4"></i>
-          </div>
+          <i data-lucide="layers" class="w-5 h-5 text-slate-500"></i>
         </div>
 
-        <div class="glass-panel rounded-2xl p-3.5 flex items-center justify-between">
+        <div class="clean-panel rounded-2xl p-4 flex items-center justify-between">
           <div>
-            <p class="text-[11px] text-slate-400 font-medium">Netto-Gewicht</p>
-            <p id="statTotalWeight" class="text-xl font-extrabold text-emerald-400 font-mono-num mt-0.5">0 g</p>
+            <p class="text-xs text-slate-400">Netto-Gewicht</p>
+            <p id="statTotalWeight" class="text-2xl font-extrabold text-emerald-400 font-mono-num mt-0.5">0 g</p>
           </div>
-          <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-            <i data-lucide="scale" class="w-4 h-4"></i>
-          </div>
+          <i data-lucide="scale" class="w-5 h-5 text-emerald-500/70"></i>
         </div>
 
-        <div class="glass-panel rounded-2xl p-3.5 flex items-center justify-between">
+        <div class="clean-panel rounded-2xl p-4 flex items-center justify-between">
           <div>
-            <p class="text-[11px] text-slate-400 font-medium">Bestands-Wert</p>
-            <p id="statTotalValue" class="text-xl font-extrabold text-sky-400 font-mono-num mt-0.5">0,00 €</p>
+            <p class="text-xs text-slate-400">Materialwert</p>
+            <p id="statTotalValue" class="text-2xl font-extrabold text-sky-400 font-mono-num mt-0.5">0,00 €</p>
           </div>
-          <div class="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
-            <i data-lucide="badge-euro" class="w-4 h-4"></i>
-          </div>
+          <i data-lucide="badge-euro" class="w-5 h-5 text-sky-500/70"></i>
         </div>
 
-        <div class="glass-panel rounded-2xl p-3.5 flex items-center justify-between">
+        <div class="clean-panel rounded-2xl p-4 flex items-center justify-between">
           <div>
-            <p class="text-[11px] text-slate-400 font-medium">Trocknung fällig</p>
-            <p id="statDryingDue" class="text-xl font-extrabold text-amber-400 font-mono-num mt-0.5">0</p>
+            <p class="text-xs text-slate-400">Trocknung fällig</p>
+            <p id="statDryingDue" class="text-2xl font-extrabold text-amber-400 font-mono-num mt-0.5">0</p>
           </div>
-          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-            <i data-lucide="flame" class="w-4 h-4"></i>
-          </div>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1 glass-panel rounded-2xl p-3.5 flex items-center justify-between">
-          <div>
-            <p class="text-[11px] text-slate-400 font-medium">Verdruckt</p>
-            <p id="statUsedWeight" class="text-xl font-extrabold text-purple-400 font-mono-num mt-0.5">0 g</p>
-          </div>
-          <div class="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-            <i data-lucide="layers" class="w-4 h-4"></i>
-          </div>
+          <i data-lucide="flame" class="w-5 h-5 text-amber-500/70"></i>
         </div>
       </section>
 
-      <!-- FILTER & SORTIER-BAR -->
-      <section class="glass-panel rounded-2xl p-3.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      <!-- FILTER & SORTIERUNG -->
+      <section class="clean-panel rounded-2xl p-3.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <div id="materialFilterBar" class="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0"></div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -499,134 +405,116 @@
               id="searchInput"
               type="text"
               oninput="renderSpools()"
-              placeholder="Filamente filtern..."
-              class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-obsidian-950 border border-white/[0.08] focus:border-orange-500 text-xs text-white outline-none"
+              placeholder="Suchen..."
+              class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-surface-950 border border-white/[0.08] focus:border-orange-500 text-xs text-white outline-none"
             />
           </div>
 
           <select
             id="sortSelect"
             onchange="renderSpools()"
-            class="px-3 py-1.5 rounded-xl bg-obsidian-950 border border-white/[0.08] focus:border-orange-500 text-xs font-semibold text-slate-200 outline-none"
+            class="px-3 py-1.5 rounded-xl bg-surface-950 border border-white/[0.08] text-xs font-semibold text-slate-200 outline-none"
           >
-            <option value="drying_urgent">🔥 Trocknung (Dringend zuerst)</option>
-            <option value="remaining_asc">⚖️ Restgewicht (Fast leer zuerst)</option>
-            <option value="remaining_desc">⚖️ Restgewicht (Voll zuerst)</option>
-            <option value="price_asc">💶 Preis / kg (Günstigste zuerst)</option>
-            <option value="brand_asc">🏷️ Hersteller (A–Z)</option>
-            <option value="color_asc">🎨 Farbe (A–Z)</option>
+            <option value="drying_urgent">Sortierung: Trocknung dringend</option>
+            <option value="remaining_asc">Sortierung: Wenig Gewicht zuerst</option>
+            <option value="remaining_desc">Sortierung: Viel Gewicht zuerst</option>
+            <option value="price_asc">Sortierung: Günstigste zuerst</option>
+            <option value="brand_asc">Sortierung: Hersteller (A–Z)</option>
+            <option value="color_asc">Sortierung: Farbe (A–Z)</option>
           </select>
         </div>
       </section>
 
-      <!-- SPULEN-GRID -->
+      <!-- SPULEN-RASTER -->
       <section id="spoolGrid" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4"></section>
 
     </main>
   </div>
 
   <!-- ================= HANDY BOTTOM-NAV ================= -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-obsidian-950/95 backdrop-blur-xl border-t border-white/[0.08] px-2 py-1.5 grid grid-cols-5 gap-1">
+  <nav class="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-surface-950/95 backdrop-blur-xl border-t border-white/[0.08] px-2 py-1.5 grid grid-cols-5 gap-1">
     <button onclick="closeSidebarOnMobile()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-orange-400">
       <i data-lucide="disc-3" class="w-4 h-4"></i>
       <span>Bestand</span>
     </button>
-    <button onclick="openSidebarTab('gcode')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-slate-300">
-      <i data-lucide="file-code-2" class="w-4 h-4 text-orange-400"></i>
+    <button onclick="openSidebarTab('gcode')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
+      <i data-lucide="file-code-2" class="w-4 h-4"></i>
       <span>G-Code</span>
     </button>
-    <button onclick="openSidebarTab('calc')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-slate-300">
-      <i data-lucide="calculator" class="w-4 h-4 text-emerald-400"></i>
+    <button onclick="openSidebarTab('calc')" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
+      <i data-lucide="calculator" class="w-4 h-4"></i>
       <span>Rechner</span>
     </button>
-    <button onclick="openDataVaultModal()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-slate-300">
-      <i data-lucide="file-text" class="w-4 h-4 text-sky-400"></i>
-      <span>Import/Txt</span>
+    <button onclick="openDataVaultModal()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold text-slate-300">
+      <i data-lucide="file-text" class="w-4 h-4"></i>
+      <span>Import</span>
     </button>
-    <button onclick="openSpoolModal()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-amber-400">
+    <button onclick="openSpoolModal()" class="py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold text-orange-400">
       <i data-lucide="plus-circle" class="w-4 h-4"></i>
       <span>Neu</span>
     </button>
   </nav>
 
-  <!-- ================= NEU: MODAL FÜR LESBAREN DATEI-EXPORT / IMPORT & MASSEN-EINGABE ================= -->
-  <div id="dataVaultModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto">
-    <div class="bg-obsidian-900 border border-white/[0.1] rounded-2xl max-w-3xl w-full p-6 space-y-4 shadow-2xl my-8">
+  <!-- ================= MODAL: DATEI / TEXT IMPORT & DIKTAT ================= -->
+  <div id="dataVaultModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="bg-surface-900 border border-white/[0.1] rounded-2xl max-w-3xl w-full p-6 space-y-4 shadow-2xl my-8">
       <div class="flex items-start justify-between border-b border-white/[0.08] pb-3">
         <div>
-          <div class="inline-flex items-center gap-1.5 text-sky-400 text-[11px] font-extrabold uppercase tracking-wider">
-            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-            <span>Lesbares & Bearbeitbares Filament-Format (.txt)</span>
-          </div>
-          <h3 class="text-lg font-extrabold text-white mt-0.5">Alle Filamente exportieren, bearbeiten oder auf einmal importieren</h3>
-          <p class="text-xs text-slate-400">Du kannst diese Liste als `.txt` Datei speichern, im Editor frei bearbeiten oder hier direkt dutzende Filamente auf einmal einfügen.</p>
+          <h3 class="text-base sm:text-lg font-extrabold text-white">Filament-Liste einfügen, diktieren oder als Datei speichern</h3>
+          <p class="text-xs text-slate-400">Hier kannst du die von mir erstellte Liste direkt online reinkopieren, per Mikrofon einsprechen oder als `.txt` herunterladen.</p>
         </div>
-        <button onclick="closeDataVaultModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.06]">✕</button>
+        <button onclick="closeDataVaultModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">✕</button>
       </div>
 
-      <!-- 1-Klick Datei-Aktionen -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <button onclick="downloadReadableTxtFile()" class="p-3.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 flex items-center justify-between transition group">
-          <div class="flex items-center gap-3 text-left">
-            <div class="w-10 h-10 rounded-xl bg-sky-500/20 flex items-center justify-center text-sky-400">
-              <i data-lucide="download" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <p class="text-xs font-extrabold text-white group-hover:text-sky-300">Als lesbare .TXT Datei herunterladen</p>
-              <p class="text-[11px] text-slate-400">Perfekt zum Sichern & Bearbeiten im Texteditor</p>
-            </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        <button id="micBtnVault" type="button" onclick="startVoiceRecognition('vaultTextArea', 'micBtnVault', false, true)" class="p-3 rounded-xl bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 flex items-center gap-2.5 text-left transition">
+          <i data-lucide="mic" class="w-5 h-5 text-orange-400 shrink-0"></i>
+          <div>
+            <p class="text-xs font-bold text-white">🎙️ Jetzt diktieren</p>
+            <p class="text-[10px] text-slate-400">Fügt Gesprochenes als neue Zeile ein</p>
           </div>
-          <i data-lucide="arrow-down-to-line" class="w-4 h-4 text-sky-400"></i>
         </button>
 
-        <label for="vaultFileInput" class="cursor-pointer p-3.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 flex items-center justify-between transition group">
-          <div class="flex items-center gap-3 text-left">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <i data-lucide="upload" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <p class="text-xs font-extrabold text-white group-hover:text-emerald-300">Datei (.TXT oder .JSON) wieder einladen</p>
-              <p class="text-[11px] text-slate-400">Liest deine bearbeitete Datei sofort wieder ein</p>
-            </div>
+        <button onclick="downloadReadableTxtFile()" class="p-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 flex items-center gap-2.5 text-left transition">
+          <i data-lucide="download" class="w-5 h-5 text-sky-400 shrink-0"></i>
+          <div>
+            <p class="text-xs font-bold text-white">.TXT herunterladen</p>
+            <p class="text-[10px] text-slate-400">Lesbares Backup speichern</p>
           </div>
-          <i data-lucide="folder-open" class="w-4 h-4 text-emerald-400"></i>
+        </button>
+
+        <label for="vaultFileInput" class="cursor-pointer p-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 flex items-center gap-2.5 text-left transition">
+          <i data-lucide="upload" class="w-5 h-5 text-emerald-400 shrink-0"></i>
+          <div>
+            <p class="text-xs font-bold text-white">Datei hochladen</p>
+            <p class="text-[10px] text-slate-400">.TXT oder .JSON laden</p>
+          </div>
           <input id="vaultFileInput" type="file" accept=".txt,.csv,.json" class="hidden" onchange="handleVaultFileUpload(event)" />
         </label>
       </div>
 
-      <!-- Live-Texteditor für alle Spulen / Bulk-Import -->
-      <div class="space-y-2">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <label class="text-xs font-bold text-slate-300">
-            Live-Editor & Massen-Import (1 Zeile = 1 Spule • Direkt hier bearbeitbar):
-          </label>
-          <span class="text-[11px] text-slate-400 font-mono-num">
-            Format: Marke | Name | Material | Farbe | Rest(g) | Voll(g) | Tara(g) | Preis(€) | Hex | Link
-          </span>
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center text-xs text-slate-400">
+          <span>1 Zeile = 1 Spule (Freitext oder Format: <code class="text-slate-300">Marke | Name | Material | Farbe | Rest(g) | Voll(g) | Tara(g) | Preis(€)</code>)</span>
         </div>
         <textarea
           id="vaultTextArea"
           rows="10"
-          placeholder="Marke | Name | Material | Farbe | Restgewicht | Startgewicht | Tara | Preis | Hex | Link&#10;Oder einfach frei tippen, z.B.:&#10;Bambu Lab PLA Weiß ohne Spule 1000g 19.99€&#10;SUNLU PETG Schwarz 850g 15.99€"
-          class="w-full p-3.5 rounded-xl bg-obsidian-950 border border-white/[0.1] focus:border-sky-400 text-xs font-mono-num text-slate-200 outline-none leading-relaxed"
+          placeholder="Hier einfach deine Liste einfügen oder diktieren, z.B.:&#10;Bambu Lab | PLA Basic Weiß | PLA | Weiß | 1000g | 1000g | 250g | 19.99€&#10;ELEGOO | PLA Marmor | PLA | Marmor | 850g | 1000g | 160g | 17.99€"
+          class="w-full p-3.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-orange-500 text-xs font-mono-num text-slate-200 outline-none leading-relaxed"
         ></textarea>
-        <p class="text-[11px] text-slate-400">
-          💡 <strong>Tipp:</strong> Du kannst hier auch einfach neue Zeilen wie <code class="text-orange-300">Bambu Lab PLA Schwarz 1000g 19,99€</code> oder Amazon-Links unten dranhängen!
-        </p>
       </div>
 
-      <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/[0.08]">
-        <button onclick="copyVaultText()" class="px-3.5 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-          <span>Text in Zwischenablage kopieren</span>
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/[0.08]">
+        <button onclick="copyVaultText()" class="px-3 py-2 rounded-xl bg-surface-950 hover:bg-surface-850 text-xs font-semibold text-slate-300 border border-white/[0.08]">
+          Text kopieren
         </button>
-
-        <div class="flex flex-wrap items-center gap-2">
-          <button onclick="applyVaultText('append')" class="px-4 py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition">
+        <div class="flex flex-wrap gap-2">
+          <button onclick="applyVaultText('append')" class="px-4 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
             ➕ Zum Bestand hinzufügen
           </button>
-          <button onclick="applyVaultText('replace')" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-obsidian-950 text-xs font-extrabold shadow-lg transition">
-            ✓ Liste genau so übernehmen (Synchronisieren)
+          <button onclick="applyVaultText('replace')" class="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold">
+            ✓ Als neuen Gesamtbestand speichern
           </button>
         </div>
       </div>
@@ -634,23 +522,11 @@
   </div>
 
   <!-- ================= MODAL: SPULE HINZUFÜGEN / BEARBEITEN ================= -->
-  <div id="spoolModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto">
-    <div class="bg-obsidian-900 border border-white/[0.1] rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl my-8 max-h-[92vh] overflow-y-auto">
+  <div id="spoolModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="bg-surface-900 border border-white/[0.1] rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl my-8">
       <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
-        <div>
-          <h3 id="modalTitle" class="text-lg font-extrabold text-white">Spule eintragen</h3>
-          <p class="text-xs text-slate-400">Automatische Shop-, Preis- & Tara-Erkennung</p>
-        </div>
+        <h3 id="modalTitle" class="text-base font-bold text-white">Spule eintragen</h3>
         <button onclick="closeSpoolModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">✕</button>
-      </div>
-
-      <div class="rounded-xl bg-obsidian-950 border border-orange-500/30 p-3 space-y-2">
-        <label class="block text-[11px] font-extrabold text-orange-400 uppercase">Produkt-Link oder Kurzbeschreibung</label>
-        <div class="flex gap-2">
-          <input id="fProductUrl" type="text" placeholder="Link oder Text (z.B. bambulab pla weiß ohne spule)..." class="flex-1 px-3 py-2 rounded-lg bg-obsidian-900 border border-white/[0.1] text-xs text-white outline-none" />
-          <button id="modalScanBtn" type="button" onclick="fetchFromModalUrl()" class="px-3.5 py-2 rounded-lg bg-orange-500 text-obsidian-950 text-xs font-extrabold whitespace-nowrap">Auslesen</button>
-        </div>
-        <p id="modalDetectedInfo" class="text-[11px] text-emerald-400 hidden"></p>
       </div>
 
       <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-3.5">
@@ -658,8 +534,8 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Hersteller / Marke *</label>
-            <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/[0.1] text-sm text-white outline-none">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Hersteller *</label>
+            <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-sm text-white outline-none">
               <option value="Bambu Lab">Bambu Lab</option>
               <option value="SUNLU">SUNLU</option>
               <option value="ELEGOO">ELEGOO</option>
@@ -677,23 +553,23 @@
               <option value="Das Filament">Das Filament</option>
               <option value="OTHER">➕ Anderer Hersteller...</option>
             </select>
-            <input id="fBrandCustom" type="text" placeholder="Hersteller eingeben..." class="w-full mt-2 px-3 py-2 rounded-xl bg-obsidian-950 border border-white/[0.1] text-sm text-white outline-none hidden" />
+            <input id="fBrandCustom" type="text" placeholder="Hersteller eingeben..." class="w-full mt-2 px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-sm text-white outline-none hidden" />
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Bezeichnung / Serie *</label>
-            <input id="fName" type="text" required placeholder="z.B. PLA Basic Weiß" class="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/[0.1] text-sm text-white outline-none" />
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Bezeichnung *</label>
+            <input id="fName" type="text" required placeholder="z.B. PLA Basic Weiß" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-sm text-white outline-none" />
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Material *</label>
-            <select id="fMaterial" onchange="applyMaterialPresetInModal()" class="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/[0.1] text-sm text-white outline-none">
+            <select id="fMaterial" onchange="applyMaterialPresetInModal()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-sm text-white outline-none">
               <option value="PLA">PLA</option>
               <option value="PLA+">PLA+</option>
               <option value="PETG">PETG</option>
-              <option value="TPU">TPU (Flex)</option>
+              <option value="TPU">TPU</option>
               <option value="ABS">ABS</option>
               <option value="ASA">ASA</option>
               <option value="PA / Nylon">PA / Nylon</option>
@@ -705,96 +581,97 @@
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Farbe *</label>
             <div class="flex items-center gap-1.5">
-              <input id="fColorHex" type="color" value="#f97316" class="w-9 h-9 rounded-xl bg-obsidian-950 border border-white/[0.1] p-1 cursor-pointer shrink-0" />
-              <input id="fColorName" type="text" required placeholder="z.B. Marmor" oninput="autoMatchHexFromColorInput(this.value)" class="w-full px-2.5 py-2 rounded-xl bg-obsidian-950 border border-white/[0.1] text-xs text-white outline-none" />
+              <input id="fColorHex" type="color" value="#f97316" class="w-9 h-9 rounded-xl bg-surface-950 border border-white/[0.1] p-1 cursor-pointer shrink-0" />
+              <input id="fColorName" type="text" required placeholder="z.B. Weiß" oninput="autoMatchHexFromColorInput(this.value)" class="w-full px-2.5 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-emerald-400 mb-1">Preis (€ / kg) *</label>
-            <input id="fPricePerKg" type="number" step="0.01" min="1" max="500" value="17.99" class="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-emerald-500/40 text-sm font-mono-num text-emerald-400 font-bold outline-none" />
+            <label class="block text-xs font-semibold text-emerald-400 mb-1">Preis (€/kg) *</label>
+            <input id="fPricePerKg" type="number" step="0.01" min="1" max="500" value="17.99" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-sm font-mono-num text-emerald-400 font-bold outline-none" />
           </div>
         </div>
 
-        <div class="rounded-xl bg-obsidian-950 border border-white/[0.07] p-3 space-y-2.5">
+        <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-2.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-slate-300">Gewicht & Leerspule (Gramm)</span>
-            <div class="flex gap-1.5 text-[11px]">
-              <button type="button" onclick="document.getElementById('fEmptySpoolWeight').value=0;applyModalScale();" class="px-2 py-0.5 rounded bg-orange-500/15 text-orange-300 border border-orange-500/30 font-semibold">Ohne Spule (0g)</button>
-            </div>
+            <button type="button" onclick="document.getElementById('fEmptySpoolWeight').value=0;applyModalScale();" class="px-2 py-0.5 rounded bg-orange-500/15 text-orange-300 text-[11px] font-semibold">Ohne Spule (0g Tara)</button>
           </div>
           <div class="grid grid-cols-3 gap-2.5">
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Startgewicht (g)</label>
-              <input id="fInitialWeight" type="number" value="1000" class="w-full px-2.5 py-2 rounded-lg bg-obsidian-900 border border-white/[0.1] text-sm font-mono-num text-white outline-none" />
+              <label class="block text-[11px] text-slate-400 mb-1">Start (g)</label>
+              <input id="fInitialWeight" type="number" value="1000" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-sm font-mono-num text-white outline-none" />
             </div>
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Restgewicht (g)</label>
-              <input id="fRemainingWeight" type="number" value="1000" class="w-full px-2.5 py-2 rounded-lg bg-obsidian-900 border border-emerald-500/50 text-sm font-mono-num text-emerald-400 font-bold outline-none" />
+              <label class="block text-[11px] text-slate-400 mb-1">Rest (g)</label>
+              <input id="fRemainingWeight" type="number" value="1000" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-emerald-500/50 text-sm font-mono-num text-emerald-400 font-bold outline-none" />
             </div>
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Leerspule Tara (g)</label>
-              <input id="fEmptySpoolWeight" type="number" value="200" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg bg-obsidian-900 border border-white/[0.1] text-sm font-mono-num text-slate-300 outline-none" />
+              <label class="block text-[11px] text-slate-400 mb-1">Tara (g)</label>
+              <input id="fEmptySpoolWeight" type="number" value="200" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-sm font-mono-num text-slate-300 outline-none" />
             </div>
           </div>
-          <div class="pt-2 border-t border-white/[0.06]">
-            <input id="fScaleGross" type="number" placeholder="⚖️ Optional: Gesamtgewicht auf Waage (Spule + Filament in g)..." oninput="applyModalScale()" class="w-full px-2.5 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
-            <p id="fScaleHint" class="text-[10px] text-slate-400 mt-1"></p>
-          </div>
+          <input id="fScaleGross" type="number" placeholder="⚖️ Optional: Gesamtgewicht auf Waage eingeben (Spule + Filament in g)..." oninput="applyModalScale()" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
+          <p id="fScaleHint" class="text-[10px] text-slate-400"></p>
         </div>
 
-        <div class="rounded-xl bg-obsidian-950 border border-white/[0.07] p-3 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-300">Trocknungs-Intervall</span>
-            <button type="button" onclick="setModalDriedNow()" class="text-[11px] text-orange-400 hover:underline font-semibold">Auf „Jetzt getrocknet“ setzen</button>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">Shop-Link (optional – sonst automatisch)</label>
+            <input id="fProductUrl" type="text" placeholder="https://..." class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-            <div class="sm:col-span-2">
-              <input id="fLastDried" type="datetime-local" class="w-full px-2.5 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.1] text-xs text-white outline-none" />
+          <div class="grid grid-cols-3 gap-1.5">
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Intervall (d)</label>
+              <input id="fDryIntervalDays" type="number" value="30" class="w-full px-2 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
             </div>
             <div>
-              <input id="fDryIntervalDays" type="number" value="30" class="w-full px-2.5 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.1] text-xs font-mono-num text-white outline-none" title="Intervall Tage" />
+              <label class="block text-[11px] text-slate-400 mb-1">Temp °C</label>
+              <input id="fDryTemp" type="number" value="50" class="w-full px-2 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
             </div>
-            <div class="flex gap-1">
-              <input id="fDryTemp" type="number" value="50" class="w-1/2 px-2 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.1] text-xs font-mono-num text-white outline-none" title="°C" />
-              <input id="fDryHours" type="number" value="5" class="w-1/2 px-2 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.1] text-xs font-mono-num text-white outline-none" title="Stunden" />
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Dauer h</label>
+              <input id="fDryHours" type="number" value="5" class="w-full px-2 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
             </div>
           </div>
         </div>
+        <input id="fLastDried" type="hidden" />
 
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeSpoolModal()" class="px-4 py-2.5 rounded-xl bg-white/[0.06] text-xs font-semibold text-slate-300">Abbrechen</button>
-          <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-obsidian-950 text-xs font-extrabold shadow-lg">Spule speichern</button>
+          <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl bg-surface-800 text-xs font-semibold text-slate-300">Abbrechen</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold">Speichern</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL: DRUCK-VERLAUF -->
-  <div id="historyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4">
-    <div class="bg-obsidian-900 border border-white/[0.1] rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl">
+  <div id="historyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-surface-900 border border-white/[0.1] rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl">
       <div class="flex justify-between items-center border-b border-white/[0.08] pb-2.5">
-        <h3 class="text-base font-bold text-white">Druck-Verlauf & Rückgängig</h3>
+        <h3 class="text-base font-bold text-white">Druck-Verlauf</h3>
         <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
       <div id="historyList" class="space-y-2 max-h-72 overflow-y-auto"></div>
     </div>
   </div>
 
-  <!-- TOAST CONTAINER -->
+  <!-- TOAST MELDUNGEN -->
   <div id="toastContainer" class="fixed bottom-16 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- STATUS PILL UNTEN RECHTS -->
-  <div class="fixed bottom-3 right-3 z-40 hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-obsidian-900/95 border border-white/[0.1] shadow-lg text-[11px] text-slate-300 backdrop-blur-md">
+  <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS (IMMER SICHTBAR MIT DATUM & UHRZEIT) -->
+  <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-900/95 border border-white/[0.12] shadow-xl text-[11px] text-slate-300 backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-orange-400">v14.0</span>
-    <span class="text-slate-600">•</span>
-    <span id="syncStatusLabel" class="text-emerald-400">Synchron</span>
+    <span class="font-mono-num font-bold text-orange-400">v16.0</span>
+    <span class="text-slate-600">|</span>
+    <span class="font-mono-num text-slate-300">19.10.2026, 17:35 Uhr</span>
+    <span class="text-slate-600">|</span>
+    <span id="syncStatusLabel" class="text-emerald-400 font-semibold">Synchron</span>
   </div>
 
   <script>
     // =========================================================================
-    // 1. DATENBANKEN (MATERIALIEN, MARKEN, FARBEN & SERIÖSE SHOPS)
+    // 1. DATENBANKEN (OHNE CHARCOAL-FALLBACK)
     // =========================================================================
     const MATERIAL_PRESETS = {
       'PLA':            { intervalDays: 30, temp: 50, hours: 5, defaultPrice: 17.99 },
@@ -806,10 +683,6 @@
       'PA / Nylon':     { intervalDays: 7,  temp: 80, hours: 8, defaultPrice: 34.99 },
       'PC':             { intervalDays: 10, temp: 80, hours: 8, defaultPrice: 36.99 },
       'PET-CF / PA-CF': { intervalDays: 10, temp: 80, hours: 8, defaultPrice: 39.99 }
-    };
-
-    const KNOWN_ASIN_DB = {
-      'B0CM6C7W84': { brand: 'ELEGOO', material: 'PLA', colorName: 'Marmor', colorHex: '#e2e8f0', name: 'PLA Filament 1.75mm Marmor 1kg', emptySpoolWeight: 160, pricePerKg: 17.99 }
     };
 
     const BRAND_DATABASE = [
@@ -832,11 +705,11 @@
 
     const COLOR_MAP = [
       { keys: ['weiss', 'weiß', 'white', 'ivory', 'jade white'], name: 'Weiß', en: 'white', hex: '#f8fafc' },
-      { keys: ['marmor', 'marble', 'stein', 'stone', 'granit'], name: 'Marmor', en: 'marble', hex: '#e2e8f0' },
-      { keys: ['charcoal', 'anthrazit', 'anthracite', 'dunkelgrau', 'galaxy black'], name: 'Anthrazit', en: 'charcoal', hex: '#27272a' },
+      { keys: ['marmor', 'marble', 'stein', 'granit'], name: 'Marmor', en: 'marble', hex: '#e2e8f0' },
+      { keys: ['anthrazit', 'dunkelgrau', 'ash grey'], name: 'Anthrazit', en: 'grey', hex: '#3f3f46' },
       { keys: ['schwarz', 'black', 'jet-black', 'onyx'], name: 'Schwarz', en: 'black', hex: '#18181b' },
       { keys: ['silber', 'silver', 'grau', 'grey', 'gray', 'titanium'], name: 'Grau / Silber', en: 'grey', hex: '#94a3b8' },
-      { keys: ['rot', 'red', 'crimson', 'scarlet', 'weinrot'], name: 'Rot', en: 'red', hex: '#ef4444' },
+      { keys: ['rot', 'red', 'crimson', 'weinrot'], name: 'Rot', en: 'red', hex: '#ef4444' },
       { keys: ['türkis', 'tuerkis', 'turquoise', 'cyan', 'mint', 'teal'], name: 'Türkis / Cyan', en: 'cyan', hex: '#06b6d4' },
       { keys: ['blau', 'blue', 'navy', 'cobalt', 'eisblau', 'hellblau'], name: 'Blau', en: 'blue', hex: '#3b82f6' },
       { keys: ['grün', 'gruen', 'green', 'olive', 'emerald', 'lime', 'bambusgrün'], name: 'Grün', en: 'green', hex: '#22c55e' },
@@ -894,100 +767,124 @@
       return `https://www.amazon.de/s?k=${encodeURIComponent(amzQ)}`;
     }
 
-    function getReliableOffers(spool) {
+    function getBestShopOffer(spool) {
       const brand = (spool.brand || 'PLA').trim();
       const brandLower = brand.toLowerCase();
       const mat = spool.material || 'PLA';
       const color = spool.colorName && spool.colorName !== 'Standard' ? spool.colorName : '';
-      const searchQ = encodeURIComponent([brand, mat, 'Filament 1.75mm', color, '1kg'].filter(Boolean).join(' '));
       const baseP = Number(spool.pricePerKg) || getDefaultPriceForSpool(brand, mat);
       const isRefill = Number(spool.emptySpoolWeight) === 0;
+      const url = spool.productUrl || buildVendorUrl(brand, mat, color, spool.name, isRefill);
 
-      const offers = [];
-      if (spool.productUrl && spool.productUrl.trim()) {
-        let shopTitle = 'Dein Shop-Link';
-        if (spool.productUrl.includes('amazon')) shopTitle = 'Amazon.de Prime';
-        else if (spool.productUrl.includes('bambulab')) shopTitle = 'Bambu Lab DE';
-        else if (spool.productUrl.includes('sunlu')) shopTitle = 'SUNLU DE Store';
-        else if (spool.productUrl.includes('3djake')) shopTitle = '3DJake.de';
-        offers.push({ shop: shopTitle, price: baseP, delivery: '1–2 Tage', url: spool.productUrl.trim() });
-      }
+      let shop = 'Amazon.de (1–2d)';
+      if (url.includes('bambulab')) shop = 'Bambu Store (1–3d)';
+      else if (url.includes('sunlu')) shop = 'SUNLU DE (2–3d)';
+      else if (url.includes('3djake')) shop = '3DJake (1–2d)';
 
-      offers.push({
-        shop: 'Amazon.de Prime',
-        price: brandLower.includes('bambu') ? +(baseP + 2.0).toFixed(2) : baseP,
-        delivery: '1–2 Tage',
-        url: `https://www.amazon.de/s?k=${searchQ}`
-      });
-
-      if (brandLower.includes('bambu')) {
-        offers.push({
-          shop: 'Bambu Lab Store',
-          price: isRefill ? 16.99 : 19.99,
-          delivery: '1–3 Tage',
-          url: buildVendorUrl(brand, mat, color, spool.name, isRefill)
-        });
-      }
-
-      if (brandLower.includes('sunlu') || brandLower.includes('jayo')) {
-        offers.push({
-          shop: 'SUNLU DE-Lager',
-          price: Math.min(baseP, 14.49),
-          delivery: '2–3 Tage',
-          url: buildVendorUrl(brand, mat, color, spool.name, isRefill)
-        });
-      }
-
-      offers.push({
-        shop: '3DJake.de',
-        price: +(baseP + 0.50).toFixed(2),
-        delivery: '1–2 Tage',
-        url: `https://www.3djake.de/suche?keyword=${searchQ}`
-      });
-
-      offers.sort((a, b) => a.price - b.price);
-      return offers;
+      return { shop, price: baseP, url };
     }
 
     // =========================================================================
-    // 2. CLOUD & LOKAL-SPEICHER (INKL. DATENRETTUNG)
+    // 2. SPEICHER & UNTERBRECHUNGSFREIER SYNC (CHARCOAL IST KOMPLETT ENTFERNT)
     // =========================================================================
-    const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_permanent';
-    const PERMANENT_HISTORY_KEY = 'filamenthub_history_permanent';
+    const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v16';
+    const PERMANENT_HISTORY_KEY = 'filamenthub_history_v16';
+    const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v16';
+    const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v16';
     const CLOUD_ID_STORAGE_KEY = 'filamenthub_cloud_id';
-    const LEGACY_KEYS = ['filamenthub_spools_v9', 'filamenthub_spools_v8', 'filamenthub_spools_v7', 'filamenthub_spools_v5'];
+
+    const OLD_KEYS_TO_CLEAN = [
+      'filamenthub_spools_v15', 'filamenthub_spools_permanent', 'filamenthub_spools_v13',
+      'filamenthub_spools_v9', 'filamenthub_spools_v8', 'filamenthub_spools_v7',
+      'filamenthub_spools_v6', 'filamenthub_spools_v5', 'filamenthub_spools_v3', 'filamenthub_spools_v2'
+    ];
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramCloud = urlParams.get('cloud');
+    if (paramCloud) {
+      const cleanId = paramCloud.replace('https://api.npoint.io/', '').trim();
+      if (cleanId) localStorage.setItem(CLOUD_ID_STORAGE_KEY, cleanId);
+    }
 
     let currentCloudId = localStorage.getItem(CLOUD_ID_STORAGE_KEY) || '2a75ad089c77e7c35f98';
     function getCloudDbUrl() { return `https://api.npoint.io/${currentCloudId}`; }
 
     let spools = [];
     let printHistory = [];
+    let deletedIds = JSON.parse(localStorage.getItem(DELETED_TOMBSTONES_KEY) || '[]');
+    let localUpdatedAt = Number(localStorage.getItem(LOCAL_UPDATED_AT_KEY) || 0);
+    let lastUserInteractionTime = 0;
+    let lastRenderedHash = '';
     let activeMaterialFilter = 'ALL';
-    let openScaleCards = {}; // Merkt sich, bei welcher Karte die Waage aufgeklappt ist
+    let openScaleCards = {};
     let isSyncing = false;
     let pendingSync = false;
 
+    // Merkt sich jede Nutzer-Interaktion, damit der Auto-Sync NIEMALS dazwischenfunkt!
+    ['keydown', 'mousedown', 'touchstart', 'input'].forEach(evt => {
+      window.addEventListener(evt, () => { lastUserInteractionTime = Date.now(); }, { passive: true });
+    });
+
+    function isAnyModalOrInputActive() {
+      const modals = ['spoolModal', 'dataVaultModal', 'historyModal'];
+      for (const mId of modals) {
+        const el = document.getElementById(mId);
+        if (el && !el.classList.contains('hidden')) return true;
+      }
+      const activeTag = document.activeElement?.tagName;
+      if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT') return true;
+      if (Date.now() - lastUserInteractionTime < 10000) return true;
+      return false;
+    }
+
+    // RADIKALE ENTFERNUNG VON CHARCOAL (egal wie es geschrieben ist)
+    function isCharcoalOrDeleted(spool) {
+      if (!spool) return true;
+      if (deletedIds.includes(spool.id)) return true;
+      const text = `${spool.id || ''} ${spool.brand || ''} ${spool.name || ''} ${spool.colorName || ''}`.toLowerCase();
+      if (text.includes('charcoal') || spool.id === 'sp-1' || spool.id === 'default-1') {
+        return true;
+      }
+      return false;
+    }
+
+    function purgeLegacyAndMigrate() {
+      OLD_KEYS_TO_CLEAN.forEach(k => {
+        const raw = localStorage.getItem(k);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              const clean = parsed.filter(s => !isCharcoalOrDeleted(s));
+              if (!localStorage.getItem(PERMANENT_SPOOLS_KEY) && clean.length > 0) {
+                localStorage.setItem(PERMANENT_SPOOLS_KEY, JSON.stringify(clean));
+              }
+            }
+          } catch (e) {}
+          localStorage.removeItem(k);
+        }
+      });
+      try { window.name = ''; } catch (e) {}
+    }
+
     function setSyncStatus(text, isOk = true) {
       const dot = document.getElementById('syncDot');
-      const topDot = document.getElementById('topSyncDot');
       const label = document.getElementById('syncStatusLabel');
-      const topText = document.getElementById('topSyncText');
       if (dot) dot.className = `w-2 h-2 rounded-full ${isOk ? 'bg-emerald-400' : 'bg-amber-400'}`;
-      if (topDot) topDot.className = `w-1.5 h-1.5 rounded-full ${isOk ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`;
-      if (label) { label.textContent = text; label.className = isOk ? 'text-emerald-400' : 'text-amber-400'; }
-      if (topText) topText.textContent = text;
+      if (label) { label.textContent = text; label.className = isOk ? 'text-emerald-400 font-semibold' : 'text-amber-400 font-semibold'; }
     }
 
     function showToast(msg) {
       const container = document.getElementById('toastContainer');
       const el = document.createElement('div');
-      el.className = 'px-4 py-2.5 rounded-xl bg-obsidian-900/95 border border-orange-500/40 text-xs font-semibold text-white shadow-xl transition-all';
+      el.className = 'px-4 py-2.5 rounded-xl bg-surface-900 border border-orange-500/40 text-xs font-semibold text-white shadow-xl transition-all';
       el.textContent = msg;
       container.appendChild(el);
-      setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
+      setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2800);
     }
 
-    function ensureSpoolDefaults() {
+    function sanitizeSpools() {
+      spools = spools.filter(s => !isCharcoalOrDeleted(s));
       spools.forEach(s => {
         if (!s.pricePerKg || isNaN(Number(s.pricePerKg))) {
           s.pricePerKg = getDefaultPriceForSpool(s.brand, s.material);
@@ -999,96 +896,68 @@
       });
     }
 
-    function getLocalBackup() {
-      let foundSpools = [];
-      let foundHistory = [];
-      const mainSpools = localStorage.getItem(PERMANENT_SPOOLS_KEY);
-      if (mainSpools) { try { foundSpools = JSON.parse(mainSpools); } catch (e) {} }
-      if (!foundSpools.length) {
-        for (const key of LEGACY_KEYS) {
-          const raw = localStorage.getItem(key);
-          if (raw) {
-            try {
-              const parsed = JSON.parse(raw);
-              if (Array.isArray(parsed) && parsed.length > 0) { foundSpools = parsed; break; }
-            } catch (e) {}
-          }
-        }
-      }
-      const mainHist = localStorage.getItem(PERMANENT_HISTORY_KEY);
-      if (mainHist) { try { foundHistory = JSON.parse(mainHist); } catch (e) {} }
-      return { spools: foundSpools, printHistory: foundHistory };
-    }
-
-    function saveLocalBackup() {
-      ensureSpoolDefaults();
-      const jsonSpools = JSON.stringify(spools);
-      const jsonHist = JSON.stringify(printHistory);
-      localStorage.setItem(PERMANENT_SPOOLS_KEY, jsonSpools);
-      localStorage.setItem(PERMANENT_HISTORY_KEY, jsonHist);
-      localStorage.setItem('filamenthub_spools_v7', jsonSpools);
-      try { window.name = JSON.stringify({ spools, printHistory }); } catch (e) {}
+    function saveLocalBackup(timestamp = Date.now()) {
+      sanitizeSpools();
+      localUpdatedAt = timestamp;
+      localStorage.setItem(PERMANENT_SPOOLS_KEY, JSON.stringify(spools));
+      localStorage.setItem(PERMANENT_HISTORY_KEY, JSON.stringify(printHistory));
+      localStorage.setItem(DELETED_TOMBSTONES_KEY, JSON.stringify(deletedIds));
+      localStorage.setItem(LOCAL_UPDATED_AT_KEY, String(localUpdatedAt));
     }
 
     async function loadStateFromCloud(manual = false) {
-      if (manual) setSyncStatus('Sync...', false);
-      const localData = getLocalBackup();
+      // Unterbricht NIEMALS deine laufende Bearbeitung!
+      if (!manual && isAnyModalOrInputActive()) return;
+
+      const localRaw = localStorage.getItem(PERMANENT_SPOOLS_KEY);
+      if (localRaw && spools.length === 0) {
+        try { spools = JSON.parse(localRaw).filter(s => !isCharcoalOrDeleted(s)); } catch (e) {}
+      }
 
       try {
         const res = await fetch(`${getCloudDbUrl()}?t=${Date.now()}`, { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          if (data && Array.isArray(data.spools) && data.spools.length > 0) {
-            spools = data.spools;
-            printHistory = Array.isArray(data.printHistory) ? data.printHistory : localData.printHistory;
-            ensureSpoolDefaults();
-            saveLocalBackup();
-            renderSpools();
-            populateCalcSpoolDropdown();
-            setSyncStatus('Live-Sync Aktiv', true);
-            if (manual) showToast('Daten synchronisiert!');
+          if (data && Array.isArray(data.spools)) {
+            if (Array.isArray(data.deletedIds)) {
+              deletedIds = Array.from(new Set([...deletedIds, ...data.deletedIds]));
+            }
+            const hadCharcoalInCloud = data.spools.some(s => isCharcoalOrDeleted(s));
+            const cloudCleaned = data.spools.filter(s => !isCharcoalOrDeleted(s));
+            const cloudTime = Number(data.updatedAt || 0);
+
+            if (manual || cloudTime > localUpdatedAt || !localRaw) {
+              const newHash = JSON.stringify(cloudCleaned);
+              const currentHash = JSON.stringify(spools);
+              spools = cloudCleaned;
+              printHistory = Array.isArray(data.printHistory) ? data.printHistory : printHistory;
+              saveLocalBackup(cloudTime || Date.now());
+
+              // Nur neu zeichnen, wenn sich wirklich etwas geändert hat!
+              if (manual || newHash !== currentHash) {
+                renderSpools(true);
+                populateCalcSpoolDropdown();
+              }
+              setSyncStatus('Synchron', true);
+            }
+
+            // Falls Charcoal noch in der Cloud lag: Sofort in der Cloud überschreiben!
+            if (hadCharcoalInCloud) {
+              await saveState();
+            }
             return;
           }
         }
       } catch (e) {}
 
-      if (localData.spools && localData.spools.length > 0) {
-        spools = localData.spools;
-        printHistory = localData.printHistory || [];
-        ensureSpoolDefaults();
-        renderSpools();
-        populateCalcSpoolDropdown();
-        await saveState();
-        return;
-      }
-
-      if (!spools.length) {
-        spools = [{
-          id: 'sp-init-1',
-          brand: 'ELEGOO',
-          name: 'PLA Filament 1.75mm Marmor 1kg',
-          material: 'PLA',
-          colorName: 'Marmor',
-          colorHex: '#e2e8f0',
-          initialWeight: 1000,
-          remainingWeight: 1000,
-          emptySpoolWeight: 160,
-          pricePerKg: 17.99,
-          lastDried: new Date().toISOString(),
-          dryIntervalDays: 30,
-          dryTemp: 50,
-          dryHours: 5,
-          productUrl: 'https://www.amazon.de/dp/B0CM6C7W84'
-        }];
-        saveLocalBackup();
-        renderSpools();
-        populateCalcSpoolDropdown();
-      }
+      renderSpools();
+      populateCalcSpoolDropdown();
     }
 
     async function saveState() {
-      saveLocalBackup();
-      renderSpools();
+      lastUserInteractionTime = Date.now();
+      saveLocalBackup(lastUserInteractionTime);
+      renderSpools(true);
       populateCalcSpoolDropdown();
       if (isSyncing) { pendingSync = true; return; }
 
@@ -1101,11 +970,16 @@
             const res = await fetch(getCloudDbUrl(), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ updatedAt: Date.now(), spools, printHistory })
+              body: JSON.stringify({
+                updatedAt: localUpdatedAt,
+                spools,
+                printHistory,
+                deletedIds
+              })
             });
-            if (res.ok) setSyncStatus('Live-Sync Aktiv', true);
+            if (res.ok) setSyncStatus('Synchron', true);
           } catch (e) {
-            setSyncStatus('Lokal gesichert', false);
+            setSyncStatus('Lokal', false);
           }
         } while (pendingSync);
       } finally {
@@ -1113,46 +987,102 @@
       }
     }
 
+    async function forcePushToCloud() {
+      await saveState();
+      showToast('✓ Stand in die Cloud übertragen!');
+    }
+
+    async function forcePullFromCloud() {
+      localUpdatedAt = 0;
+      await loadStateFromCloud(true);
+      showToast('✓ Stand aus der Cloud geladen!');
+    }
+
     function saveCloudId() {
-      const val = document.getElementById('cloudIdInput').value.trim();
+      const val = document.getElementById('cloudIdInput').value.trim().replace('https://api.npoint.io/', '');
       if (!val) return;
       currentCloudId = val;
       localStorage.setItem(CLOUD_ID_STORAGE_KEY, val);
-      loadStateFromCloud(true);
-      showToast(`Cloud-ID "${val}" verbunden!`);
+      forcePullFromCloud();
+      renderSidebarQr();
     }
 
     // =========================================================================
-    // 3. NEU: LESBARER DATEI-EXPORT / IMPORT & MASSEN-EINGABE (.TXT)
+    // 3. SPRACHEINGABE (MIKROFON) DIREKT IN DER WEBSITE
+    // =========================================================================
+    let activeRecognition = null;
+
+    function startVoiceRecognition(targetInputId, btnId, autoSendAi = false, appendNewLine = false) {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        showToast('⚠️ Dein Browser unterstützt leider keine direkte Spracheingabe (nutze Chrome, Edge oder Safari).');
+        return;
+      }
+
+      if (activeRecognition) {
+        activeRecognition.stop();
+        activeRecognition = null;
+        return;
+      }
+
+      const btn = document.getElementById(btnId);
+      const inputEl = document.getElementById(targetInputId);
+      const rec = new SpeechRec();
+      activeRecognition = rec;
+      rec.lang = 'de-DE';
+      rec.interimResults = false;
+
+      if (btn) btn.classList.add('mic-active');
+      showToast('🎙️ Ich höre zu... Sprich jetzt dein Filament ein!');
+
+      rec.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        if (inputEl) {
+          if (appendNewLine) {
+            inputEl.value = (inputEl.value ? inputEl.value.trim() + '\n' : '') + transcript;
+          } else {
+            inputEl.value = transcript;
+          }
+        }
+        showToast(`✓ Erkannt: „${transcript}“`);
+        if (autoSendAi) {
+          sendAiMessage();
+        }
+      };
+
+      rec.onerror = function() {
+        if (btn) btn.classList.remove('mic-active');
+        activeRecognition = null;
+      };
+
+      rec.onend = function() {
+        if (btn) btn.classList.remove('mic-active');
+        activeRecognition = null;
+      };
+
+      rec.start();
+    }
+
+    // =========================================================================
+    // 4. DATEI / TEXT IMPORT & EXPORT (.TXT)
     // =========================================================================
     function spoolsToReadableText() {
-      const header = [
-        '# =================================================================================',
-        '# FILAMENTHUB BESTANDS-DATEI (LESBAR & DIREKT BEARBEITBAR)',
-        '# Du kannst Werte einfach ändern oder neue Zeilen unten anhängen.',
-        '# Format: Marke | Bezeichnung | Material | Farbe | Rest(g) | Voll(g) | Tara(g) | Preis(€) | Hex | Link',
-        '# =================================================================================',
-        ''
-      ].join('\n');
-
-      const lines = spools.map(s => {
+      if (!spools.length) return '';
+      return spools.map(s => {
         const p = (Number(s.pricePerKg) || 17.99).toFixed(2);
         return `${s.brand} | ${s.name} | ${s.material} | ${s.colorName || 'Standard'} | ${s.remainingWeight}g | ${s.initialWeight}g | ${s.emptySpoolWeight ?? 200}g | ${p}€ | ${s.colorHex || '#f97316'} | ${s.productUrl || ''}`;
-      });
-
-      return header + lines.join('\n');
+      }).join('\n');
     }
 
     function parseReadableTextToSpools(rawText) {
       const trimmed = (rawText || '').trim();
       if (!trimmed) return [];
 
-      // Falls der Nutzer eine ältere JSON-Backup-Datei hochgeladen hat, auch automatisch unterstützen!
       if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
         try {
           const parsedJson = JSON.parse(trimmed);
-          if (Array.isArray(parsedJson)) return parsedJson;
-          if (parsedJson && Array.isArray(parsedJson.spools)) return parsedJson.spools;
+          if (Array.isArray(parsedJson)) return parsedJson.filter(s => !isCharcoalOrDeleted(s));
+          if (parsedJson && Array.isArray(parsedJson.spools)) return parsedJson.spools.filter(s => !isCharcoalOrDeleted(s));
         } catch (e) {}
       }
 
@@ -1163,7 +1093,6 @@
         const clean = line.trim();
         if (!clean || clean.startsWith('#') || clean.toLowerCase().startsWith('marke |')) return;
 
-        // Fall A: Strukturierte Zeile mit Pipe-Trennern (Marke | Name | Material | Farbe | Rest | Voll | Tara | Preis | Hex | Link)
         if (clean.includes('|')) {
           const parts = clean.split('|').map(p => p.trim());
           const brand = parts[0] || 'Bambu Lab';
@@ -1184,23 +1113,14 @@
 
           result.push({
             id: 'sp-imp-' + Date.now() + '-' + idx,
-            brand,
-            name,
-            material,
-            colorName,
-            colorHex: hex,
-            remainingWeight: remW,
-            initialWeight: initW,
+            brand, name, material, colorName, colorHex: hex,
+            remainingWeight: remW, initialWeight: initW,
             emptySpoolWeight: isNaN(taraW) ? 200 : taraW,
-            pricePerKg: price,
-            productUrl: url,
+            pricePerKg: price, productUrl: url,
             lastDried: new Date().toISOString(),
-            dryIntervalDays: preset.intervalDays,
-            dryTemp: preset.temp,
-            dryHours: preset.hours
+            dryIntervalDays: preset.intervalDays, dryTemp: preset.temp, dryHours: preset.hours
           });
         } else {
-          // Fall B: Freie Textzeile oder Link ("Bambu Lab PLA Weiß ohne Spule 850g 19,99€")
           const auto = parseFilamentQueryOrUrl(clean, '');
           const weightMatches = [...clean.matchAll(/(\d{2,4})\s*g/gi)].map(m => parseInt(m[1]));
           if (weightMatches.length === 1) {
@@ -1238,7 +1158,7 @@
       a.href = URL.createObjectURL(blob);
       a.download = `FilamentHub-Bestand-${new Date().toISOString().slice(0, 10)}.txt`;
       a.click();
-      showToast('Lesbare .TXT Datei gespeichert!');
+      showToast('Datei gespeichert!');
     }
 
     function handleVaultFileUpload(event) {
@@ -1246,17 +1166,12 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        const text = e.target.result || '';
-        const imported = parseReadableTextToSpools(text);
-        if (imported.length > 0) {
-          pushUndo();
-          spools = imported;
-          saveState();
-          document.getElementById('vaultTextArea').value = spoolsToReadableText();
-          showToast(`✓ ${imported.length} Filamente aus Datei geladen!`);
-        } else {
-          showToast('⚠️ Keine gültigen Filament-Zeilen in der Datei gefunden.');
-        }
+        const imported = parseReadableTextToSpools(e.target.result || '');
+        pushUndo();
+        spools = imported;
+        saveState();
+        document.getElementById('vaultTextArea').value = spoolsToReadableText();
+        showToast(`✓ ${imported.length} Filamente geladen!`);
       };
       reader.readAsText(file);
     }
@@ -1264,36 +1179,26 @@
     function applyVaultText(mode = 'replace') {
       const raw = document.getElementById('vaultTextArea').value;
       const parsed = parseReadableTextToSpools(raw);
-      if (!parsed.length) {
-        showToast('⚠️ Bitte mindestens eine gültige Zeile eingeben.');
-        return;
-      }
       pushUndo();
       if (mode === 'append') {
         spools = [...parsed, ...spools];
-        showToast(`✓ ${parsed.length} Filamente zum Bestand hinzugefügt!`);
+        showToast(`✓ ${parsed.length} Filamente hinzugefügt!`);
       } else {
         spools = parsed;
-        showToast(`✓ Bestand aktualisiert (${parsed.length} Filamente übernommen)!`);
+        showToast(`✓ Bestand gespeichert (${parsed.length} Spulen)!`);
       }
       saveState();
       closeDataVaultModal();
     }
 
     function copyVaultText() {
-      const val = document.getElementById('vaultTextArea').value;
-      navigator.clipboard?.writeText(val);
-      showToast('Filament-Liste in die Zwischenablage kopiert!');
+      navigator.clipboard?.writeText(document.getElementById('vaultTextArea').value);
+      showToast('In die Zwischenablage kopiert!');
     }
 
     // =========================================================================
-    // 4. SMART LINK & TEXT SCANNER
+    // 5. SMART SCANNER (LINK & TEXT)
     // =========================================================================
-    function extractAsin(urlStr) {
-      const m = urlStr.match(/(?:\/dp\/|\/gp\/product\/)([A-Z0-9]{10})/i);
-      return m ? m[1].toUpperCase() : null;
-    }
-
     function extractEuroPriceFromText(rawText) {
       if (!rawText) return null;
       const matches = [...rawText.matchAll(/(?:€|EUR)?\s*(\d{1,2}[,.]\d{2})\s*(?:€|EUR)?/gi)];
@@ -1318,18 +1223,6 @@
       const trimmed = inputStr.trim();
       const isUrl = /^https?:\/\//i.test(trimmed);
       const extractedPrice = extractEuroPriceFromText(`${trimmed} ${rawPageText}`);
-
-      if (isUrl) {
-        const asin = extractAsin(trimmed);
-        if (asin && KNOWN_ASIN_DB[asin]) {
-          return {
-            ...KNOWN_ASIN_DB[asin],
-            pricePerKg: extractedPrice || KNOWN_ASIN_DB[asin].pricePerKg,
-            productUrl: trimmed
-          };
-        }
-      }
-
       const combined = `${trimmed} ${rawPageText}`.toLowerCase();
 
       let detectedBrand = 'Bambu Lab';
@@ -1342,19 +1235,19 @@
         }
       }
 
-      const isRefill = combined.includes('ohne spule') || combined.includes('refill') || combined.includes('nachfüll');
+      const isRefill = combined.includes('ohne spule') || combined.includes('refill');
       if (isRefill) detectedTara = 0;
 
       let detectedMaterial = 'PLA';
-      if (combined.includes('pla+') || combined.includes('pla plus') || combined.includes('tough')) detectedMaterial = 'PLA+';
+      if (combined.includes('pla+') || combined.includes('pla plus')) detectedMaterial = 'PLA+';
       else if (combined.includes('petg')) detectedMaterial = 'PETG';
       else if (combined.includes('tpu')) detectedMaterial = 'TPU';
       else if (combined.includes('asa')) detectedMaterial = 'ASA';
       else if (combined.includes('abs')) detectedMaterial = 'ABS';
-      else if (combined.includes('nylon') || combined.includes('pa6') || combined.includes('pa12')) detectedMaterial = 'PA / Nylon';
+      else if (combined.includes('nylon') || combined.includes('pa')) detectedMaterial = 'PA / Nylon';
 
-      let detectedColorName = 'Standard';
-      let detectedColorHex = '#f97316';
+      let detectedColorName = 'Weiß';
+      let detectedColorHex = '#f8fafc';
       for (const c of COLOR_MAP) {
         if (c.keys.some(k => combined.includes(k))) {
           detectedColorName = c.name;
@@ -1369,8 +1262,7 @@
       else if (detectedBrand === 'Bambu Lab' && detectedMaterial === 'PLA') variantAdd = 'Basic ';
 
       const refillSuffix = isRefill ? ' (Ohne Spule)' : '';
-      let cleanTitle = `${detectedMaterial} ${variantAdd}${detectedColorName}${refillSuffix}`.replace(/\s+/g, ' ').trim();
-
+      const cleanTitle = `${detectedMaterial} ${variantAdd}${detectedColorName}${refillSuffix}`.replace(/\s+/g, ' ').trim();
       const finalUrl = isUrl ? trimmed : buildVendorUrl(detectedBrand, detectedMaterial, detectedColorName, trimmed, isRefill);
       const preset = MATERIAL_PRESETS[detectedMaterial] || MATERIAL_PRESETS['PLA'];
       const finalPrice = extractedPrice || getDefaultPriceForSpool(detectedBrand, detectedMaterial);
@@ -1392,65 +1284,17 @@
       };
     }
 
-    async function extractMetadataFromInput(inputStr) {
-      const trimmed = inputStr.trim();
-      if (!/^https?:\/\//i.test(trimmed)) return parseFilamentQueryOrUrl(trimmed, '');
-
-      try {
-        const jinaRes = await fetch(`https://r.jina.ai/${trimmed}`, { headers: { 'Accept': 'text/plain' } });
-        if (jinaRes.ok) {
-          const text = await jinaRes.text();
-          if (text && text.length > 50 && !text.includes('Robot Check')) {
-            return parseFilamentQueryOrUrl(trimmed, text.slice(0, 4000));
-          }
-        }
-      } catch (e) {}
-
-      return parseFilamentQueryOrUrl(trimmed, '');
-    }
-
     async function handleQuickLinkImport() {
       const input = document.getElementById('quickLinkInput');
-      const btn = document.getElementById('quickScanBtn');
       const val = input.value.trim();
       if (!val) return;
-
-      const orig = btn.innerHTML;
-      btn.innerHTML = '<span>Lese...</span>';
-      btn.disabled = true;
-
-      const data = await extractMetadataFromInput(val);
-      btn.innerHTML = orig;
-      btn.disabled = false;
+      const data = parseFilamentQueryOrUrl(val, '');
       input.value = '';
       openSpoolModal(null, data);
     }
 
-    async function fetchFromModalUrl() {
-      const val = document.getElementById('fProductUrl').value.trim();
-      if (!val) return;
-      const btn = document.getElementById('modalScanBtn');
-      btn.textContent = '...';
-      const data = await extractMetadataFromInput(val);
-      btn.textContent = 'Auslesen';
-      populateModalFields(data);
-    }
-
-    async function refreshSingleSpoolPrice(spoolId) {
-      const spool = spools.find(s => s.id === spoolId);
-      if (!spool) return;
-      showToast(`Prüfe aktuellen Preis für ${spool.brand}...`);
-      const data = await extractMetadataFromInput(spool.productUrl || `${spool.brand} ${spool.material}`);
-      if (data && data.pricePerKg) {
-        pushUndo();
-        spool.pricePerKg = data.pricePerKg;
-        saveState();
-        showToast(`✓ Preis aktualisiert: ${spool.pricePerKg.toFixed(2).replace('.', ',')} €/kg`);
-      }
-    }
-
     // =========================================================================
-    // 5. SIDEBAR, G-CODE PARSER, KOSTENRECHNER & KI-AGENT
+    // 6. SIDEBAR, G-CODE, RECHNER & KI-AGENT
     // =========================================================================
     let sidebarCollapsedDesktop = false;
 
@@ -1465,10 +1309,10 @@
         sidebarCollapsedDesktop = !sidebarCollapsedDesktop;
         if (sidebarCollapsedDesktop) {
           sidebar.classList.add('lg:w-0', 'lg:border-r-0', 'lg:-translate-x-full');
-          sidebar.classList.remove('sm:w-[390px]');
+          sidebar.classList.remove('sm:w-[380px]');
         } else {
           sidebar.classList.remove('lg:w-0', 'lg:border-r-0', 'lg:-translate-x-full');
-          sidebar.classList.add('sm:w-[390px]');
+          sidebar.classList.add('sm:w-[380px]');
         }
       }
     }
@@ -1484,7 +1328,7 @@
         const btn = document.getElementById(`tabBtn-${t}`);
         if (t === tabName) {
           panel.classList.remove('hidden');
-          btn.className = 'py-2 px-1 rounded-lg text-[11px] font-bold flex flex-col items-center gap-1 transition bg-gradient-to-b from-orange-500 to-amber-500 text-obsidian-950 shadow';
+          btn.className = 'py-2 px-1 rounded-lg text-[11px] font-bold flex flex-col items-center gap-1 transition bg-orange-500 text-surface-950';
         } else {
           panel.classList.add('hidden');
           btn.className = 'py-2 px-1 rounded-lg text-[11px] font-semibold flex flex-col items-center gap-1 transition text-slate-400 hover:text-white';
@@ -1508,7 +1352,7 @@
       switchSidebarTab(tabName);
     }
 
-    // G-Code Parser
+    // G-Code Upload
     let lastParsedGcode = { grams: 0, hours: 0, fileName: '' };
 
     function parseGcodeContent(text, fileName) {
@@ -1536,7 +1380,7 @@
 
       const timeMatchBambu = text.match(/;\s*estimated printing time.*?=\s*([^\n\r]+)/i);
       const timeMatchCura = text.match(/;TIME:\s*(\d+)/i);
-      let timeFormatted = 'Unbekannt';
+      let timeFormatted = '—';
       if (timeMatchBambu && timeMatchBambu[1]) {
         timeFormatted = timeMatchBambu[1].trim();
         const d = (timeFormatted.match(/(\d+)\s*d/i) || [0, 0])[1];
@@ -1572,7 +1416,7 @@
           document.getElementById('gcodeParsedTime').textContent = parsed.timeFormatted;
           document.getElementById('gcodeResultBox').classList.remove('hidden');
           renderGcodeSpoolSelection();
-          showToast(`G-Code erkannt: ${parsed.grams}g – Spule zum Abziehen wählen!`);
+          showToast(`G-Code erkannt: ${parsed.grams}g`);
         }
       };
       reader.readAsText(file);
@@ -1585,16 +1429,16 @@
       container.innerHTML = spools.map(s => {
         const cost = ((g / 1000) * (Number(s.pricePerKg) || 17.99)).toFixed(2).replace('.', ',');
         return `
-          <button onclick="confirmGcodeDeduct('${s.id}')" class="w-full p-2.5 rounded-xl bg-obsidian-900 hover:bg-orange-500/15 border border-white/[0.07] hover:border-orange-500/50 flex items-center justify-between gap-2 text-left transition">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <span class="w-3.5 h-3.5 rounded-full shrink-0" style="background-color: ${s.colorHex || '#f97316'}"></span>
+          <button onclick="confirmGcodeDeduct('${s.id}')" class="w-full p-2.5 rounded-xl bg-surface-900 hover:bg-orange-500/15 border border-white/[0.07] hover:border-orange-500/50 flex items-center justify-between gap-2 text-left transition">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${s.colorHex || '#f97316'}"></span>
               <div class="min-w-0">
                 <p class="text-xs font-bold text-white truncate">${s.brand} – ${s.name}</p>
-                <p class="text-[10px] text-slate-400">${s.material} • Rest: <strong class="text-emerald-400">${s.remainingWeight}g</strong></p>
+                <p class="text-[10px] text-slate-400">Rest: <strong class="text-emerald-400">${s.remainingWeight}g</strong></p>
               </div>
             </div>
             <div class="text-right shrink-0">
-              <span class="px-2 py-0.5 rounded-md bg-orange-500 text-obsidian-950 text-[10px] font-extrabold block">-${g}g</span>
+              <span class="px-2 py-0.5 rounded bg-orange-500 text-surface-950 text-[10px] font-bold block">-${g}g</span>
               <span class="text-[10px] text-slate-400 font-mono-num">${cost} €</span>
             </div>
           </button>
@@ -1616,7 +1460,6 @@
       calculatePrintCost();
     }
 
-    // Kostenrechner
     function populateCalcSpoolDropdown() {
       const sel = document.getElementById('calcSpoolSelect');
       if (!sel) return;
@@ -1647,8 +1490,7 @@
 
       const fmt = n => n.toFixed(2).replace('.', ',') + ' €';
       document.getElementById('calcResMaterial').textContent = fmt(matCost);
-      document.getElementById('calcResPower').textContent = fmt(powerCost);
-      document.getElementById('calcResWear').textContent = fmt(wearCost);
+      document.getElementById('calcResPower').textContent = fmt(powerCost + wearCost);
       document.getElementById('calcResTotal').textContent = fmt(total);
     }
 
@@ -1662,27 +1504,16 @@
     let aiMessages = [
       {
         role: 'assistant',
-        text: 'Hallo! Ich bin dein **FilamentHub KI-Agent**. Schreib mir einfach, was ich tun soll:\n• *"Ziehe 45g von Marmor ab"*\n• *"Neue Spule Bambu Lab PLA Schwarz 1000g 19,99€"*\n• *"Öffne den Datei-Export"*'
+        text: 'Hallo! Tippe oder drücke auf das **🎙️ Mikrofon**, um mir Filamente zu diktieren:\n• *"Neue Spule Bambu Lab PLA Schwarz 1000g"*\n• *"Ziehe 45g von Marmor ab"*'
       }
     ];
-
-    function toggleAiKeyConfig() {
-      document.getElementById('aiKeyBox').classList.toggle('hidden');
-      document.getElementById('geminiApiKeyInput').value = localStorage.getItem('filamenthub_gemini_key') || '';
-    }
-
-    function saveGeminiKey() {
-      localStorage.setItem('filamenthub_gemini_key', document.getElementById('geminiApiKeyInput').value.trim());
-      document.getElementById('aiKeyBox').classList.add('hidden');
-      showToast('API-Key gespeichert!');
-    }
 
     function renderAiMessages() {
       const box = document.getElementById('aiChatMessages');
       if (!box) return;
       box.innerHTML = aiMessages.map(m => `
         <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}">
-          <div class="max-w-[90%] rounded-2xl px-3 py-2 ${m.role === 'user' ? 'bg-orange-500 text-obsidian-950 font-semibold' : 'bg-obsidian-900 border border-white/[0.07] text-slate-200'} whitespace-pre-line leading-relaxed">
+          <div class="max-w-[90%] rounded-xl px-3 py-2 ${m.role === 'user' ? 'bg-orange-500 text-surface-950 font-semibold' : 'bg-surface-900 border border-white/[0.07] text-slate-200'} whitespace-pre-line">
             ${m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
           </div>
         </div>
@@ -1690,18 +1521,8 @@
       box.scrollTop = box.scrollHeight;
     }
 
-    function runAiQuickPrompt(text) {
-      document.getElementById('aiUserInput').value = text;
-      sendAiMessage();
-    }
-
     async function processLocalAiCommand(input) {
       const lower = input.toLowerCase();
-
-      if (lower.includes('export') || lower.includes('import') || lower.includes('datei')) {
-        openDataVaultModal();
-        return '📂 Ich habe dir das **Datei Import / Export Fenster** geöffnet!';
-      }
 
       const deductMatch = input.match(/(?:zieh|abziehen|minus|verbrauch\w*)\s*(\d+)\s*g?\s*(?:von|bei|aus)?\s*(.+)/i);
       if (deductMatch) {
@@ -1714,36 +1535,17 @@
         }
       }
 
-      if (lower.includes('neue spule') || lower.includes('füge') || lower.includes('hinzufügen')) {
-        const cleaned = input.replace(/neue spule|füge|hinzufügen/gi, '').trim();
-        const parsed = parseFilamentQueryOrUrl(cleaned, '');
-        pushUndo();
-        const newSpool = { id: 'sp-' + Date.now(), ...parsed, lastDried: new Date().toISOString() };
-        spools.unshift(newSpool);
-        saveState();
-        return `✅ Neue Spule **${newSpool.brand} ${newSpool.name}** (${newSpool.pricePerKg.toFixed(2).replace('.', ',')} €/kg) angelegt!`;
-      }
+      // Alles andere als neue Spule anlegen, wenn Material oder Marke genannt wird
+      const cleaned = input.replace(/neue spule|füge|hinzufügen/gi, '').trim();
+      const parsed = parseFilamentQueryOrUrl(cleaned, '');
+      const weightM = cleaned.match(/(\d{2,4})\s*g/i);
+      if (weightM) parsed.remainingWeight = parseInt(weightM[1]);
 
-      if (lower.includes('trockn')) {
-        const due = spools.filter(s => getDryingStatus(s).statusLevel !== 'ok');
-        if (!due.length) return `🛡️ Alle **${spools.length} Spulen** sind frisch getrocknet!`;
-        return `🔥 Trocknung empfohlen für:\n` + due.map(s => `• **${s.brand} ${s.name}** (${s.dryTemp || 50}°C / ${s.dryHours || 5}h)`).join('\n');
-      }
-
-      if (lower.includes('günstig') || lower.includes('shop') || lower.includes('bestpreis')) {
-        return `💶 Günstigste Shops (1–3 Tage Versand):\n` + spools.map(s => {
-          const b = getReliableOffers(s)[0];
-          return `• **${s.brand} ${s.material}**: **${b.price.toFixed(2).replace('.', ',')} €** bei **${b.shop}**`;
-        }).join('\n');
-      }
-
-      if (lower.includes('wert') || lower.includes('bestand')) {
-        const totalG = spools.reduce((a, s) => a + (Number(s.remainingWeight) || 0), 0);
-        const totalVal = spools.reduce((a, s) => a + ((Number(s.remainingWeight) || 0) / 1000) * (Number(s.pricePerKg) || 17.99), 0);
-        return `📊 Bestand: **${spools.length} Spulen** (**${totalG}g** Netto) im Wert von **${totalVal.toFixed(2).replace('.', ',')} €**.`;
-      }
-
-      return `🤖 Schreib mir z. B.:\n• **"Ziehe 35g von ${spools[0]?.colorName || 'Marmor'} ab"**\n• **"Neue Spule SUNLU PETG Schwarz 1000g 15,99€"**\n• **"Öffne Datei-Export"**`;
+      pushUndo();
+      const newSpool = { id: 'sp-' + Date.now(), ...parsed, lastDried: new Date().toISOString() };
+      spools.unshift(newSpool);
+      saveState();
+      return `✅ Eingetragen: **${newSpool.brand} – ${newSpool.name}** (${newSpool.remainingWeight}g • ${newSpool.pricePerKg.toFixed(2).replace('.', ',')} €/kg).`;
     }
 
     async function sendAiMessage() {
@@ -1759,7 +1561,7 @@
     }
 
     // =========================================================================
-    // 6. TROCKNUNG & SLEEK CARD RENDERING
+    // 7. SCHLICHTES KARTEN-RENDERING (OHNE UNTERBRECHUNG)
     // =========================================================================
     function getDryingStatus(spool) {
       const lastDriedMs = new Date(spool.lastDried || Date.now()).getTime();
@@ -1773,26 +1575,12 @@
       else if (diffMs < 3 * 86400000) statusLevel = 'soon';
 
       return {
-        diffMs,
-        isOverdue,
-        statusLevel,
+        diffMs, isOverdue, statusLevel,
         days: Math.floor(absMs / 86400000),
         hours: Math.floor((absMs % 86400000) / 3600000),
-        mins: Math.floor((absMs % 3600000) / 60000),
-        secs: Math.floor((absMs % 60000) / 1000)
+        mins: Math.floor((absMs % 3600000) / 60000)
       };
     }
-
-    setInterval(() => {
-      spools.forEach(spool => {
-        const el = document.getElementById(`countdown-${spool.id}`);
-        if (!el) return;
-        const dry = getDryingStatus(spool);
-        el.textContent = dry.isOverdue
-          ? `Überfällig: ${dry.days}d ${dry.hours}h ${dry.mins}m`
-          : `Trocknung in ${dry.days}d ${dry.hours}h ${dry.mins}m ${dry.secs}s`;
-      });
-    }, 1000);
 
     function toggleCardScale(spoolId) {
       openScaleCards[spoolId] = !openScaleCards[spoolId];
@@ -1800,32 +1588,22 @@
       if (box) box.classList.toggle('hidden', !openScaleCards[spoolId]);
     }
 
-    function renderSpools() {
-      ensureSpoolDefaults();
+    function renderSpools(force = false) {
+      sanitizeSpools();
 
-      const keptInputs = {};
-      document.querySelectorAll('#spoolGrid input[id^="deduct-"], #spoolGrid input[id^="scale-"]').forEach(i => {
-        if (i.value) keptInputs[i.id] = i.value;
-      });
-      const activeInputId = document.activeElement && document.activeElement.tagName === 'INPUT' ? document.activeElement.id : null;
-
-      // KPIs
+      // KPIs aktualisieren
       document.getElementById('statTotalSpools').textContent = spools.length;
       const totalGrams = spools.reduce((sum, s) => sum + (Number(s.remainingWeight) || 0), 0);
       document.getElementById('statTotalWeight').textContent = `${totalGrams.toLocaleString('de-DE')} g`;
-
       const totalValue = spools.reduce((sum, s) => sum + (((Number(s.remainingWeight) || 0) / 1000) * (Number(s.pricePerKg) || 17.99)), 0);
       document.getElementById('statTotalValue').textContent = `${totalValue.toFixed(2).replace('.', ',')} €`;
-
       document.getElementById('statDryingDue').textContent = spools.filter(s => getDryingStatus(s).statusLevel !== 'ok').length;
-      const usedGrams = printHistory.reduce((sum, h) => sum + (Number(h.grams) || 0), 0);
-      document.getElementById('statUsedWeight').textContent = `${usedGrams.toLocaleString('de-DE')} g`;
       document.getElementById('historyBadge').textContent = printHistory.length;
 
-      // Filter-Pills
+      // Filterleiste
       const bar = document.getElementById('materialFilterBar');
       bar.innerHTML = ['ALL', 'PLA', 'PLA+', 'PETG', 'TPU', 'ABS', 'ASA', 'PA / Nylon'].map(mat => `
-        <button onclick="activeMaterialFilter='${mat}';renderSpools();" class="px-3 py-1 rounded-xl text-xs font-bold border transition whitespace-nowrap ${activeMaterialFilter === mat ? 'bg-orange-500 text-obsidian-950 border-orange-500 shadow-md shadow-orange-500/20' : 'bg-obsidian-950/80 text-slate-400 border-white/[0.07] hover:text-white'}">
+        <button onclick="activeMaterialFilter='${mat}';renderSpools(true);" class="px-3 py-1 rounded-xl text-xs font-semibold border transition whitespace-nowrap ${activeMaterialFilter === mat ? 'bg-orange-500 text-surface-950 border-orange-500 font-bold' : 'bg-surface-950 text-slate-400 border-white/[0.07] hover:text-white'}">
           ${mat === 'ALL' ? `Alle (${spools.length})` : mat}
         </button>
       `).join('');
@@ -1851,7 +1629,7 @@
 
       const grid = document.getElementById('spoolGrid');
       if (!filtered.length) {
-        grid.innerHTML = `<div class="col-span-full glass-panel rounded-2xl p-10 text-center text-xs text-slate-400">Keine passenden Spulen im Bestand gefunden.</div>`;
+        grid.innerHTML = `<div class="col-span-full clean-panel rounded-2xl p-10 text-center text-xs text-slate-400">Dein Bestand ist leer. Klicke oben auf <strong>„Datei / Text Import“</strong> oder <strong>„Neue Spule“</strong>, um deine Filamente einzutragen.</div>`;
         return;
       }
 
@@ -1863,50 +1641,34 @@
         const pct = Math.max(0, Math.min(100, Math.round((remW / initW) * 100)));
         const dry = getDryingStatus(spool);
         const hex = spool.colorHex || '#f97316';
-        const preset = MATERIAL_PRESETS[spool.material] || MATERIAL_PRESETS['PLA'];
-        const dryTemp = spool.dryTemp || preset.temp;
-        const dryHours = spool.dryHours || preset.hours;
-
         const priceKg = Number(spool.pricePerKg) || 17.99;
-        const remValueEuro = ((remW / 1000) * priceKg).toFixed(2).replace('.', ',');
-        const offers = getReliableOffers(spool);
-        const bestOffer = offers[0];
+        const offer = getBestShopOffer(spool);
         const isScaleOpen = !!openScaleCards[spool.id];
 
-        let barGradient = 'from-emerald-500 to-teal-400';
-        if (pct <= 15) barGradient = 'from-rose-500 to-red-500';
-        else if (pct <= 35) barGradient = 'from-amber-500 to-orange-400';
+        let barColor = 'bg-emerald-500';
+        if (pct <= 15) barColor = 'bg-rose-500';
+        else if (pct <= 35) barColor = 'bg-amber-500';
 
         return `
-          <div class="glass-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-4 sm:p-5 flex flex-col justify-between gap-3.5">
+          <div class="clean-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-5 flex flex-col justify-between gap-4">
             
-            <!-- 1. KARTEN-KOPF: ECHTER SPULEN-RING + TITEL + ICONS -->
+            <!-- 1. Kopfzeile -->
             <div class="flex justify-between items-start gap-2">
               <div class="flex items-center gap-3 min-w-0">
-                <!-- Techy Spulen-Icon in Filamentfarbe -->
-                <div class="w-11 h-11 rounded-2xl bg-obsidian-950 border border-white/[0.08] flex items-center justify-center shrink-0 relative shadow-inner">
-                  <div class="w-7 h-7 rounded-full border-[5px] shadow-sm" style="border-color: ${hex}; box-shadow: 0 0 12px ${hex}44;"></div>
-                </div>
+                <span class="w-8 h-8 rounded-full border-4 shrink-0 shadow-sm" style="border-color: ${hex}; background-color: ${hex}33;"></span>
                 <div class="min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-[11px] uppercase font-extrabold tracking-wider text-orange-400">${spool.brand}</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded-md bg-white/[0.06] text-slate-200 font-bold">${spool.material}</span>
-                    ${tara === 0 ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-300 font-semibold">Refill</span>` : ''}
+                    <span class="text-[11px] uppercase font-bold tracking-wider text-orange-400">${spool.brand}</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-surface-850 text-slate-200 font-semibold">${spool.material}</span>
+                    <span class="text-[10px] font-mono-num text-emerald-400 font-semibold">${priceKg.toFixed(2).replace('.', ',')} €/kg</span>
                   </div>
-                  <h3 class="text-sm font-bold text-white truncate mt-0.5" title="${spool.name}">${spool.name}</h3>
+                  <h3 class="text-sm font-bold text-white truncate mt-0.5">${spool.name}</h3>
                 </div>
               </div>
 
-              <!-- Dezente Icon-Leiste rechts -->
-              <div class="flex items-center gap-0.5 shrink-0 bg-obsidian-950/80 p-1 rounded-xl border border-white/[0.06]">
-                <button onclick="refreshSingleSpoolPrice('${spool.id}')" title="Preis aktualisieren" class="p-1.5 rounded-lg hover:bg-white/[0.08] text-slate-400 hover:text-emerald-400 transition">
-                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                </button>
-                <button onclick="duplicateSpool('${spool.id}')" title="Spule duplizieren" class="p-1.5 rounded-lg hover:bg-white/[0.08] text-slate-400 hover:text-sky-400 transition">
-                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                </button>
-                <button onclick="openSpoolModal('${spool.id}')" title="Bearbeiten" class="p-1.5 rounded-lg hover:bg-white/[0.08] text-slate-400 hover:text-amber-400 transition">
-                  <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+              <div class="flex items-center gap-1 shrink-0">
+                <button onclick="openSpoolModal('${spool.id}')" title="Bearbeiten" class="p-1.5 rounded-lg hover:bg-surface-850 text-slate-400 hover:text-white transition">
+                  <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                 </button>
                 <button onclick="deleteSpool('${spool.id}')" title="Löschen" class="p-1.5 rounded-lg hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -1914,81 +1676,48 @@
               </div>
             </div>
 
-            <!-- 2. FÜLLSTAND, PREIS & RESTWERT -->
-            <div class="rounded-xl bg-obsidian-950/90 border border-white/[0.06] p-3 space-y-2">
-              <div class="flex items-baseline justify-between">
-                <div class="flex items-center gap-2 text-xs text-slate-400">
-                  <span>${spool.colorName || 'Standard'}</span>
-                  <span class="text-slate-600">•</span>
-                  <span class="font-mono-num text-emerald-400 font-bold">${priceKg.toFixed(2).replace('.', ',')} €/kg</span>
-                </div>
-                <div class="text-right">
-                  <span class="font-mono-num text-sm font-extrabold text-white">${remW}g</span>
-                  <span class="font-mono-num text-xs text-slate-500">/ ${initW}g (${pct}%)</span>
-                </div>
+            <!-- 2. Gewicht & Balken -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-baseline text-xs">
+                <span class="text-slate-400">${spool.colorName || 'Standard'}</span>
+                <span class="font-mono-num font-bold text-white">${remW}g <span class="text-slate-500 font-normal">/ ${initW}g (${pct}%)</span></span>
               </div>
-
-              <div class="w-full h-2 rounded-full bg-obsidian-800 overflow-hidden">
-                <div class="h-full bg-gradient-to-r ${barGradient} transition-all duration-300" style="width: ${pct}%"></div>
+              <div class="w-full h-2 rounded-full bg-surface-950 overflow-hidden">
+                <div class="h-full ${barColor} transition-all" style="width: ${pct}%"></div>
               </div>
-
-              <div class="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
-                <span>Restwert: <strong class="text-sky-400 font-mono-num">${remValueEuro} €</strong></span>
-                <button onclick="toggleCardScale('${spool.id}')" class="text-emerald-400 hover:underline font-semibold flex items-center gap-1">
-                  <i data-lucide="scale" class="w-3 h-3"></i>
-                  <span>Waage (≈ ${scaleNow}g)</span>
+              <div class="flex items-center justify-between pt-1 text-[11px] text-slate-400">
+                <button onclick="toggleCardScale('${spool.id}')" class="hover:text-emerald-400 transition">
+                  ⚖️ Waage (≈ ${scaleNow}g)
                 </button>
+                <a href="${offer.url}" target="_blank" rel="noopener" class="text-orange-400 hover:underline font-semibold flex items-center gap-1">
+                  <span>${offer.shop}</span>
+                  <i data-lucide="external-link" class="w-3 h-3"></i>
+                </a>
               </div>
 
-              <!-- Aufklappbare Waage (hält die Karte super schlicht) -->
-              <div id="scale-box-${spool.id}" class="${isScaleOpen ? '' : 'hidden'} pt-2 mt-1 border-t border-white/[0.07] space-y-1.5">
-                <div class="flex items-center justify-between text-[10px] text-slate-400">
-                  <span>Leerspule Tara: <strong class="text-white font-mono-num">${tara}g</strong></span>
-                  <span>Brutto erwartet: <strong class="text-emerald-400 font-mono-num">${scaleNow}g</strong></span>
-                </div>
-                <div class="flex gap-1.5">
-                  <input id="scale-${spool.id}" type="number" placeholder="Gewicht auf Waage (g)..." oninput="updateScalePreview('${spool.id}')" onkeydown="if(event.key==='Enter'){applyScaleWeight('${spool.id}');}" class="flex-1 px-2.5 py-1.5 rounded-lg bg-obsidian-900 border border-white/[0.1] text-xs text-white font-mono-num outline-none focus:border-emerald-400" />
-                  <button onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-obsidian-950 text-xs font-extrabold">Setzen</button>
-                </div>
-                <p id="scale-preview-${spool.id}" class="text-[10px] text-slate-500">Zieht ${tara}g Leerspule automatisch ab.</p>
+              <!-- Aufklappbare Waage -->
+              <div id="scale-box-${spool.id}" class="${isScaleOpen ? '' : 'hidden'} pt-2 mt-1 border-t border-white/[0.06] flex gap-1.5">
+                <input id="scale-${spool.id}" type="number" placeholder="Gewicht auf Waage (g)..." onkeydown="if(event.key==='Enter'){applyScaleWeight('${spool.id}');}" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs text-white font-mono-num outline-none" />
+                <button onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-surface-950 text-xs font-bold">Übernehmen</button>
               </div>
             </div>
 
-            <!-- 3. BESTPREIS SHOP-LEISTE (1-3 TAGE LIEFERUNG) -->
-            <div class="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-              <div class="min-w-0">
-                <div class="flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                  <span class="text-[11px] font-bold text-slate-200 truncate">${bestOffer.shop}</span>
-                  <span class="text-[10px] text-slate-400">(${bestOffer.delivery})</span>
-                </div>
-              </div>
-              <a href="${bestOffer.url}" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-lg bg-orange-500/15 hover:bg-orange-500 hover:text-obsidian-950 text-orange-400 text-[11px] font-extrabold transition flex items-center gap-1 shrink-0">
-                <span>${bestOffer.price.toFixed(2).replace('.', ',')} €</span>
-                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-              </a>
-            </div>
-
-            <!-- 4. SCHNELL-ABZUG -->
+            <!-- 3. Schnell-Abzug -->
             <div class="flex items-center gap-1.5">
-              <input id="deduct-${spool.id}" type="number" placeholder="g abziehen..." onkeydown="if(event.key==='Enter'){deductWeight('${spool.id}');}" class="w-28 px-2.5 py-1.5 rounded-xl bg-obsidian-950 border border-white/[0.08] text-xs text-white font-mono-num outline-none focus:border-orange-500" />
-              <button onclick="deductWeight('${spool.id}')" class="px-3 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-obsidian-950 text-xs font-extrabold transition">Abziehen</button>
-              <button onclick="deductWeight('${spool.id}', 10)" class="px-2 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] text-[10px] font-mono-num text-slate-300">-10</button>
-              <button onclick="deductWeight('${spool.id}', 25)" class="px-2 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] text-[10px] font-mono-num text-slate-300">-25</button>
-              <button onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] text-[10px] font-mono-num text-slate-300">-50</button>
+              <input id="deduct-${spool.id}" type="number" placeholder="Gramm..." onkeydown="if(event.key==='Enter'){deductWeight('${spool.id}');}" class="w-24 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.08] text-xs text-white font-mono-num outline-none focus:border-orange-500" />
+              <button onclick="deductWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold transition">Abziehen</button>
+              <button onclick="deductWeight('${spool.id}', 10)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-10g</button>
+              <button onclick="deductWeight('${spool.id}', 25)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-25g</button>
+              <button onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-50g</button>
             </div>
 
-            <!-- 5. TROCKNUNGS-STATUS -->
-            <div class="flex items-center justify-between pt-2 border-t border-white/[0.06] text-[11px]">
-              <div class="flex items-center gap-1.5">
-                <i data-lucide="flame" class="w-3.5 h-3.5 ${dry.isOverdue ? 'text-rose-400' : 'text-amber-400'}"></i>
-                <span id="countdown-${spool.id}" class="font-mono-num ${dry.isOverdue ? 'text-rose-400 font-bold' : 'text-slate-300'}">
-                  ${dry.isOverdue ? `Überfällig: ${dry.days}d${dry.hours}h` : `Trocknung in ${dry.days}d${dry.hours}h`}
-                </span>
-                <span class="text-[10px] text-slate-500 font-mono-num">(${dryTemp}°C/${dryHours}h)</span>
-              </div>
-              <button onclick="markDried('${spool.id}')" class="px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-orange-500/20 text-orange-400 font-bold transition">
-                Getrocknet
+            <!-- 4. Trocknungs-Status -->
+            <div class="flex items-center justify-between pt-2.5 border-t border-white/[0.06] text-[11px]">
+              <span class="font-mono-num ${dry.isOverdue ? 'text-rose-400 font-bold' : 'text-slate-400'}">
+                ${dry.isOverdue ? `⚠️ Trocknung überfällig (${dry.days}d)` : `🔥 Trocknung in ${dry.days}d${dry.hours}h`}
+              </span>
+              <button onclick="markDried('${spool.id}')" class="text-orange-400 hover:underline font-semibold">
+                Jetzt getrocknet
               </button>
             </div>
 
@@ -1997,27 +1726,15 @@
       }).join('');
 
       lucide.createIcons();
-
-      Object.entries(keptInputs).forEach(([id, val]) => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.value = val;
-          if (id.startsWith('scale-')) updateScalePreview(id.slice('scale-'.length));
-        }
-      });
-      if (activeInputId) {
-        const a = document.getElementById(activeInputId);
-        if (a) a.focus();
-      }
     }
 
     // =========================================================================
-    // 7. UNDO / REDO, WAAGE & SPULEN-AKTIONEN
+    // 8. AKTIONEN & MODAL-STEUERUNG
     // =========================================================================
     let undoStack = [];
     let redoStack = [];
 
-    function snapshotState() { return JSON.stringify({ spools, printHistory }); }
+    function snapshotState() { return JSON.stringify({ spools, printHistory, deletedIds }); }
 
     function pushUndo() {
       undoStack.push(snapshotState());
@@ -2030,6 +1747,7 @@
       const data = JSON.parse(json);
       spools = Array.isArray(data.spools) ? data.spools : [];
       printHistory = Array.isArray(data.printHistory) ? data.printHistory : [];
+      deletedIds = Array.isArray(data.deletedIds) ? data.deletedIds : [];
       saveState();
       updateUndoRedoButtons();
     }
@@ -2038,14 +1756,12 @@
       if (!undoStack.length) return;
       redoStack.push(snapshotState());
       restoreSnapshot(undoStack.pop());
-      showToast('Rückgängig gemacht.');
     }
 
     function redoAction() {
       if (!redoStack.length) return;
       undoStack.push(snapshotState());
       restoreSnapshot(redoStack.pop());
-      showToast('Wiederhergestellt.');
     }
 
     function updateUndoRedoButtons() {
@@ -2055,20 +1771,12 @@
       if (r) r.disabled = !redoStack.length;
     }
 
-    function duplicateSpool(id) {
-      const orig = spools.find(s => s.id === id);
-      if (!orig) return;
-      pushUndo();
-      spools.unshift({ ...orig, id: 'sp-' + Date.now(), name: `${orig.name} (Kopie)`, lastDried: new Date().toISOString() });
-      saveState();
-      showToast('Spule dupliziert!');
-    }
-
     function deleteSpool(id) {
       pushUndo();
+      if (!deletedIds.includes(id)) deletedIds.push(id);
       spools = spools.filter(s => s.id !== id);
       saveState();
-      showToast('Spule gelöscht (Rückgängig oben möglich).');
+      showToast('Spule gelöscht.');
     }
 
     function deductWeight(id, presetGrams = null) {
@@ -2088,22 +1796,7 @@
       });
       if (input) input.value = '';
       saveState();
-      showToast(`-${g}g abgezogen (${spool.remainingWeight}g übrig).`);
-    }
-
-    function updateScalePreview(id) {
-      const spool = spools.find(s => s.id === id);
-      const input = document.getElementById(`scale-${id}`);
-      const out = document.getElementById(`scale-preview-${id}`);
-      if (!spool || !input || !out) return;
-      const tara = Number(spool.emptySpoolWeight) || 0;
-      const gross = parseFloat(input.value);
-      if (!input.value || isNaN(gross)) {
-        out.textContent = `Zieht ${tara}g Leerspule automatisch ab.`;
-        return;
-      }
-      const net = Math.round(gross - tara);
-      out.textContent = net < 0 ? `⚠️ Weniger als Leerspule (${tara}g)!` : `${gross}g − ${tara}g Tara = ${net}g Netto`;
+      showToast(`-${g}g abgezogen.`);
     }
 
     function applyScaleWeight(id) {
@@ -2118,7 +1811,7 @@
       spool.remainingWeight = Math.round(gross - tara);
       input.value = '';
       saveState();
-      showToast(`Neues Restgewicht: ${spool.remainingWeight}g`);
+      showToast(`Restgewicht: ${spool.remainingWeight}g`);
     }
 
     function markDried(id) {
@@ -2127,12 +1820,9 @@
       pushUndo();
       spool.lastDried = new Date().toISOString();
       saveState();
-      showToast('Als frisch getrocknet markiert!');
+      showToast('Als getrocknet markiert!');
     }
 
-    // =========================================================================
-    // 8. MODAL & HANDY-APP HELFER
-    // =========================================================================
     const QR_URL_KEY = 'filamenthub_qr_url';
 
     function renderSidebarQr() {
@@ -2140,16 +1830,18 @@
       const box = document.getElementById('qrCanvasSidebar');
       if (!input || !box) return;
       if (!input.value) {
-        input.value = localStorage.getItem(QR_URL_KEY) || (location.protocol.startsWith('http') ? location.href.split('#')[0] : '');
+        input.value = localStorage.getItem(QR_URL_KEY) || (location.protocol.startsWith('http') ? location.href.split('?')[0].split('#')[0] : '');
       }
-      const url = input.value.trim();
+      let url = input.value.trim();
       box.innerHTML = '';
       if (!url || url.startsWith('file:')) {
-        box.innerHTML = '<span class="text-slate-600 font-semibold">Für QR-Scan Online-URL unten eintragen oder oben Handy-Datei speichern.</span>';
+        box.innerHTML = '<span class="text-slate-500">Online-URL unten eintragen</span>';
         return;
       }
+      const sep = url.includes('?') ? '&' : '?';
+      const pairedUrl = `${url}${sep}cloud=${encodeURIComponent(currentCloudId)}`;
       if (typeof QRCode !== 'undefined') {
-        new QRCode(box, { text: url, width: 140, height: 140, colorDark: '#070a12', colorLight: '#ffffff' });
+        new QRCode(box, { text: pairedUrl, width: 125, height: 125, colorDark: '#090d16', colorLight: '#ffffff' });
       }
     }
 
@@ -2157,26 +1849,6 @@
       const url = document.getElementById('qrUrlSidebarInput').value.trim();
       if (url) localStorage.setItem(QR_URL_KEY, url);
       renderSidebarQr();
-    }
-
-    function downloadMobileAppFile() {
-      const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'FilamentHub-App.html';
-      a.click();
-      showToast('App-Datei gespeichert!');
-    }
-
-    function toLocalInputDate(isoStr) {
-      const d = isoStr ? new Date(isoStr) : new Date();
-      const pad = n => String(n).padStart(2, '0');
-      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
-
-    function setModalDriedNow() {
-      document.getElementById('fLastDried').value = toLocalInputDate(new Date().toISOString());
     }
 
     function applyMaterialPresetInModal() {
@@ -2194,7 +1866,7 @@
       const hint = document.getElementById('fScaleHint');
       const tara = parseInt(document.getElementById('fEmptySpoolWeight').value) || 0;
       if (!grossVal || isNaN(parseFloat(grossVal))) {
-        hint.textContent = `Tara: ${tara}g wird automatisch abgezogen.`;
+        hint.textContent = `Leerspule (${tara}g) wird automatisch abgezogen.`;
         return;
       }
       const net = Math.round(parseFloat(grossVal) - tara);
@@ -2236,7 +1908,7 @@
       if (data.dryIntervalDays !== undefined) document.getElementById('fDryIntervalDays').value = data.dryIntervalDays;
       if (data.dryTemp !== undefined) document.getElementById('fDryTemp').value = data.dryTemp;
       if (data.dryHours !== undefined) document.getElementById('fDryHours').value = data.dryHours;
-      if (data.lastDried !== undefined) document.getElementById('fLastDried').value = toLocalInputDate(data.lastDried);
+      if (data.lastDried !== undefined) document.getElementById('fLastDried').value = data.lastDried;
 
       if (data.brand) {
         const select = document.getElementById('fBrandSelect');
@@ -2253,40 +1925,24 @@
     }
 
     function openSpoolModal(spoolId = null, prefill = null) {
-      document.getElementById('modalDetectedInfo').classList.add('hidden');
       document.getElementById('fScaleGross').value = '';
-
       if (spoolId) {
         const existing = spools.find(s => s.id === spoolId);
         if (!existing) return;
-        document.getElementById('modalTitle').textContent = 'Filament bearbeiten';
+        document.getElementById('modalTitle').textContent = 'Spule bearbeiten';
         document.getElementById('fId').value = existing.id;
         populateModalFields(existing);
       } else {
-        document.getElementById('modalTitle').textContent = prefill ? 'Erkanntes Filament prüfen' : 'Neue Spule eintragen';
+        document.getElementById('modalTitle').textContent = 'Neue Spule eintragen';
         document.getElementById('fId').value = '';
         populateModalFields({
-          productUrl: '',
-          brand: 'Bambu Lab',
-          name: '',
-          material: 'PLA',
-          colorHex: '#f97316',
-          colorName: '',
-          pricePerKg: 19.99,
-          initialWeight: 1000,
-          remainingWeight: 1000,
-          emptySpoolWeight: 250,
-          dryIntervalDays: 30,
-          dryTemp: 50,
-          dryHours: 5,
+          productUrl: '', brand: 'Bambu Lab', name: '', material: 'PLA',
+          colorHex: '#f8fafc', colorName: '', pricePerKg: 19.99,
+          initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 250,
+          dryIntervalDays: 30, dryTemp: 50, dryHours: 5,
           lastDried: new Date().toISOString(),
           ...(prefill || {})
         });
-        if (prefill) {
-          const info = document.getElementById('modalDetectedInfo');
-          info.textContent = `✓ Erkannt: ${prefill.brand} • ${prefill.colorName} • ${prefill.material} • ${(Number(prefill.pricePerKg) || 17.99).toFixed(2).replace('.', ',')} €`;
-          info.classList.remove('hidden');
-        }
       }
       applyModalScale();
       document.getElementById('spoolModal').classList.replace('hidden', 'flex');
@@ -2304,7 +1960,6 @@
       const brand = selectVal === 'OTHER' ? (customVal || 'Unbekannt') : selectVal;
       const mat = document.getElementById('fMaterial').value;
       const preset = MATERIAL_PRESETS[mat] || MATERIAL_PRESETS['PLA'];
-      const lastDriedInput = document.getElementById('fLastDried').value;
       const colorName = document.getElementById('fColorName').value.trim() || 'Standard';
       const nameVal = document.getElementById('fName').value.trim();
       const emptyW = parseInt(document.getElementById('fEmptySpoolWeight').value);
@@ -2316,9 +1971,7 @@
 
       const spoolData = {
         id: existingId || ('sp-' + Date.now()),
-        brand,
-        name: nameVal,
-        material: mat,
+        brand, name: nameVal, material: mat,
         colorHex: document.getElementById('fColorHex').value,
         colorName,
         pricePerKg: parseFloat(document.getElementById('fPricePerKg').value) || getDefaultPriceForSpool(brand, mat),
@@ -2326,7 +1979,7 @@
         remainingWeight: parseInt(document.getElementById('fRemainingWeight').value) || 0,
         emptySpoolWeight: isNaN(emptyW) ? 200 : emptyW,
         productUrl: urlVal,
-        lastDried: lastDriedInput ? new Date(lastDriedInput).toISOString() : new Date().toISOString(),
+        lastDried: document.getElementById('fLastDried').value || new Date().toISOString(),
         dryIntervalDays: parseInt(document.getElementById('fDryIntervalDays').value) || preset.intervalDays,
         dryTemp: parseInt(document.getElementById('fDryTemp').value) || preset.temp,
         dryHours: parseInt(document.getElementById('fDryHours').value) || preset.hours
@@ -2341,23 +1994,23 @@
       }
       saveState();
       closeSpoolModal();
-      showToast(`Spule „${spoolData.brand} ${spoolData.name}“ gespeichert!`);
+      showToast('Spule gespeichert!');
     }
 
     function openHistoryModal() {
       const list = document.getElementById('historyList');
       list.innerHTML = printHistory.map(h => `
-        <div class="p-2.5 bg-obsidian-950 border border-white/[0.07] rounded-xl text-xs flex justify-between items-center gap-2">
+        <div class="p-2.5 bg-surface-950 border border-white/[0.07] rounded-xl text-xs flex justify-between items-center gap-2">
           <div>
             <p class="font-bold text-white">${h.spoolLabel}</p>
             <p class="text-[10px] text-slate-400">${new Date(h.timestamp).toLocaleString('de-DE')}</p>
           </div>
           <div class="flex items-center gap-2">
             <span class="text-orange-400 font-mono-num font-bold">-${h.grams}g</span>
-            <button onclick="undoHistory('${h.id}')" class="px-2 py-1 rounded bg-white/[0.06] hover:bg-white/[0.12] text-[10px] text-slate-200">Rückgängig</button>
+            <button onclick="undoHistory('${h.id}')" class="px-2 py-1 rounded bg-surface-800 hover:bg-surface-850 text-[10px] text-slate-200">Rückgängig</button>
           </div>
         </div>
-      `).join('') || '<p class="text-xs text-slate-500 text-center py-4">Noch keine Druck-Abzüge protokolliert.</p>';
+      `).join('') || '<p class="text-xs text-slate-500 text-center py-4">Noch keine Einträge.</p>';
       document.getElementById('historyModal').classList.replace('hidden', 'flex');
     }
 
@@ -2378,22 +2031,18 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      purgeLegacyAndMigrate();
       document.getElementById('cloudIdInput').value = currentCloudId;
       renderAiMessages();
       loadStateFromCloud();
       updateUndoRedoButtons();
 
-      setInterval(() => { if (!isSyncing && !pendingSync) loadStateFromCloud(false); }, 6000);
-      window.addEventListener('focus', () => { if (!isSyncing && !pendingSync) loadStateFromCloud(false); });
-
-      document.addEventListener('keydown', e => {
-        const tag = e.target && e.target.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-        if (!(e.ctrlKey || e.metaKey)) return;
-        const k = e.key.toLowerCase();
-        if (k === 'z' && !e.shiftKey) { e.preventDefault(); undoAction(); }
-        else if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); redoAction(); }
-      });
+      // Prüft sanft im Hintergrund, unterbricht aber NIEMALS offene Eingaben oder Fenster
+      setInterval(() => {
+        if (!isSyncing && !pendingSync && !isAnyModalOrInputActive()) {
+          loadStateFromCloud(false);
+        }
+      }, 12000);
     });
   </script>
 </body>
