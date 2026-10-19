@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#090d16" />
-  <title>FilamentHub v16.0 – 3D-Filament Manager</title>
+  <title>FilamentHub v17.0 – 3D-Filament Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -38,7 +38,7 @@
     .clean-card {
       background-color: #101624;
       border: 1px solid rgba(255, 255, 255, 0.07);
-      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
     .clean-card:hover {
       border-color: rgba(249, 115, 22, 0.4);
@@ -86,7 +86,6 @@
 
       <!-- Rechts: Klare Direkt-Aktionen -->
       <div class="flex flex-wrap items-center gap-2">
-        <!-- Rückgängig / Vorwärts -->
         <div class="inline-flex items-center rounded-xl bg-surface-900 border border-white/[0.08]">
           <button id="undoBtn" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:bg-surface-850 text-slate-300 transition disabled:opacity-30">
             <i data-lucide="undo-2" class="w-4 h-4"></i>
@@ -96,20 +95,17 @@
           </button>
         </div>
 
-        <!-- Datei / Text Import & Export -->
         <button onclick="openDataVaultModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 text-xs font-semibold border border-white/[0.08] transition">
           <i data-lucide="file-text" class="w-3.5 h-3.5 text-sky-400"></i>
           <span>Datei / Text Import</span>
         </button>
 
-        <!-- Druck-Verlauf -->
         <button onclick="openHistoryModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-900 hover:bg-surface-850 text-slate-200 text-xs font-semibold border border-white/[0.08] transition">
           <i data-lucide="history" class="w-3.5 h-3.5 text-orange-400"></i>
           <span class="hidden sm:inline">Verlauf</span>
           <span id="historyBadge" class="px-1.5 py-0.2 text-[10px] font-mono-num rounded-full bg-surface-800 text-slate-300">0</span>
         </button>
 
-        <!-- Neue Spule -->
         <button onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold transition shadow-sm">
           <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
           <span>Neue Spule</span>
@@ -127,10 +123,9 @@
     <!-- ================= LINKES AUSKLAPP-MENÜ (SIDEBAR) ================= -->
     <aside id="leftSidebar" class="fixed lg:sticky top-0 lg:top-[57px] left-0 z-50 lg:z-20 h-screen lg:h-[calc(100vh-57px)] w-[340px] sm:w-[380px] bg-surface-900 border-r border-white/[0.07] flex flex-col transition-all duration-300 -translate-x-full lg:translate-x-0 shrink-0 overflow-hidden">
       
-      <!-- Sidebar Tabs -->
       <div class="p-3 border-b border-white/[0.07] bg-surface-950/40">
         <div class="flex items-center justify-between mb-2 px-1">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Werkzeuge</span>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Werkzeuge & KI</span>
           <button onclick="toggleSidebar()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
             <i data-lucide="x" class="w-3.5 h-3.5"></i>
             <span>Schließen</span>
@@ -159,12 +154,12 @@
 
       <div class="flex-1 overflow-y-auto p-4 space-y-4">
 
-        <!-- TAB 1: KI-AGENT (INKL. SPRACHEINGABE) -->
+        <!-- TAB 1: KI-AGENT -->
         <div id="sidebarPanel-ai" class="flex flex-col h-full space-y-3">
           <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3">
-            <p class="text-xs font-bold text-white">KI-Assistent & Sprachsteuerung</p>
+            <p class="text-xs font-bold text-white">KI-Assistent & Spracheingabe</p>
             <p class="text-[11px] text-slate-400 mt-1">
-              Tippe oder diktiere per Mikrofon, z. B.: <em>„Neue Spule Bambu Lab PLA Schwarz 1000g“</em> oder <em>„Ziehe 40g von Marmor ab“</em>.
+              Tippe oder sprich ein, z. B.: <em>„Neue Spule Bambu Lab PLA Schwarz einvakuumiert“</em> oder <em>„Ziehe 40g von Marmor ab“</em>.
             </p>
           </div>
 
@@ -192,7 +187,7 @@
           <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3">
             <h3 class="text-xs font-bold text-white">G-Code Direkt-Abzug</h3>
             <p class="text-[11px] text-slate-400 mt-1">
-              Lade deinen fertigen G-Code hoch und wähle die Spule aus, von der das Gewicht abgezogen werden soll.
+              Lade deinen fertigen G-Code hoch und tippe die Spule an, von der das Gewicht abgezogen werden soll.
             </p>
           </div>
 
@@ -333,7 +328,7 @@
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div>
             <h2 class="text-sm font-bold text-white">Schnell-Eintrag (Link, Text oder 🎙️ Spracheingabe)</h2>
-            <p class="text-xs text-slate-400">z. B. „Bambu Lab PLA Weiß ohne Spule“ oder Amazon-Link einfügen</p>
+            <p class="text-xs text-slate-400">Erkennt auch direkt „einvakuumiert“, „im BQ Bag“ oder „ohne Spule“</p>
           </div>
 
           <div class="flex-1 max-w-2xl flex gap-2">
@@ -344,7 +339,7 @@
             <input
               id="quickLinkInput"
               type="text"
-              placeholder="Name diktieren, eintippen oder Produkt-Link einfügen..."
+              placeholder="z.B. 'Bambu Lab PLA Weiß einvakuumiert' oder Produkt-Link..."
               class="w-full px-3.5 py-2.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-orange-500 text-xs sm:text-sm text-white outline-none"
               onkeydown="if(event.key==='Enter'){ handleQuickLinkImport(); }"
             />
@@ -363,7 +358,7 @@
       <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div class="clean-panel rounded-2xl p-4 flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-400">Spulen im Bestand</p>
+            <p class="text-xs text-slate-400">Spulen (davon vakuumiert)</p>
             <p id="statTotalSpools" class="text-2xl font-extrabold text-white font-mono-num mt-0.5">0</p>
           </div>
           <i data-lucide="layers" class="w-5 h-5 text-slate-500"></i>
@@ -461,7 +456,7 @@
       <div class="flex items-start justify-between border-b border-white/[0.08] pb-3">
         <div>
           <h3 class="text-base sm:text-lg font-extrabold text-white">Filament-Liste einfügen, diktieren oder als Datei speichern</h3>
-          <p class="text-xs text-slate-400">Hier kannst du die von mir erstellte Liste direkt online reinkopieren, per Mikrofon einsprechen oder als `.txt` herunterladen.</p>
+          <p class="text-xs text-slate-400">Unterstützt auch direkt den Verpackungsstatus (Offen, BQ-Bag, OVP) beim Import und Export.</p>
         </div>
         <button onclick="closeDataVaultModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">✕</button>
       </div>
@@ -494,13 +489,13 @@
       </div>
 
       <div class="space-y-1.5">
-        <div class="flex justify-between items-center text-xs text-slate-400">
-          <span>1 Zeile = 1 Spule (Freitext oder Format: <code class="text-slate-300">Marke | Name | Material | Farbe | Rest(g) | Voll(g) | Tara(g) | Preis(€)</code>)</span>
+        <div class="flex justify-between items-center text-[11px] text-slate-400">
+          <span>Format: <code class="text-slate-300">Marke | Name | Material | Farbe | Rest(g) | Voll(g) | Spulen-Tara(g) | Status(open/biqu_bag/factory_sealed) | Bag-Tara(g) | Preis(€)</code></span>
         </div>
         <textarea
           id="vaultTextArea"
           rows="10"
-          placeholder="Hier einfach deine Liste einfügen oder diktieren, z.B.:&#10;Bambu Lab | PLA Basic Weiß | PLA | Weiß | 1000g | 1000g | 250g | 19.99€&#10;ELEGOO | PLA Marmor | PLA | Marmor | 850g | 1000g | 160g | 17.99€"
+          placeholder="Hier einfach deine Liste einfügen oder diktieren, z.B.:&#10;Bambu Lab | PLA Basic Weiß | PLA | Weiß | 1000g | 1000g | 250g | factory_sealed | 18g | 19.99€&#10;ELEGOO | PLA Marmor | PLA | Marmor | 850g | 1000g | 160g | biqu_bag | 25g | 17.99€"
           class="w-full p-3.5 rounded-xl bg-surface-950 border border-white/[0.1] focus:border-orange-500 text-xs font-mono-num text-slate-200 outline-none leading-relaxed"
         ></textarea>
       </div>
@@ -521,108 +516,155 @@
     </div>
   </div>
 
-  <!-- ================= MODAL: SPULE HINZUFÜGEN / BEARBEITEN ================= -->
+  <!-- ================= MODAL: SPULE HINZUFÜGEN / BEARBEITEN (MINIMALISTISCH MIT MEHR ERKLÄRTEXT) ================= -->
   <div id="spoolModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-    <div class="bg-surface-900 border border-white/[0.1] rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl my-8">
-      <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
-        <h3 id="modalTitle" class="text-base font-bold text-white">Spule eintragen</h3>
+    <div class="bg-surface-900 border border-white/[0.1] rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl my-8 max-h-[93vh] overflow-y-auto">
+      <div class="flex items-start justify-between border-b border-white/[0.08] pb-3.5">
+        <div>
+          <h3 id="modalTitle" class="text-base sm:text-lg font-extrabold text-white">Neue Filament-Spule eintragen</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Alle Standardwerte für Leerspule, Vakuum-Beutel und Haltbarkeit werden automatisch passend zu deiner Auswahl geladen.</p>
+        </div>
         <button onclick="closeSpoolModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">✕</button>
       </div>
 
-      <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-3.5">
+      <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-4">
         <input type="hidden" id="fId" />
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Hersteller *</label>
-            <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-sm text-white outline-none">
-              <option value="Bambu Lab">Bambu Lab</option>
-              <option value="SUNLU">SUNLU</option>
-              <option value="ELEGOO">ELEGOO</option>
-              <option value="eSUN">eSUN</option>
-              <option value="3DJake">3DJake</option>
-              <option value="Prusament">Prusament</option>
-              <option value="Extrudr">Extrudr</option>
-              <option value="Polymaker">Polymaker</option>
-              <option value="Anycubic">Anycubic</option>
-              <option value="Creality">Creality</option>
-              <option value="Eryone">Eryone</option>
-              <option value="Overture">Overture</option>
-              <option value="Jayo">Jayo</option>
-              <option value="Geeetech">Geeetech</option>
-              <option value="Das Filament">Das Filament</option>
-              <option value="OTHER">➕ Anderer Hersteller...</option>
-            </select>
-            <input id="fBrandCustom" type="text" placeholder="Hersteller eingeben..." class="w-full mt-2 px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-sm text-white outline-none hidden" />
-          </div>
+        <!-- SCHRITT 1: HERSTELLER, MATERIAL & FARBE -->
+        <div class="space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-200 mb-1">1. Hersteller / Marke *</label>
+              <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none">
+                <option value="Bambu Lab">Bambu Lab (Standard-Spule: 250g)</option>
+                <option value="SUNLU">SUNLU (Standard-Spule: 195g)</option>
+                <option value="ELEGOO">ELEGOO (Standard-Spule: 160g)</option>
+                <option value="eSUN">eSUN (Standard-Spule: 220g)</option>
+                <option value="3DJake">3DJake (Standard-Spule: 215g)</option>
+                <option value="Prusament">Prusament (Standard-Spule: 200g)</option>
+                <option value="Extrudr">Extrudr (Standard-Spule: 240g)</option>
+                <option value="Polymaker">Polymaker (Standard-Spule: 140g)</option>
+                <option value="Anycubic">Anycubic (Standard-Spule: 190g)</option>
+                <option value="Creality">Creality (Standard-Spule: 180g)</option>
+                <option value="Eryone">Eryone (Standard-Spule: 200g)</option>
+                <option value="Overture">Overture (Standard-Spule: 145g)</option>
+                <option value="Jayo">Jayo (Standard-Spule: 195g)</option>
+                <option value="Geeetech">Geeetech (Standard-Spule: 195g)</option>
+                <option value="Das Filament">Das Filament (Standard-Spule: 210g)</option>
+                <option value="OTHER">➕ Anderer Hersteller...</option>
+              </select>
+              <input id="fBrandCustom" type="text" placeholder="Hersteller eingeben..." class="w-full mt-2 px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none hidden" />
+            </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Bezeichnung *</label>
-            <input id="fName" type="text" required placeholder="z.B. PLA Basic Weiß" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-sm text-white outline-none" />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Material *</label>
-            <select id="fMaterial" onchange="applyMaterialPresetInModal()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-sm text-white outline-none">
-              <option value="PLA">PLA</option>
-              <option value="PLA+">PLA+</option>
-              <option value="PETG">PETG</option>
-              <option value="TPU">TPU</option>
-              <option value="ABS">ABS</option>
-              <option value="ASA">ASA</option>
-              <option value="PA / Nylon">PA / Nylon</option>
-              <option value="PC">PC</option>
-              <option value="PET-CF / PA-CF">Carbon (CF)</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Farbe *</label>
-            <div class="flex items-center gap-1.5">
-              <input id="fColorHex" type="color" value="#f97316" class="w-9 h-9 rounded-xl bg-surface-950 border border-white/[0.1] p-1 cursor-pointer shrink-0" />
-              <input id="fColorName" type="text" required placeholder="z.B. Weiß" oninput="autoMatchHexFromColorInput(this.value)" class="w-full px-2.5 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
+            <div>
+              <label class="block text-xs font-semibold text-slate-200 mb-1">Bezeichnung / Serie *</label>
+              <input id="fName" type="text" required placeholder="z.B. PLA Basic Weiß" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none" />
             </div>
           </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-emerald-400 mb-1">Preis (€/kg) *</label>
-            <input id="fPricePerKg" type="number" step="0.01" min="1" max="500" value="17.99" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-sm font-mono-num text-emerald-400 font-bold outline-none" />
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-200 mb-1">Materialtyp *</label>
+              <select id="fMaterial" onchange="onMaterialOrStorageChangeInModal()" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm text-white outline-none">
+                <option value="PLA">PLA</option>
+                <option value="PLA+">PLA+ / Tough</option>
+                <option value="PETG">PETG</option>
+                <option value="TPU">TPU (Flex)</option>
+                <option value="ABS">ABS</option>
+                <option value="ASA">ASA</option>
+                <option value="PA / Nylon">PA / Nylon</option>
+                <option value="PC">PC (Polycarbonat)</option>
+                <option value="PET-CF / PA-CF">Carbon (CF)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-200 mb-1">Farbe *</label>
+              <div class="flex items-center gap-1.5">
+                <input id="fColorHex" type="color" value="#f8fafc" class="w-9 h-9 rounded-xl bg-surface-950 border border-white/[0.1] p-1 cursor-pointer shrink-0" />
+                <input id="fColorName" type="text" required placeholder="z.B. Weiß" oninput="autoMatchHexFromColorInput(this.value)" class="w-full px-2.5 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-emerald-400 mb-1">Spulenpreis (€/kg) *</label>
+              <input id="fPricePerKg" type="number" step="0.01" min="1" max="500" value="19.99" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-emerald-400 font-bold outline-none" />
+            </div>
           </div>
         </div>
 
-        <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3 space-y-2.5">
+        <!-- SCHRITT 2: VERPACKUNGS-STATUS (OFFEN / BIQU BAG / HERSTELLER-VAKUUMIERT) -->
+        <div class="rounded-xl bg-surface-950 border border-sky-500/25 p-3.5 space-y-2.5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-300">Gewicht & Leerspule (Gramm)</span>
-            <button type="button" onclick="document.getElementById('fEmptySpoolWeight').value=0;applyModalScale();" class="px-2 py-0.5 rounded bg-orange-500/15 text-orange-300 text-[11px] font-semibold">Ohne Spule (0g Tara)</button>
+            <label class="text-xs font-bold text-white flex items-center gap-1.5">
+              <i data-lucide="package-check" class="w-4 h-4 text-sky-400"></i>
+              <span>2. Ist die Spule eingepackt / vakuumiert?</span>
+            </label>
+            <span id="modalStorageBadge" class="text-[10px] font-mono-num px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 font-semibold">0g Beutel-Tara</span>
           </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] text-slate-400 mb-1">Lagerungs-Zustand auswählen (Dropdown)</label>
+              <select id="fStorageMode" onchange="onMaterialOrStorageChangeInModal()" class="w-full px-3 py-2 rounded-xl bg-surface-900 border border-white/[0.1] text-xs text-white font-semibold outline-none focus:border-sky-400">
+                <option value="open">🌬️ Nein – Offen an der Luft / Im Drucker (0g Bag)</option>
+                <option value="biqu_bag">🛡️ Ja – Im BIQU (BQ) Vakuum-Bag (+25g inkl. Silikagel)</option>
+                <option value="factory_sealed">📦 Ja – Original Hersteller-Vakuumiert OVP (+18g Folie)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Beutel-Gewicht (g)</label>
+              <input id="fBagWeight" type="number" min="0" max="200" value="0" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-xl bg-surface-900 border border-white/[0.1] text-xs font-mono-num text-sky-300 font-bold outline-none" />
+            </div>
+          </div>
+
+          <!-- Dynamischer Erklärtext zu Haltbarkeit & Beutelgewicht -->
+          <p id="modalMaterialStorageInfo" class="text-[11px] text-slate-300 bg-surface-900/90 border border-white/[0.05] rounded-lg p-2.5 leading-relaxed"></p>
+        </div>
+
+        <!-- SCHRITT 3: GEWICHT, TARA & KÜCHENWAAGEN-RECHNER -->
+        <div class="rounded-xl bg-surface-950 border border-white/[0.07] p-3.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-white flex items-center gap-1.5">
+              <i data-lucide="scale" class="w-4 h-4 text-emerald-400"></i>
+              <span>3. Gewicht & Waagen-Automatik (zieht Spule + Bag ab)</span>
+            </span>
+            <button type="button" onclick="document.getElementById('fEmptySpoolWeight').value=0;applyModalScale();" class="px-2 py-0.5 rounded bg-orange-500/15 text-orange-300 text-[10px] font-semibold">
+              Ohne Spule / Refill (0g Spule)
+            </button>
+          </div>
+
           <div class="grid grid-cols-3 gap-2.5">
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Start (g)</label>
-              <input id="fInitialWeight" type="number" value="1000" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-sm font-mono-num text-white outline-none" />
+              <label class="block text-[11px] text-slate-400 mb-1">Startgewicht (g)</label>
+              <input id="fInitialWeight" type="number" value="1000" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-white outline-none" />
             </div>
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Rest (g)</label>
-              <input id="fRemainingWeight" type="number" value="1000" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-emerald-500/50 text-sm font-mono-num text-emerald-400 font-bold outline-none" />
+              <label class="block text-[11px] text-slate-400 mb-1">Netto-Rest (g)</label>
+              <input id="fRemainingWeight" type="number" value="1000" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-emerald-500/50 text-xs sm:text-sm font-mono-num text-emerald-400 font-bold outline-none" />
             </div>
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Tara (g)</label>
-              <input id="fEmptySpoolWeight" type="number" value="200" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-sm font-mono-num text-slate-300 outline-none" />
+              <label class="block text-[11px] text-slate-400 mb-1">Leerspule Tara (g)</label>
+              <input id="fEmptySpoolWeight" type="number" value="250" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg bg-surface-900 border border-white/[0.1] text-xs sm:text-sm font-mono-num text-slate-300 outline-none" />
             </div>
           </div>
-          <input id="fScaleGross" type="number" placeholder="⚖️ Optional: Gesamtgewicht auf Waage eingeben (Spule + Filament in g)..." oninput="applyModalScale()" class="w-full px-2.5 py-1.5 rounded-lg bg-surface-900 border border-white/[0.08] text-xs font-mono-num text-white outline-none" />
-          <p id="fScaleHint" class="text-[10px] text-slate-400"></p>
+
+          <div class="pt-2 border-t border-white/[0.06] space-y-1.5">
+            <label class="block text-[11px] text-emerald-400 font-semibold">⚖️ Komplett auf die Waage gelegt (Spule + ggf. Vakuum-Bag + Filament in g):</label>
+            <input id="fScaleGross" type="number" placeholder="Bruttogewicht der Waage hier eintippen → Netto-Filament wird berechnet..." oninput="applyModalScale()" class="w-full px-3 py-2 rounded-lg bg-surface-900 border border-emerald-500/30 text-xs font-mono-num text-white outline-none focus:border-emerald-400" />
+            <p id="fScaleHint" class="text-[11px] text-slate-400 leading-relaxed"></p>
+          </div>
         </div>
 
+        <!-- SCHRITT 4: TROCKNUNGSWERT & SHOP-LINK -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-[11px] text-slate-400 mb-1">Shop-Link (optional – sonst automatisch)</label>
-            <input id="fProductUrl" type="text" placeholder="https://..." class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
+            <input id="fProductUrl" type="text" placeholder="Leer = Auto-Link zum günstigsten Shop" class="w-full px-3 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs text-white outline-none" />
           </div>
           <div class="grid grid-cols-3 gap-1.5">
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">Intervall (d)</label>
+              <label class="block text-[11px] text-slate-400 mb-1">Haltbar (Tage)</label>
               <input id="fDryIntervalDays" type="number" value="30" class="w-full px-2 py-2 rounded-xl bg-surface-950 border border-white/[0.1] text-xs font-mono-num text-white outline-none" />
             </div>
             <div>
@@ -637,9 +679,9 @@
         </div>
         <input id="fLastDried" type="hidden" />
 
-        <div class="flex justify-end gap-2 pt-2">
+        <div class="flex justify-end gap-2 pt-2 border-t border-white/[0.08]">
           <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl bg-surface-800 text-xs font-semibold text-slate-300">Abbrechen</button>
-          <button type="submit" class="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold">Speichern</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold">Spule speichern</button>
         </div>
       </form>
     </div>
@@ -659,31 +701,59 @@
   <!-- TOAST MELDUNGEN -->
   <div id="toastContainer" class="fixed bottom-16 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS (IMMER SICHTBAR MIT DATUM & UHRZEIT) -->
+  <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS -->
   <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-900/95 border border-white/[0.12] shadow-xl text-[11px] text-slate-300 backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-orange-400">v16.0</span>
+    <span class="font-mono-num font-bold text-orange-400">v17.0</span>
     <span class="text-slate-600">|</span>
-    <span class="font-mono-num text-slate-300">19.10.2026, 17:35 Uhr</span>
+    <span class="font-mono-num text-slate-300">19.10.2026, 17:45 Uhr</span>
     <span class="text-slate-600">|</span>
     <span id="syncStatusLabel" class="text-emerald-400 font-semibold">Synchron</span>
   </div>
 
   <script>
     // =========================================================================
-    // 1. DATENBANKEN (OHNE CHARCOAL-FALLBACK)
+    // 1. RECHERCHIERTE DATENBANKEN: HALTBARKEIT (OFFEN / BQ BAG / OVP) & TARA
     // =========================================================================
-    const MATERIAL_PRESETS = {
-      'PLA':            { intervalDays: 30, temp: 50, hours: 5, defaultPrice: 17.99 },
-      'PLA+':           { intervalDays: 28, temp: 50, hours: 5, defaultPrice: 18.99 },
-      'PETG':           { intervalDays: 21, temp: 65, hours: 6, defaultPrice: 18.99 },
-      'TPU':            { intervalDays: 14, temp: 55, hours: 6, defaultPrice: 24.99 },
-      'ABS':            { intervalDays: 21, temp: 70, hours: 6, defaultPrice: 19.99 },
-      'ASA':            { intervalDays: 21, temp: 70, hours: 6, defaultPrice: 23.99 },
-      'PA / Nylon':     { intervalDays: 7,  temp: 80, hours: 8, defaultPrice: 34.99 },
-      'PC':             { intervalDays: 10, temp: 80, hours: 8, defaultPrice: 36.99 },
-      'PET-CF / PA-CF': { intervalDays: 10, temp: 80, hours: 8, defaultPrice: 39.99 }
+    const STORAGE_MODES = {
+      'open': {
+        label: '🌬️ Offen (Luft)',
+        shortBadge: '🌬️ Offen',
+        bagWeight: 0,
+        desc: 'Offen an der Luft oder im Drucker (0g Beutel-Tara)'
+      },
+      'biqu_bag': {
+        label: '🛡️ BQ Vakuum-Bag',
+        shortBadge: '🛡️ BQ-Bag',
+        bagWeight: 25, // ~20g BIQU Vakuumbeutel + 5g Silikagel
+        desc: 'Wiederverschließbarer BIQU Vakuum-Bag inkl. Silikagel (~25g Beutel-Tara)'
+      },
+      'factory_sealed': {
+        label: '📦 OVP Vakuumiert',
+        shortBadge: '📦 OVP Vakuum',
+        bagWeight: 18, // ~13g Werks-Schweißfolie + 5g Silikagel
+        desc: 'Original vom Hersteller luftdicht verschweißt inkl. Silikagel (~18g Folien-Tara)'
+      }
     };
+
+    const MATERIAL_PRESETS = {
+      'PLA':            { openDays: 30, biquBagDays: 180, factorySealedDays: 365, temp: 50, hours: 5, defaultPrice: 17.99 },
+      'PLA+':           { openDays: 21, biquBagDays: 150, factorySealedDays: 365, temp: 50, hours: 5, defaultPrice: 18.99 },
+      'PETG':           { openDays: 14, biquBagDays: 120, factorySealedDays: 365, temp: 65, hours: 6, defaultPrice: 18.99 },
+      'TPU':            { openDays: 7,  biquBagDays: 90,  factorySealedDays: 365, temp: 55, hours: 6, defaultPrice: 24.99 },
+      'ABS':            { openDays: 14, biquBagDays: 120, factorySealedDays: 365, temp: 70, hours: 6, defaultPrice: 19.99 },
+      'ASA':            { openDays: 14, biquBagDays: 120, factorySealedDays: 365, temp: 70, hours: 6, defaultPrice: 23.99 },
+      'PA / Nylon':     { openDays: 2,  biquBagDays: 45,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 34.99 },
+      'PC':             { openDays: 5,  biquBagDays: 60,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 36.99 },
+      'PET-CF / PA-CF': { openDays: 4,  biquBagDays: 60,  factorySealedDays: 365, temp: 80, hours: 8, defaultPrice: 39.99 }
+    };
+
+    function getRecommendedDays(material, storageMode) {
+      const p = MATERIAL_PRESETS[material] || MATERIAL_PRESETS['PLA'];
+      if (storageMode === 'factory_sealed') return p.factorySealedDays;
+      if (storageMode === 'biqu_bag') return p.biquBagDays;
+      return p.openDays;
+    }
 
     const BRAND_DATABASE = [
       { keys: ['bambulab', 'bambu lab', 'bambu'], name: 'Bambu Lab', tara: 250, basePrice: 19.99 },
@@ -769,7 +839,6 @@
 
     function getBestShopOffer(spool) {
       const brand = (spool.brand || 'PLA').trim();
-      const brandLower = brand.toLowerCase();
       const mat = spool.material || 'PLA';
       const color = spool.colorName && spool.colorName !== 'Standard' ? spool.colorName : '';
       const baseP = Number(spool.pricePerKg) || getDefaultPriceForSpool(brand, mat);
@@ -785,18 +854,18 @@
     }
 
     // =========================================================================
-    // 2. SPEICHER & UNTERBRECHUNGSFREIER SYNC (CHARCOAL IST KOMPLETT ENTFERNT)
+    // 2. SPEICHER & UNTERBRECHUNGSFREIER SYNC
     // =========================================================================
-    const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v16';
-    const PERMANENT_HISTORY_KEY = 'filamenthub_history_v16';
-    const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v16';
-    const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v16';
+    const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v17';
+    const PERMANENT_HISTORY_KEY = 'filamenthub_history_v17';
+    const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v17';
+    const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v17';
     const CLOUD_ID_STORAGE_KEY = 'filamenthub_cloud_id';
 
     const OLD_KEYS_TO_CLEAN = [
-      'filamenthub_spools_v15', 'filamenthub_spools_permanent', 'filamenthub_spools_v13',
-      'filamenthub_spools_v9', 'filamenthub_spools_v8', 'filamenthub_spools_v7',
-      'filamenthub_spools_v6', 'filamenthub_spools_v5', 'filamenthub_spools_v3', 'filamenthub_spools_v2'
+      'filamenthub_spools_v16', 'filamenthub_spools_v15', 'filamenthub_spools_permanent',
+      'filamenthub_spools_v13', 'filamenthub_spools_v9', 'filamenthub_spools_v8',
+      'filamenthub_spools_v7', 'filamenthub_spools_v5', 'filamenthub_spools_v3'
     ];
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -814,13 +883,11 @@
     let deletedIds = JSON.parse(localStorage.getItem(DELETED_TOMBSTONES_KEY) || '[]');
     let localUpdatedAt = Number(localStorage.getItem(LOCAL_UPDATED_AT_KEY) || 0);
     let lastUserInteractionTime = 0;
-    let lastRenderedHash = '';
     let activeMaterialFilter = 'ALL';
     let openScaleCards = {};
     let isSyncing = false;
     let pendingSync = false;
 
-    // Merkt sich jede Nutzer-Interaktion, damit der Auto-Sync NIEMALS dazwischenfunkt!
     ['keydown', 'mousedown', 'touchstart', 'input'].forEach(evt => {
       window.addEventListener(evt, () => { lastUserInteractionTime = Date.now(); }, { passive: true });
     });
@@ -837,14 +904,11 @@
       return false;
     }
 
-    // RADIKALE ENTFERNUNG VON CHARCOAL (egal wie es geschrieben ist)
     function isCharcoalOrDeleted(spool) {
       if (!spool) return true;
       if (deletedIds.includes(spool.id)) return true;
       const text = `${spool.id || ''} ${spool.brand || ''} ${spool.name || ''} ${spool.colorName || ''}`.toLowerCase();
-      if (text.includes('charcoal') || spool.id === 'sp-1' || spool.id === 'default-1') {
-        return true;
-      }
+      if (text.includes('charcoal') || spool.id === 'sp-1' || spool.id === 'default-1') return true;
       return false;
     }
 
@@ -890,6 +954,10 @@
           s.pricePerKg = getDefaultPriceForSpool(s.brand, s.material);
         }
         if (s.emptySpoolWeight === undefined) s.emptySpoolWeight = 200;
+        if (!s.storageMode || !STORAGE_MODES[s.storageMode]) s.storageMode = 'open';
+        if (s.bagWeight === undefined || isNaN(Number(s.bagWeight))) {
+          s.bagWeight = STORAGE_MODES[s.storageMode].bagWeight;
+        }
         if (!s.productUrl) {
           s.productUrl = buildVendorUrl(s.brand, s.material, s.colorName || '', s.name || '', Number(s.emptySpoolWeight) === 0);
         }
@@ -906,7 +974,6 @@
     }
 
     async function loadStateFromCloud(manual = false) {
-      // Unterbricht NIEMALS deine laufende Bearbeitung!
       if (!manual && isAnyModalOrInputActive()) return;
 
       const localRaw = localStorage.getItem(PERMANENT_SPOOLS_KEY);
@@ -933,7 +1000,6 @@
               printHistory = Array.isArray(data.printHistory) ? data.printHistory : printHistory;
               saveLocalBackup(cloudTime || Date.now());
 
-              // Nur neu zeichnen, wenn sich wirklich etwas geändert hat!
               if (manual || newHash !== currentHash) {
                 renderSpools(true);
                 populateCalcSpoolDropdown();
@@ -941,10 +1007,7 @@
               setSyncStatus('Synchron', true);
             }
 
-            // Falls Charcoal noch in der Cloud lag: Sofort in der Cloud überschreiben!
-            if (hadCharcoalInCloud) {
-              await saveState();
-            }
+            if (hadCharcoalInCloud) await saveState();
             return;
           }
         }
@@ -1008,14 +1071,14 @@
     }
 
     // =========================================================================
-    // 3. SPRACHEINGABE (MIKROFON) DIREKT IN DER WEBSITE
+    // 3. SPRACHEINGABE (MIKROFON)
     // =========================================================================
     let activeRecognition = null;
 
     function startVoiceRecognition(targetInputId, btnId, autoSendAi = false, appendNewLine = false) {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRec) {
-        showToast('⚠️ Dein Browser unterstützt leider keine direkte Spracheingabe (nutze Chrome, Edge oder Safari).');
+        showToast('⚠️ Bitte nutze Chrome, Edge oder Safari für Spracheingabe.');
         return;
       }
 
@@ -1045,9 +1108,7 @@
           }
         }
         showToast(`✓ Erkannt: „${transcript}“`);
-        if (autoSendAi) {
-          sendAiMessage();
-        }
+        if (autoSendAi) sendAiMessage();
       };
 
       rec.onerror = function() {
@@ -1064,13 +1125,15 @@
     }
 
     // =========================================================================
-    // 4. DATEI / TEXT IMPORT & EXPORT (.TXT)
+    // 4. DATEI / TEXT IMPORT & EXPORT (.TXT INKL. VAKUUM-STATUS)
     // =========================================================================
     function spoolsToReadableText() {
       if (!spools.length) return '';
       return spools.map(s => {
         const p = (Number(s.pricePerKg) || 17.99).toFixed(2);
-        return `${s.brand} | ${s.name} | ${s.material} | ${s.colorName || 'Standard'} | ${s.remainingWeight}g | ${s.initialWeight}g | ${s.emptySpoolWeight ?? 200}g | ${p}€ | ${s.colorHex || '#f97316'} | ${s.productUrl || ''}`;
+        const mode = s.storageMode || 'open';
+        const bagW = s.bagWeight ?? STORAGE_MODES[mode].bagWeight;
+        return `${s.brand} | ${s.name} | ${s.material} | ${s.colorName || 'Standard'} | ${s.remainingWeight}g | ${s.initialWeight}g | ${s.emptySpoolWeight ?? 200}g | ${mode} | ${bagW}g | ${p}€ | ${s.colorHex || '#f97316'} | ${s.productUrl || ''}`;
       }).join('\n');
     }
 
@@ -1102,13 +1165,31 @@
           const remW = parseInt((parts[4] || '1000').replace(/[^\d]/g, '')) || 0;
           const initW = parseInt((parts[5] || '1000').replace(/[^\d]/g, '')) || 1000;
           const taraW = parseInt((parts[6] || '200').replace(/[^\d]/g, ''));
-          const price = parseFloat((parts[7] || '17.99').replace(',', '.').replace(/[^\d.]/g, '')) || getDefaultPriceForSpool(brand, material);
-          let hex = parts[8] || '';
+
+          // Unterstützt sowohl neues 12-Spalten-Format (mit Vakuum) als auch bisheriges 10-Spalten-Format
+          let storageMode = 'open';
+          let bagWeight = 0;
+          let price = getDefaultPriceForSpool(brand, material);
+          let hex = '';
+          let url = '';
+
+          if (parts[7] && ['open', 'biqu_bag', 'factory_sealed'].includes(parts[7].toLowerCase())) {
+            storageMode = parts[7].toLowerCase();
+            bagWeight = parseInt((parts[8] || '0').replace(/[^\d]/g, '')) || STORAGE_MODES[storageMode].bagWeight;
+            price = parseFloat((parts[9] || '17.99').replace(',', '.').replace(/[^\d.]/g, '')) || price;
+            hex = parts[10] || '';
+            url = parts[11] || '';
+          } else {
+            price = parseFloat((parts[7] || '17.99').replace(',', '.').replace(/[^\d.]/g, '')) || price;
+            hex = parts[8] || '';
+            url = parts[9] || '';
+          }
+
           if (!hex.startsWith('#')) {
             const foundC = COLOR_MAP.find(c => c.name.toLowerCase() === colorName.toLowerCase());
             hex = foundC ? foundC.hex : '#f97316';
           }
-          const url = parts[9] || buildVendorUrl(brand, material, colorName, name, taraW === 0);
+          if (!url) url = buildVendorUrl(brand, material, colorName, name, taraW === 0);
           const preset = MATERIAL_PRESETS[material] || MATERIAL_PRESETS['PLA'];
 
           result.push({
@@ -1116,9 +1197,12 @@
             brand, name, material, colorName, colorHex: hex,
             remainingWeight: remW, initialWeight: initW,
             emptySpoolWeight: isNaN(taraW) ? 200 : taraW,
+            storageMode,
+            bagWeight,
             pricePerKg: price, productUrl: url,
             lastDried: new Date().toISOString(),
-            dryIntervalDays: preset.intervalDays, dryTemp: preset.temp, dryHours: preset.hours
+            dryIntervalDays: getRecommendedDays(material, storageMode),
+            dryTemp: preset.temp, dryHours: preset.hours
           });
         } else {
           const auto = parseFilamentQueryOrUrl(clean, '');
@@ -1197,7 +1281,7 @@
     }
 
     // =========================================================================
-    // 5. SMART SCANNER (LINK & TEXT)
+    // 5. SMART SCANNER (ERKENNT AUCH "EINVAKUUMIERT" & "BQ BAG")
     // =========================================================================
     function extractEuroPriceFromText(rawText) {
       if (!rawText) return null;
@@ -1238,6 +1322,15 @@
       const isRefill = combined.includes('ohne spule') || combined.includes('refill');
       if (isRefill) detectedTara = 0;
 
+      // Erkennt automatisch BQ Bag oder Hersteller-Vakuumierung aus Text/Sprache
+      let detectedStorageMode = 'open';
+      if (combined.includes('bq') || combined.includes('biqu') || combined.includes('bag') || combined.includes('beutel')) {
+        detectedStorageMode = 'biqu_bag';
+      } else if (combined.includes('vakuum') || combined.includes('vakum') || combined.includes('eingeschweißt') || combined.includes('ovp') || combined.includes('neu')) {
+        detectedStorageMode = 'factory_sealed';
+      }
+      const detectedBagWeight = STORAGE_MODES[detectedStorageMode].bagWeight;
+
       let detectedMaterial = 'PLA';
       if (combined.includes('pla+') || combined.includes('pla plus')) detectedMaterial = 'PLA+';
       else if (combined.includes('petg')) detectedMaterial = 'PETG';
@@ -1245,6 +1338,8 @@
       else if (combined.includes('asa')) detectedMaterial = 'ASA';
       else if (combined.includes('abs')) detectedMaterial = 'ABS';
       else if (combined.includes('nylon') || combined.includes('pa')) detectedMaterial = 'PA / Nylon';
+      else if (combined.includes('pc')) detectedMaterial = 'PC';
+      else if (combined.includes('cf') || combined.includes('carbon')) detectedMaterial = 'PET-CF / PA-CF';
 
       let detectedColorName = 'Weiß';
       let detectedColorHex = '#f8fafc';
@@ -1276,8 +1371,10 @@
         initialWeight: 1000,
         remainingWeight: 1000,
         emptySpoolWeight: detectedTara,
+        storageMode: detectedStorageMode,
+        bagWeight: detectedBagWeight,
         pricePerKg: finalPrice,
-        dryIntervalDays: preset.intervalDays,
+        dryIntervalDays: getRecommendedDays(detectedMaterial, detectedStorageMode),
         dryTemp: preset.temp,
         dryHours: preset.hours,
         productUrl: finalUrl
@@ -1504,7 +1601,7 @@
     let aiMessages = [
       {
         role: 'assistant',
-        text: 'Hallo! Tippe oder drücke auf das **🎙️ Mikrofon**, um mir Filamente zu diktieren:\n• *"Neue Spule Bambu Lab PLA Schwarz 1000g"*\n• *"Ziehe 45g von Marmor ab"*'
+        text: 'Hallo! Tippe oder drücke auf das **🎙️ Mikrofon**, um mir Filamente zu diktieren:\n• *"Neue Spule Bambu Lab PLA Schwarz einvakuumiert"*\n• *"SUNLU PETG im BQ Bag"*\n• *"Ziehe 45g von Marmor ab"*'
       }
     ];
 
@@ -1522,8 +1619,6 @@
     }
 
     async function processLocalAiCommand(input) {
-      const lower = input.toLowerCase();
-
       const deductMatch = input.match(/(?:zieh|abziehen|minus|verbrauch\w*)\s*(\d+)\s*g?\s*(?:von|bei|aus)?\s*(.+)/i);
       if (deductMatch) {
         const g = parseInt(deductMatch[1]);
@@ -1535,7 +1630,6 @@
         }
       }
 
-      // Alles andere als neue Spule anlegen, wenn Material oder Marke genannt wird
       const cleaned = input.replace(/neue spule|füge|hinzufügen/gi, '').trim();
       const parsed = parseFilamentQueryOrUrl(cleaned, '');
       const weightM = cleaned.match(/(\d{2,4})\s*g/i);
@@ -1545,7 +1639,8 @@
       const newSpool = { id: 'sp-' + Date.now(), ...parsed, lastDried: new Date().toISOString() };
       spools.unshift(newSpool);
       saveState();
-      return `✅ Eingetragen: **${newSpool.brand} – ${newSpool.name}** (${newSpool.remainingWeight}g • ${newSpool.pricePerKg.toFixed(2).replace('.', ',')} €/kg).`;
+      const modeInfo = STORAGE_MODES[newSpool.storageMode].label;
+      return `✅ Eingetragen: **${newSpool.brand} – ${newSpool.name}** (${newSpool.remainingWeight}g • ${modeInfo} • ${newSpool.dryIntervalDays}d Haltbarkeit).`;
     }
 
     async function sendAiMessage() {
@@ -1561,11 +1656,12 @@
     }
 
     // =========================================================================
-    // 7. SCHLICHTES KARTEN-RENDERING (OHNE UNTERBRECHUNG)
+    // 7. SCHLICHTES KARTEN-RENDERING INKL. VAKUUM- & BQ-BAG DROPDOWN
     // =========================================================================
     function getDryingStatus(spool) {
       const lastDriedMs = new Date(spool.lastDried || Date.now()).getTime();
-      const intervalMs = (Number(spool.dryIntervalDays) || 30) * 86400000;
+      const intervalDays = Number(spool.dryIntervalDays) || getRecommendedDays(spool.material, spool.storageMode || 'open');
+      const intervalMs = intervalDays * 86400000;
       const diffMs = (lastDriedMs + intervalMs) - Date.now();
       const isOverdue = diffMs <= 0;
       const absMs = Math.abs(diffMs);
@@ -1577,8 +1673,7 @@
       return {
         diffMs, isOverdue, statusLevel,
         days: Math.floor(absMs / 86400000),
-        hours: Math.floor((absMs % 86400000) / 3600000),
-        mins: Math.floor((absMs % 3600000) / 60000)
+        hours: Math.floor((absMs % 86400000) / 3600000)
       };
     }
 
@@ -1588,11 +1683,25 @@
       if (box) box.classList.toggle('hidden', !openScaleCards[spoolId]);
     }
 
+    // Direktes Umschalten des Verpackungsstatus (Offen / BQ Bag / OVP) auf der Karte!
+    function changeCardStorageMode(spoolId, newMode) {
+      const spool = spools.find(s => s.id === spoolId);
+      if (!spool || !STORAGE_MODES[newMode]) return;
+      pushUndo();
+      spool.storageMode = newMode;
+      spool.bagWeight = STORAGE_MODES[newMode].bagWeight;
+      spool.dryIntervalDays = getRecommendedDays(spool.material, newMode);
+      // Wenn frisch vakuumiert oder frisch geöffnet wird, startet das neue Intervall ab jetzt
+      spool.lastDried = new Date().toISOString();
+      saveState();
+      showToast(`${spool.brand} ${spool.name}: ${STORAGE_MODES[newMode].label} (${spool.dryIntervalDays} Tage Haltbarkeit, ${spool.bagWeight}g Bag-Tara)`);
+    }
+
     function renderSpools(force = false) {
       sanitizeSpools();
 
-      // KPIs aktualisieren
-      document.getElementById('statTotalSpools').textContent = spools.length;
+      const sealedCount = spools.filter(s => s.storageMode && s.storageMode !== 'open').length;
+      document.getElementById('statTotalSpools').innerHTML = `${spools.length} <span class="text-xs font-normal text-sky-400">(${sealedCount} verpackt)</span>`;
       const totalGrams = spools.reduce((sum, s) => sum + (Number(s.remainingWeight) || 0), 0);
       document.getElementById('statTotalWeight').textContent = `${totalGrams.toLocaleString('de-DE')} g`;
       const totalValue = spools.reduce((sum, s) => sum + (((Number(s.remainingWeight) || 0) / 1000) * (Number(s.pricePerKg) || 17.99)), 0);
@@ -1600,7 +1709,6 @@
       document.getElementById('statDryingDue').textContent = spools.filter(s => getDryingStatus(s).statusLevel !== 'ok').length;
       document.getElementById('historyBadge').textContent = printHistory.length;
 
-      // Filterleiste
       const bar = document.getElementById('materialFilterBar');
       bar.innerHTML = ['ALL', 'PLA', 'PLA+', 'PETG', 'TPU', 'ABS', 'ASA', 'PA / Nylon'].map(mat => `
         <button onclick="activeMaterialFilter='${mat}';renderSpools(true);" class="px-3 py-1 rounded-xl text-xs font-semibold border transition whitespace-nowrap ${activeMaterialFilter === mat ? 'bg-orange-500 text-surface-950 border-orange-500 font-bold' : 'bg-surface-950 text-slate-400 border-white/[0.07] hover:text-white'}">
@@ -1636,8 +1744,11 @@
       grid.innerHTML = filtered.map(spool => {
         const initW = Number(spool.initialWeight) || 1000;
         const remW = Number(spool.remainingWeight) || 0;
-        const tara = Number(spool.emptySpoolWeight) || 0;
-        const scaleNow = remW + tara;
+        const spoolTara = Number(spool.emptySpoolWeight) || 0;
+        const mode = spool.storageMode || 'open';
+        const bagTara = Number(spool.bagWeight ?? STORAGE_MODES[mode].bagWeight) || 0;
+        const totalTara = spoolTara + bagTara;
+        const scaleNow = remW + totalTara;
         const pct = Math.max(0, Math.min(100, Math.round((remW / initW) * 100)));
         const dry = getDryingStatus(spool);
         const hex = spool.colorHex || '#f97316';
@@ -1650,7 +1761,7 @@
         else if (pct <= 35) barColor = 'bg-amber-500';
 
         return `
-          <div class="clean-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-5 flex flex-col justify-between gap-4">
+          <div class="clean-card rounded-2xl ${dry.isOverdue ? 'overdue-card' : ''} p-5 flex flex-col justify-between gap-3.5">
             
             <!-- 1. Kopfzeile -->
             <div class="flex justify-between items-start gap-2">
@@ -1676,7 +1787,20 @@
               </div>
             </div>
 
-            <!-- 2. Gewicht & Balken -->
+            <!-- 2. VAKUUM / VERPACKUNGS-DROPDOWN DIREKT AUF DER KARTE -->
+            <div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-surface-950 border ${mode !== 'open' ? 'border-sky-500/35' : 'border-white/[0.06]'}">
+              <span class="text-[11px] text-slate-400 font-medium">Lagerung:</span>
+              <select
+                onchange="changeCardStorageMode('${spool.id}', this.value)"
+                class="bg-transparent text-xs font-bold ${mode !== 'open' ? 'text-sky-300' : 'text-slate-300'} outline-none cursor-pointer text-right"
+              >
+                <option value="open" class="bg-surface-900 text-white" ${mode === 'open' ? 'selected' : ''}>🌬️ Offen an der Luft (0g Bag)</option>
+                <option value="biqu_bag" class="bg-surface-900 text-white" ${mode === 'biqu_bag' ? 'selected' : ''}>🛡️ Im BQ Vakuum-Bag (+25g)</option>
+                <option value="factory_sealed" class="bg-surface-900 text-white" ${mode === 'factory_sealed' ? 'selected' : ''}>📦 OVP Vakuumiert (+18g)</option>
+              </select>
+            </div>
+
+            <!-- 3. Gewicht, Balken & Waage (inkl. Spule + Beutel-Abzug) -->
             <div class="space-y-1.5">
               <div class="flex justify-between items-baseline text-xs">
                 <span class="text-slate-400">${spool.colorName || 'Standard'}</span>
@@ -1687,7 +1811,7 @@
               </div>
               <div class="flex items-center justify-between pt-1 text-[11px] text-slate-400">
                 <button onclick="toggleCardScale('${spool.id}')" class="hover:text-emerald-400 transition">
-                  ⚖️ Waage (≈ ${scaleNow}g)
+                  ⚖️ Waage: ≈ ${scaleNow}g <span class="text-[10px] text-slate-500">(Tara: ${spoolTara}g+${bagTara}g)</span>
                 </button>
                 <a href="${offer.url}" target="_blank" rel="noopener" class="text-orange-400 hover:underline font-semibold flex items-center gap-1">
                   <span>${offer.shop}</span>
@@ -1695,14 +1819,19 @@
                 </a>
               </div>
 
-              <!-- Aufklappbare Waage -->
-              <div id="scale-box-${spool.id}" class="${isScaleOpen ? '' : 'hidden'} pt-2 mt-1 border-t border-white/[0.06] flex gap-1.5">
-                <input id="scale-${spool.id}" type="number" placeholder="Gewicht auf Waage (g)..." onkeydown="if(event.key==='Enter'){applyScaleWeight('${spool.id}');}" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs text-white font-mono-num outline-none" />
-                <button onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-surface-950 text-xs font-bold">Übernehmen</button>
+              <!-- Aufklappbare Waage (zieht Spule + Bag automatisch ab) -->
+              <div id="scale-box-${spool.id}" class="${isScaleOpen ? '' : 'hidden'} pt-2 mt-1 border-t border-white/[0.06] space-y-1.5">
+                <div class="text-[10px] text-slate-400 flex justify-between">
+                  <span>Abzug: Spule (${spoolTara}g) + Bag (${bagTara}g) = <strong>${totalTara}g Tara</strong></span>
+                </div>
+                <div class="flex gap-1.5">
+                  <input id="scale-${spool.id}" type="number" placeholder="Gewicht auf Waage (g)..." onkeydown="if(event.key==='Enter'){applyScaleWeight('${spool.id}');}" class="flex-1 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.1] text-xs text-white font-mono-num outline-none" />
+                  <button onclick="applyScaleWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-surface-950 text-xs font-bold">Übernehmen</button>
+                </div>
               </div>
             </div>
 
-            <!-- 3. Schnell-Abzug -->
+            <!-- 4. Schnell-Abzug -->
             <div class="flex items-center gap-1.5">
               <input id="deduct-${spool.id}" type="number" placeholder="Gramm..." onkeydown="if(event.key==='Enter'){deductWeight('${spool.id}');}" class="w-24 px-2.5 py-1.5 rounded-lg bg-surface-950 border border-white/[0.08] text-xs text-white font-mono-num outline-none focus:border-orange-500" />
               <button onclick="deductWeight('${spool.id}')" class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-surface-950 text-xs font-bold transition">Abziehen</button>
@@ -1711,13 +1840,19 @@
               <button onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg bg-surface-950 hover:bg-surface-850 text-[10px] font-mono-num text-slate-300">-50g</button>
             </div>
 
-            <!-- 4. Trocknungs-Status -->
+            <!-- 5. Trocknungs-Status -->
             <div class="flex items-center justify-between pt-2.5 border-t border-white/[0.06] text-[11px]">
-              <span class="font-mono-num ${dry.isOverdue ? 'text-rose-400 font-bold' : 'text-slate-400'}">
-                ${dry.isOverdue ? `⚠️ Trocknung überfällig (${dry.days}d)` : `🔥 Trocknung in ${dry.days}d${dry.hours}h`}
+              <span class="font-mono-num ${dry.isOverdue ? 'text-rose-400 font-bold' : (mode !== 'open' ? 'text-sky-400' : 'text-slate-400')}">
+                ${dry.isOverdue
+                  ? `⚠️ Trocknung fällig (seit ${dry.days}d)`
+                  : (mode === 'factory_sealed'
+                      ? `📦 OVP geschützt (${dry.days}d Puffer)`
+                      : (mode === 'biqu_bag'
+                          ? `🛡️ Im BQ-Bag geschützt (${dry.days}d)`
+                          : `🔥 Offen haltbar: noch ${dry.days}d${dry.hours}h`))}
               </span>
               <button onclick="markDried('${spool.id}')" class="text-orange-400 hover:underline font-semibold">
-                Jetzt getrocknet
+                Frisch getrocknet
               </button>
             </div>
 
@@ -1729,7 +1864,7 @@
     }
 
     // =========================================================================
-    // 8. AKTIONEN & MODAL-STEUERUNG
+    // 8. AKTIONEN & MODAL-STEUERUNG MIT ERKLÄRTEXTEN
     // =========================================================================
     let undoStack = [];
     let redoStack = [];
@@ -1799,19 +1934,28 @@
       showToast(`-${g}g abgezogen.`);
     }
 
+    // Waage zieht sowohl Leerspule als auch Beutel (BQ Bag / OVP Folie) automatisch ab!
     function applyScaleWeight(id) {
       const input = document.getElementById(`scale-${id}`);
       const gross = parseFloat(input?.value);
       if (!input || isNaN(gross) || gross <= 0) return;
       const spool = spools.find(s => s.id === id);
       if (!spool) return;
-      const tara = Number(spool.emptySpoolWeight) || 0;
-      if (gross < tara) { showToast(`⚠️ Weniger als Leerspule (${tara}g)!`); return; }
+
+      const spoolTara = Number(spool.emptySpoolWeight) || 0;
+      const mode = spool.storageMode || 'open';
+      const bagTara = Number(spool.bagWeight ?? STORAGE_MODES[mode].bagWeight) || 0;
+      const totalTara = spoolTara + bagTara;
+
+      if (gross < totalTara) {
+        showToast(`⚠️ ${gross}g ist weniger als Spule + Verpackung (${totalTara}g)!`);
+        return;
+      }
       pushUndo();
-      spool.remainingWeight = Math.round(gross - tara);
+      spool.remainingWeight = Math.round(gross - totalTara);
       input.value = '';
       saveState();
-      showToast(`Restgewicht: ${spool.remainingWeight}g`);
+      showToast(`Waage übernommen: ${gross}g − ${spoolTara}g Spule − ${bagTara}g Bag = ${spool.remainingWeight}g Netto!`);
     }
 
     function markDried(id) {
@@ -1820,7 +1964,7 @@
       pushUndo();
       spool.lastDried = new Date().toISOString();
       saveState();
-      showToast('Als getrocknet markiert!');
+      showToast('Als frisch getrocknet markiert!');
     }
 
     const QR_URL_KEY = 'filamenthub_qr_url';
@@ -1851,28 +1995,56 @@
       renderSidebarQr();
     }
 
-    function applyMaterialPresetInModal() {
-      const mat = document.getElementById('fMaterial').value;
-      const p = MATERIAL_PRESETS[mat];
-      if (p) {
-        document.getElementById('fDryIntervalDays').value = p.intervalDays;
-        document.getElementById('fDryTemp').value = p.temp;
-        document.getElementById('fDryHours').value = p.hours;
+    // Aktualisiert im Modal automatisch Beutel-Tara, Trocknungs-Intervall und den Erklärtext
+    function onMaterialOrStorageChangeInModal(keepCustomBagWeight = false) {
+      const mat = document.getElementById('fMaterial').value || 'PLA';
+      const mode = document.getElementById('fStorageMode').value || 'open';
+      const preset = MATERIAL_PRESETS[mat] || MATERIAL_PRESETS['PLA'];
+      const modeInfo = STORAGE_MODES[mode] || STORAGE_MODES['open'];
+
+      if (!keepCustomBagWeight) {
+        document.getElementById('fBagWeight').value = modeInfo.bagWeight;
       }
+
+      const recDays = getRecommendedDays(mat, mode);
+      document.getElementById('fDryIntervalDays').value = recDays;
+      document.getElementById('fDryTemp').value = preset.temp;
+      document.getElementById('fDryHours').value = preset.hours;
+
+      const bagW = parseInt(document.getElementById('fBagWeight').value) || 0;
+      document.getElementById('modalStorageBadge').textContent = `${bagW}g Beutel-Tara`;
+
+      const infoEl = document.getElementById('modalMaterialStorageInfo');
+      if (infoEl) {
+        infoEl.innerHTML = `
+          <strong>Richtwerte für ${mat}:</strong> Offen an der Luft ca. <strong>${preset.openDays} Tage</strong> haltbar • Im <strong>BIQU Vakuum-Bag ca. ${preset.biquBagDays} Tage</strong> • Original <strong>Hersteller-Vakuumiert ca. ${preset.factorySealedDays} Tage</strong>.<br>
+          <span class="text-sky-300">→ Aktuell gewählt: <strong>${recDays} Tage Haltbarkeit</strong> (Trocknung bei Bedarf: ${preset.temp}°C für ${preset.hours}h).</span>
+        `;
+      }
+
+      applyModalScale();
     }
 
     function applyModalScale() {
       const grossVal = document.getElementById('fScaleGross').value;
       const hint = document.getElementById('fScaleHint');
-      const tara = parseInt(document.getElementById('fEmptySpoolWeight').value) || 0;
+      const spoolTara = parseInt(document.getElementById('fEmptySpoolWeight').value) || 0;
+      const bagTara = parseInt(document.getElementById('fBagWeight').value) || 0;
+      const totalTara = spoolTara + bagTara;
+
+      document.getElementById('modalStorageBadge').textContent = `${bagTara}g Beutel-Tara`;
+
       if (!grossVal || isNaN(parseFloat(grossVal))) {
-        hint.textContent = `Leerspule (${tara}g) wird automatisch abgezogen.`;
+        hint.innerHTML = `Standard-Abzug beim Wiegen: <strong>${spoolTara}g Leerspule + ${bagTara}g Verpackung/Bag = ${totalTara}g Gesamt-Tara</strong>.`;
         return;
       }
-      const net = Math.round(parseFloat(grossVal) - tara);
+      const gross = parseFloat(grossVal);
+      const net = Math.round(gross - totalTara);
       if (net >= 0) {
         document.getElementById('fRemainingWeight').value = net;
-        hint.textContent = `${grossVal}g − ${tara}g Tara = ${net}g Restgewicht.`;
+        hint.innerHTML = `<span class="text-emerald-400 font-semibold">✓ Berechnet: ${gross}g (Waage) − ${spoolTara}g (Spule) − ${bagTara}g (Bag) = <strong>${net}g Netto-Filament</strong>.</span>`;
+      } else {
+        hint.innerHTML = `<span class="text-rose-400">⚠️ ${gross}g ist weniger als das Tara-Gewicht (${totalTara}g)!</span>`;
       }
     }
 
@@ -1899,12 +2071,14 @@
       if (data.productUrl !== undefined) document.getElementById('fProductUrl').value = data.productUrl || '';
       if (data.name !== undefined) document.getElementById('fName').value = data.name || '';
       if (data.material !== undefined) document.getElementById('fMaterial').value = data.material || 'PLA';
-      if (data.colorHex !== undefined) document.getElementById('fColorHex').value = data.colorHex || '#f97316';
+      if (data.colorHex !== undefined) document.getElementById('fColorHex').value = data.colorHex || '#f8fafc';
       if (data.colorName !== undefined) document.getElementById('fColorName').value = data.colorName || '';
-      if (data.pricePerKg !== undefined) document.getElementById('fPricePerKg').value = data.pricePerKg || 17.99;
+      if (data.pricePerKg !== undefined) document.getElementById('fPricePerKg').value = data.pricePerKg || 19.99;
       if (data.initialWeight !== undefined) document.getElementById('fInitialWeight').value = data.initialWeight;
       if (data.remainingWeight !== undefined) document.getElementById('fRemainingWeight').value = data.remainingWeight;
       if (data.emptySpoolWeight !== undefined) document.getElementById('fEmptySpoolWeight').value = data.emptySpoolWeight;
+      if (data.storageMode !== undefined) document.getElementById('fStorageMode').value = data.storageMode || 'open';
+      if (data.bagWeight !== undefined) document.getElementById('fBagWeight').value = data.bagWeight;
       if (data.dryIntervalDays !== undefined) document.getElementById('fDryIntervalDays').value = data.dryIntervalDays;
       if (data.dryTemp !== undefined) document.getElementById('fDryTemp').value = data.dryTemp;
       if (data.dryHours !== undefined) document.getElementById('fDryHours').value = data.dryHours;
@@ -1922,6 +2096,7 @@
           document.getElementById('fBrandCustom').value = data.brand;
         }
       }
+      onMaterialOrStorageChangeInModal(data.bagWeight !== undefined);
     }
 
     function openSpoolModal(spoolId = null, prefill = null) {
@@ -1929,23 +2104,24 @@
       if (spoolId) {
         const existing = spools.find(s => s.id === spoolId);
         if (!existing) return;
-        document.getElementById('modalTitle').textContent = 'Spule bearbeiten';
+        document.getElementById('modalTitle').textContent = 'Filament-Spule bearbeiten';
         document.getElementById('fId').value = existing.id;
         populateModalFields(existing);
       } else {
-        document.getElementById('modalTitle').textContent = 'Neue Spule eintragen';
+        document.getElementById('modalTitle').textContent = 'Neue Filament-Spule eintragen';
         document.getElementById('fId').value = '';
         populateModalFields({
           productUrl: '', brand: 'Bambu Lab', name: '', material: 'PLA',
           colorHex: '#f8fafc', colorName: '', pricePerKg: 19.99,
           initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 250,
+          storageMode: 'open', bagWeight: 0,
           dryIntervalDays: 30, dryTemp: 50, dryHours: 5,
           lastDried: new Date().toISOString(),
           ...(prefill || {})
         });
       }
-      applyModalScale();
       document.getElementById('spoolModal').classList.replace('hidden', 'flex');
+      lucide.createIcons();
     }
 
     function closeSpoolModal() {
@@ -1963,6 +2139,8 @@
       const colorName = document.getElementById('fColorName').value.trim() || 'Standard';
       const nameVal = document.getElementById('fName').value.trim();
       const emptyW = parseInt(document.getElementById('fEmptySpoolWeight').value);
+      const storageMode = document.getElementById('fStorageMode').value || 'open';
+      const bagW = parseInt(document.getElementById('fBagWeight').value);
 
       let urlVal = document.getElementById('fProductUrl').value.trim();
       if (!urlVal || !/^https?:\/\//i.test(urlVal)) {
@@ -1978,9 +2156,11 @@
         initialWeight: parseInt(document.getElementById('fInitialWeight').value) || 1000,
         remainingWeight: parseInt(document.getElementById('fRemainingWeight').value) || 0,
         emptySpoolWeight: isNaN(emptyW) ? 200 : emptyW,
+        storageMode,
+        bagWeight: isNaN(bagW) ? STORAGE_MODES[storageMode].bagWeight : bagW,
         productUrl: urlVal,
         lastDried: document.getElementById('fLastDried').value || new Date().toISOString(),
-        dryIntervalDays: parseInt(document.getElementById('fDryIntervalDays').value) || preset.intervalDays,
+        dryIntervalDays: parseInt(document.getElementById('fDryIntervalDays').value) || getRecommendedDays(mat, storageMode),
         dryTemp: parseInt(document.getElementById('fDryTemp').value) || preset.temp,
         dryHours: parseInt(document.getElementById('fDryHours').value) || preset.hours
       };
@@ -2037,7 +2217,6 @@
       loadStateFromCloud();
       updateUndoRedoButtons();
 
-      // Prüft sanft im Hintergrund, unterbricht aber NIEMALS offene Eingaben oder Fenster
       setInterval(() => {
         if (!isSyncing && !pendingSync && !isAnyModalOrInputActive()) {
           loadStateFromCloud(false);
