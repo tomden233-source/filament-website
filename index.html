@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FilamentHub – 3D-Druck Filament-Manager</title>
+  <title>FilamentHub – 3D-Druck Filament-Manager & Intelligenter Link-Scanner</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
@@ -29,7 +29,7 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-xl font-extrabold tracking-tight text-white">FilamentHub</h1>
-            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Cloud Storage Aktiv</span>
+            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Pro Farb-Scanner</span>
           </div>
           <p class="text-xs text-slate-400">Bestand, Druckverbrauch & fester Cloud-Speicher</p>
         </div>
@@ -57,9 +57,9 @@
         <div class="space-y-1">
           <div class="inline-flex items-center gap-2 text-orange-400 text-xs font-bold uppercase tracking-wider">
             <i data-lucide="wand-2" class="w-4 h-4"></i>
-            <span>Automatischer Produkt-Link Scanner</span>
+            <span>Intelligenter Produkt-Link Scanner</span>
           </div>
-          <h2 class="text-base sm:text-lg font-bold text-white">Filament-Link einfügen & Daten automatisch ziehen</h2>
+          <h2 class="text-base sm:text-lg font-bold text-white">Filament-Link einfügen & Farbe / Daten automatisch ziehen</h2>
         </div>
 
         <div class="flex-1 max-w-2xl">
@@ -69,7 +69,7 @@
               <input
                 id="quickLinkInput"
                 type="url"
-                placeholder="https://eu.store.bambulab.com/products/..."
+                placeholder="https://eu.store.bambulab.com/products/pla-matte-filament..."
                 class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700 focus:border-orange-500 text-sm text-white outline-none"
                 onkeydown="if(event.key==='Enter'){ handleQuickLinkImport(); }"
               />
@@ -118,6 +118,7 @@
 
       <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-3">
         <input type="hidden" id="fId" />
+        
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Hersteller / Marke *</label>
           <select id="fBrandSelect" onchange="handleBrandDropdownChange()" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none mb-2">
@@ -129,6 +130,9 @@
             <option value="SUNLU">SUNLU</option>
             <option value="Das Filament">Das Filament</option>
             <option value="3DJake">3DJake</option>
+            <option value="Overture">Overture</option>
+            <option value="Creality">Creality</option>
+            <option value="Elegoo">Elegoo</option>
             <option value="OTHER">➕ Anderer Hersteller / Manuell...</option>
           </select>
           <input id="fBrandCustom" type="text" placeholder="Hersteller-Name eingeben..." class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white outline-none hidden" />
@@ -147,8 +151,11 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Farbe (Hex)</label>
-            <input id="fColorHex" type="color" value="#f97316" class="w-full h-10 rounded-xl bg-slate-950 border border-slate-800 p-1 cursor-pointer" />
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Farbe & Vorschau</label>
+            <div class="flex items-center gap-2">
+              <input id="fColorHex" type="color" value="#f97316" class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 p-1 cursor-pointer" />
+              <input id="fColorName" type="text" placeholder="Farbe..." class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white outline-none" />
+            </div>
           </div>
         </div>
 
@@ -196,14 +203,30 @@
       { keys: ['3djake'], name: '3DJake' }
     ];
 
-    const STORAGE_KEY_SPOOLS = 'filamenthub_spools_v5';
-    const STORAGE_KEY_HISTORY = 'filamenthub_history_v5';
+    const COLOR_MAP = [
+      { keys: ['charcoal', 'anthrazit', 'anthracite', 'dunkelgrau', 'galaxy-black'], name: 'Anthrazit / Charcoal', hex: '#27272a' },
+      { keys: ['schwarz', 'black', 'jet-black', 'onyx'], name: 'Schwarz', hex: '#18181b' },
+      { keys: ['weiss', 'weiß', 'white', 'cold-white', 'ivory', 'marble'], name: 'Weiß', hex: '#f8fafc' },
+      { keys: ['orange', 'mandarin', 'pumpkin', 'amber'], name: 'Orange', hex: '#f97316' },
+      { keys: ['rot', 'red', 'crimson', 'scarlet', 'ruby', 'magenta'], name: 'Rot', hex: '#ef4444' },
+      { keys: ['blau', 'blue', 'navy', 'cobalt', 'cyan', 'türkis', 'turquoise', 'sky'], name: 'Blau', hex: '#3b82f6' },
+      { keys: ['gruen', 'grün', 'green', 'olive', 'emerald', 'lime', 'mint', 'forest'], name: 'Grün', hex: '#22c55e' },
+      { keys: ['gelb', 'yellow', 'lemon', 'sunflower'], name: 'Gelb', hex: '#eab308' },
+      { keys: ['lila', 'purple', 'violet', 'violett', 'lavender', 'plum'], name: 'Lila / Violett', hex: '#a855f7' },
+      { keys: ['pink', 'rosa', 'rose', 'peach'], name: 'Pink / Rosa', hex: '#ec4899' },
+      { keys: ['gold', 'messing', 'brass', 'bronze', 'copper', 'kupfer'], name: 'Gold / Bronze', hex: '#d97706' },
+      { keys: ['silber', 'silver', 'grau', 'grey', 'gray', 'titanium'], name: 'Silber / Grau', hex: '#94a3b8' },
+      { keys: ['braun', 'brown', 'wood', 'holz', 'coffee', 'beige', 'sand'], name: 'Braun / Holz', hex: '#a16207' },
+      { keys: ['transparent', 'clear', 'translucent', 'natur'], name: 'Transparent / Natur', hex: '#cbd5e1' }
+    ];
+
+    const STORAGE_KEY_SPOOLS = 'filamenthub_spools_v6';
+    const STORAGE_KEY_HISTORY = 'filamenthub_history_v6';
 
     let spools = [];
     let printHistory = [];
     let activeMaterialFilter = 'ALL';
 
-    // Fester Cloud-Speicher (npoint.io)
     const cloudDbUrl = 'https://api.npoint.io/2a75ad089c77e7c35f98';
     let isSyncing = false;
 
@@ -221,14 +244,13 @@
         }
       } catch(e) {}
 
-      // Fallback auf lokalen Speicher, falls Cloud nicht erreichbar
       const s = localStorage.getItem(STORAGE_KEY_SPOOLS);
       const h = localStorage.getItem(STORAGE_KEY_HISTORY);
       if (s) try { spools = JSON.parse(s); } catch(e){}
       if (h) try { printHistory = JSON.parse(h); } catch(e){}
       
       if (!spools.length) {
-        spools = [{ id: 'sp-1', brand: 'Bambu Lab', name: 'PLA Matte Charcoal', material: 'PLA', colorHex: '#27272a', initialWeight: 1000, remainingWeight: 750, lastDried: new Date().toISOString(), dryIntervalDays: 30 }];
+        spools = [{ id: 'sp-1', brand: 'Bambu Lab', name: 'PLA Matte Charcoal', material: 'PLA', colorName: 'Anthrazit', colorHex: '#27272a', initialWeight: 1000, remainingWeight: 750, lastDried: new Date().toISOString(), dryIntervalDays: 30 }];
         saveState();
       }
       renderSpools();
@@ -238,7 +260,6 @@
       localStorage.setItem(STORAGE_KEY_SPOOLS, JSON.stringify(spools));
       localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(printHistory));
       
-      // Sofort in die feste Cloud schreiben
       if (!isSyncing) {
         try {
           await fetch(cloudDbUrl, {
@@ -250,19 +271,40 @@
       }
     }
 
-    // Link parser
+    // Intelligenter Link- & Farb-Parser
     function parseFilamentData(urlStr, title = '') {
       const lower = `${urlStr} ${title}`.toLowerCase();
+      
       let detectedBrand = 'Bambu Lab';
       for (const b of BRAND_DATABASE) {
         if (b.keys.some(k => lower.includes(k))) { detectedBrand = b.name; break; }
       }
+
       let detectedMaterial = 'PLA';
       if (lower.includes('petg')) detectedMaterial = 'PETG';
       else if (lower.includes('tpu')) detectedMaterial = 'TPU';
       else if (lower.includes('abs')) detectedMaterial = 'ABS';
+      else if (lower.includes('asa')) detectedMaterial = 'ASA';
+      else if (lower.includes('nylon') || lower.includes('pa')) detectedMaterial = 'PA / Nylon';
 
-      return { brand: detectedBrand, material: detectedMaterial, name: title || 'Neues Filament', productUrl: urlStr };
+      let detectedColorName = 'Standard';
+      let detectedColorHex = '#f97316';
+      for (const c of COLOR_MAP) {
+        if (c.keys.some(k => lower.includes(k))) {
+          detectedColorName = c.name;
+          detectedColorHex = c.hex;
+          break;
+        }
+      }
+
+      return {
+        brand: detectedBrand,
+        material: detectedMaterial,
+        name: title ? title.split('|')[0].trim() : `${detectedMaterial} ${detectedColorName}`,
+        colorName: detectedColorName,
+        colorHex: detectedColorHex,
+        productUrl: urlStr
+      };
     }
 
     async function extractMetadataFromUrl(urlStr) {
@@ -322,17 +364,23 @@
       grid.innerHTML = filtered.map(spool => {
         const pct = Math.max(0, Math.min(100, Math.round((spool.remainingWeight / spool.initialWeight) * 100)));
         const dry = getDryingStatus(spool);
+        const hex = spool.colorHex || '#f97316';
         return `
           <div class="rounded-2xl bg-slate-900/95 border ${dry.isOverdue ? 'overdue-card border-rose-500/70' : 'border-slate-800'} p-5 space-y-3">
             <div class="flex justify-between items-start">
-              <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400">${spool.brand}</span>
-                <h3 class="text-sm font-bold text-white">${spool.name}</h3>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
+                  <span class="w-4 h-4 rounded-full border border-white/20 shadow" style="background-color: ${hex}"></span>
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase font-bold text-slate-400">${spool.brand}</span>
+                  <h3 class="text-sm font-bold text-white">${spool.name}</h3>
+                </div>
               </div>
               <button onclick="deleteSpool('${spool.id}')" class="text-slate-500 hover:text-rose-400 text-xs">✕</button>
             </div>
             <div class="space-y-1">
-              <div class="flex justify-between text-xs text-slate-400"><span>Restgewicht</span><span class="font-mono-num text-white font-bold">${spool.remainingWeight}g / ${spool.initialWeight}g</span></div>
+              <div class="flex justify-between text-xs text-slate-400"><span>Restgewicht (${spool.colorName || 'Farbe'})</span><span class="font-mono-num text-white font-bold">${spool.remainingWeight}g / ${spool.initialWeight}g</span></div>
               <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden"><div class="h-full bg-emerald-500" style="width: ${pct}%"></div></div>
             </div>
             <div class="flex items-center gap-2">
@@ -389,6 +437,8 @@
       if (data.productUrl) document.getElementById('fProductUrl').value = data.productUrl;
       if (data.name) document.getElementById('fName').value = data.name;
       if (data.material) document.getElementById('fMaterial').value = data.material;
+      if (data.colorHex) document.getElementById('fColorHex').value = data.colorHex;
+      if (data.colorName) document.getElementById('fColorName').value = data.colorName;
       if (data.brand) {
         const select = document.getElementById('fBrandSelect');
         const match = Array.from(select.options).some(o => o.value === data.brand);
@@ -410,6 +460,8 @@
       document.getElementById('fBrandSelect').value = 'Bambu Lab';
       document.getElementById('fBrandCustom').classList.add('hidden');
       document.getElementById('fBrandCustom').value = '';
+      document.getElementById('fColorHex').value = '#f97316';
+      document.getElementById('fColorName').value = 'Orange';
       
       if (prefill) populateModalFields(prefill);
       document.getElementById('spoolModal').classList.replace('hidden', 'flex');
@@ -429,6 +481,7 @@
         name: document.getElementById('fName').value,
         material: document.getElementById('fMaterial').value,
         colorHex: document.getElementById('fColorHex').value,
+        colorName: document.getElementById('fColorName').value,
         initialWeight: parseInt(document.getElementById('fInitialWeight').value),
         remainingWeight: parseInt(document.getElementById('fRemainingWeight').value),
         lastDried: new Date().toISOString(),
@@ -447,7 +500,6 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       loadStateFromCloud();
-      // Alle 15 Sekunden im Hintergrund synchronisieren
       setInterval(loadStateFromCloud, 15000);
     });
   </script>
