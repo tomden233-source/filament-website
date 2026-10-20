@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>FilamentHub v20.0 – 3D-Filament Manager</title>
+  <title>FilamentHub v19.0 – 3D-Filament Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -71,7 +71,7 @@
     .t-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-col);
-      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
     }
 
     .t-card:hover {
@@ -93,8 +93,8 @@
     .t-muted { color: var(--text-muted); }
 
     @keyframes pulse-overdue {
-      0%, 100% { border-color: rgba(244, 63, 94, 0.85); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.2); }
-      50% { border-color: rgba(244, 63, 94, 0.3); box-shadow: 0 0 16px 2px rgba(244, 63, 94, 0.15); }
+      0%, 100% { border-color: rgba(244, 63, 94, 0.85); }
+      50% { border-color: rgba(244, 63, 94, 0.25); }
     }
     .overdue-card { animation: pulse-overdue 2.2s infinite; }
 
@@ -118,13 +118,15 @@
   <!-- ================= 1. VERTIKALE MENÜ-LEISTE LINKS (VON OBEN NACH UNTEN) ================= -->
   <aside class="fixed top-0 left-0 bottom-0 z-50 w-16 sm:w-20 t-panel border-r flex flex-col items-center justify-between py-3 select-none shadow-xl">
     
+    <!-- Oben: Logo & Menü-Öffner -->
     <div class="flex flex-col items-center gap-3 w-full px-1.5">
-      <button type="button" onclick="toggleSideDrawer()" title="Werkzeug-Panel öffnen/schließen" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-400 flex items-center justify-center text-slate-950 shadow-md hover:scale-105 transition cursor-pointer">
+      <button type="button" onclick="toggleSideDrawer()" title="Werkzeug-Panel ein-/ausklappen" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-400 flex items-center justify-center text-slate-950 shadow-md hover:scale-105 transition cursor-pointer">
         <i data-lucide="disc-3" class="w-6 h-6 stroke-[2.3]"></i>
       </button>
 
       <div class="w-8 h-[1px] bg-slate-500/20"></div>
 
+      <!-- Vertikale Menü-Buttons (öffnen das Panel zur Seite) -->
       <nav class="flex flex-col items-center gap-1.5 w-full">
         <button id="railBtn-ai" type="button" onclick="openDrawerTab('ai')" class="w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-bold transition cursor-pointer">
           <i data-lucide="bot" class="w-5 h-5"></i>
@@ -141,6 +143,7 @@
           <span>Rechner</span>
         </button>
 
+        <!-- NEU: EIGENER MENÜPUNKT FÜR ZWISCHENSPEICHER + IMPORT/EXPORT -->
         <button id="railBtn-vault" type="button" onclick="openDrawerTab('vault')" class="relative w-full py-2.5 px-1 rounded-xl flex flex-col items-center gap-1 text-[10px] font-semibold transition cursor-pointer">
           <i data-lucide="archive-restore" class="w-5 h-5"></i>
           <span>Speicher</span>
@@ -159,6 +162,7 @@
       </nav>
     </div>
 
+    <!-- Unten: Verlauf & Ein-/Ausklapp-Pfeil -->
     <div class="flex flex-col items-center gap-2 w-full px-1.5">
       <button type="button" onclick="openHistoryModal()" title="Druck-Verlauf" class="w-full py-2 rounded-xl t-sub hover:opacity-80 flex flex-col items-center gap-0.5 text-[10px] font-semibold cursor-pointer">
         <i data-lucide="history" class="w-4 h-4 text-sky-400"></i>
@@ -171,13 +175,14 @@
     </div>
   </aside>
 
-  <!-- ================= 2. SEITLICH AUSFAHRENDES PANEL (SLIDE-OUT DRAWER) ================= -->
+  <!-- ================= 2. SEITLICH AUSFAHRENDES WERKZEUG-PANEL (SLIDE-OUT DRAWER) ================= -->
   <div id="drawerBackdrop" onclick="closeSideDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden"></div>
 
   <aside
     id="sideDrawer"
-    class="fixed top-0 bottom-0 left-16 sm:left-20 z-40 w-[330px] sm:w-[400px] t-panel border-r shadow-2xl flex flex-col transition-transform duration-300 ease-out -translate-x-[430px]"
+    class="fixed top-0 bottom-0 left-16 sm:left-20 z-40 w-[330px] sm:w-[395px] t-panel border-r shadow-2xl flex flex-col transition-transform duration-300 ease-out -translate-x-[420px]"
   >
+    <!-- Drawer Kopfzeile -->
     <div class="px-4 py-3.5 border-b border-slate-500/15 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-sky-400"></span>
@@ -189,35 +194,34 @@
       </button>
     </div>
 
+    <!-- Drawer Inhalt -->
     <div class="flex-1 overflow-y-auto p-4 space-y-4">
 
-      <!-- PANEL 1: KI-AGENT (DIKTIEREN & AUTOMATISCH EINTRAGEN) -->
+      <!-- ================= PANEL 1: KI-AGENT ================= -->
       <div id="drawerPanel-ai" class="flex flex-col h-full space-y-3">
         <div class="rounded-xl t-sub p-3 space-y-1.5">
           <div class="flex items-center justify-between">
-            <p class="text-xs font-bold">KI-Agent (Diktat & Direkt-Eintrag)</p>
-            <button type="button" onclick="speakText('Sprachausgabe ist aktiv.')" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 text-[10px] font-semibold flex items-center gap-1 cursor-pointer">
+            <p class="text-xs font-bold">KI-Agent & Sprachsteuerung</p>
+            <button type="button" onclick="speakText('Sprachausgabe funktioniert einwandfrei.')" class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 text-[10px] font-semibold flex items-center gap-1 cursor-pointer">
               <i data-lucide="volume-2" class="w-3 h-3"></i>
-              <span>Test</span>
+              <span>Stimme testen</span>
             </button>
           </div>
           <p class="text-[11px] t-muted">
-            Diktiere oder schreibe mir einfach deine Spule – ich trage sie sofort komplett für dich ein, z. B.:<br>
-            • <em>„Bambu Lab PLA Schwarz im eBOS Beutel 800g in 15 Tagen trocknen“</em><br>
-            • <em>„Eryone PLA Durchsichtig 970g sofort trocknen“</em>
+            Schreibe oder diktiere z. B.: <em>„Neue Spule Bambu Lab PETG Blau im eBOS Beutel“</em> oder <em>„Ziehe 45g von Weiß ab“</em>.
           </p>
         </div>
 
         <div id="aiChatMessages" class="flex-1 min-h-[280px] max-h-[450px] overflow-y-auto space-y-2 rounded-xl t-sub p-3 text-xs"></div>
 
         <div class="flex gap-1.5">
-          <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" title="Jetzt einsprechen" class="px-3 py-2.5 rounded-xl t-sub text-sky-400 hover:opacity-80 transition cursor-pointer">
+          <button id="micBtnAi" type="button" onclick="startVoiceRecognition('aiUserInput', 'micBtnAi', true)" title="Einsprechen" class="px-3 py-2.5 rounded-xl t-sub text-sky-400 hover:opacity-80 transition cursor-pointer">
             <i data-lucide="mic" class="w-4 h-4"></i>
           </button>
           <input
             id="aiUserInput"
             type="text"
-            placeholder="Diktieren oder tippen..."
+            placeholder="Befehl eingeben oder diktieren..."
             class="flex-1 px-3 py-2.5 rounded-xl t-input text-xs outline-none focus:border-sky-500"
             onkeydown="if(event.key==='Enter'){ sendAiMessage(); }"
           />
@@ -227,7 +231,7 @@
         </div>
       </div>
 
-      <!-- PANEL 2: G-CODE DIREKT-ABZUG -->
+      <!-- ================= PANEL 2: G-CODE DIREKT-ABZUG ================= -->
       <div id="drawerPanel-gcode" class="hidden space-y-4">
         <div class="rounded-xl t-sub p-3">
           <h3 class="text-xs font-bold">G-Code Direkt-Abzug</h3>
@@ -265,7 +269,7 @@
         </div>
       </div>
 
-      <!-- PANEL 3: KOSTENRECHNER -->
+      <!-- ================= PANEL 3: KOSTENRECHNER ================= -->
       <div id="drawerPanel-calc" class="hidden space-y-3.5">
         <label for="calcGcodeInput" class="cursor-pointer flex items-center justify-between px-3.5 py-2.5 rounded-xl t-sub border border-dashed border-sky-500/40 transition">
           <div>
@@ -326,8 +330,10 @@
         </div>
       </div>
 
-      <!-- PANEL 4: ZWISCHENSPEICHER & IMPORT/EXPORT -->
+      <!-- ================= PANEL 4: DATENTRESOR (ZWISCHENSPEICHER + IMPORT/EXPORT) ================= -->
       <div id="drawerPanel-vault" class="hidden space-y-4">
+        
+        <!-- TEIL A: AUSKLAPPBARER ZWISCHENSPEICHER -->
         <div class="rounded-xl t-sub border border-emerald-500/35 p-3.5 space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -337,14 +343,18 @@
             <span id="vaultSnapshotCountLabel" class="text-[11px] font-mono-num font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">0 Spulen</span>
           </div>
 
+          <!-- Ausklapp-Button für die Spulen im Zwischenspeicher -->
           <div class="rounded-xl t-panel p-2.5 space-y-2">
             <button type="button" onclick="toggleBufferPreview()" class="w-full flex items-center justify-between text-xs font-bold cursor-pointer">
               <span id="bufferPreviewTitle">📦 Inhalt im Zwischenspeicher anzeigen</span>
               <i id="bufferChevron" data-lucide="chevron-down" class="w-4 h-4 text-sky-400 transition-transform"></i>
             </button>
+
+            <!-- Ausgefahrene Liste aller Spulen im Zwischenspeicher -->
             <div id="bufferSpoolDetailsList" class="hidden pt-2 border-t border-slate-500/15 space-y-1.5 max-h-56 overflow-y-auto"></div>
           </div>
 
+          <!-- 2 Haupt-Knöpfe: JETZT LADEN & JETZT LÖSCHEN -->
           <div class="grid grid-cols-2 gap-2">
             <button type="button" onclick="loadBufferNow()" class="py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold flex items-center justify-center gap-1.5 shadow cursor-pointer">
               <i data-lucide="download" class="w-3.5 h-3.5"></i>
@@ -356,6 +366,7 @@
             </button>
           </div>
 
+          <!-- EINMAL-KNOPF: Alten Browserspeicher durchsuchen & retten -->
           <button
             id="browserRescueBtn"
             type="button"
@@ -366,6 +377,7 @@
           </button>
         </div>
 
+        <!-- TEIL B: DATEI & TEXT IMPORT / EXPORT -->
         <div class="rounded-xl t-sub p-3.5 space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="text-xs font-bold flex items-center gap-1.5">
@@ -411,9 +423,10 @@
             </button>
           </div>
         </div>
+
       </div>
 
-      <!-- PANEL 5: HANDY-KOPPLUNG & CLOUD-SYNC -->
+      <!-- ================= PANEL 5: HANDY-KOPPLUNG & CLOUD-SYNC ================= -->
       <div id="drawerPanel-sync" class="hidden space-y-3.5">
         <div class="rounded-xl t-sub p-3.5 space-y-2.5">
           <h3 class="text-xs font-bold">PC & Handy Cloud-Sync</h3>
@@ -446,10 +459,10 @@
         </div>
       </div>
 
-      <!-- PANEL 6: OPTIONEN (3 AUSFAHRBARE MENÜS) -->
+      <!-- ================= PANEL 6: OPTIONEN (3 AUSFAHRBARE MENÜS) ================= -->
       <div id="drawerPanel-settings" class="hidden space-y-3">
 
-        <!-- 1. Darstellung & Design -->
+        <!-- 1. AUSFAHRBAR: DARSTELLUNG & DESIGN -->
         <div class="rounded-xl t-sub overflow-hidden">
           <button type="button" onclick="toggleSettingsAccordion('accDesign')" class="w-full p-3.5 flex items-center justify-between text-xs font-extrabold uppercase tracking-wider cursor-pointer">
             <span class="flex items-center gap-2">
@@ -461,7 +474,7 @@
 
           <div id="accDesign" class="p-3.5 pt-0 border-t border-slate-500/15 space-y-3">
             <div>
-              <label class="block text-[11px] t-muted mb-1">Hintergrund / Theme</label>
+              <label class="block text-[11px] t-muted mb-1">Hintergrund / Theme (inkl. Hell-Modus)</label>
               <select id="settingTheme" onchange="updateAppSetting('theme', this.value)" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-semibold outline-none">
                 <option value="obsidian">🌑 Obsidian Dunkel (Standard)</option>
                 <option value="midnight">🌌 Midnight Tech-Blau</option>
@@ -499,7 +512,7 @@
           </div>
         </div>
 
-        <!-- 2. Standardwerte (Spulen & Beutel) -->
+        <!-- 2. AUSFAHRBAR: STANDARDWERTE (SPULEN PRO HERSTELLER & BEUTEL) -->
         <div class="rounded-xl t-sub overflow-hidden">
           <button type="button" onclick="toggleSettingsAccordion('accTara')" class="w-full p-3.5 flex items-center justify-between text-xs font-extrabold uppercase tracking-wider cursor-pointer">
             <span class="flex items-center gap-2">
@@ -510,6 +523,10 @@
           </button>
 
           <div id="accTara" class="hidden p-3.5 pt-0 border-t border-slate-500/15 space-y-3">
+            <p class="text-[11px] t-muted">
+              Wähle einen Hersteller aus, um dessen Standard-Leerspulengewicht (Tara) und Standardpreis anzupassen:
+            </p>
+
             <div>
               <label class="block text-[11px] font-bold mb-1">Hersteller auswählen</label>
               <select id="settingBrandSelect" onchange="loadBrandPresetIntoSettings()" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-bold outline-none"></select>
@@ -539,7 +556,7 @@
           </div>
         </div>
 
-        <!-- 3. Haltbarkeit pro Filament -->
+        <!-- 3. AUSFAHRBAR: AUFBEWAHRUNGSDAUER & TROCKNUNG PRO FILAMENT -->
         <div class="rounded-xl t-sub overflow-hidden">
           <button type="button" onclick="toggleSettingsAccordion('accDry')" class="w-full p-3.5 flex items-center justify-between text-xs font-extrabold uppercase tracking-wider cursor-pointer">
             <span class="flex items-center gap-2">
@@ -550,6 +567,10 @@
           </button>
 
           <div id="accDry" class="hidden p-3.5 pt-0 border-t border-slate-500/15 space-y-3">
+            <p class="text-[11px] t-muted">
+              Bestimme für jeden Filamenttyp, wie viele Tage er offen, im eBOS-Beutel oder OVP gelagert werden darf:
+            </p>
+
             <div>
               <label class="block text-[11px] font-bold mb-1">Filamenttyp auswählen</label>
               <select id="settingMatSelect" onchange="loadMaterialPresetIntoSettings()" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-bold outline-none">
@@ -593,6 +614,7 @@
           </div>
         </div>
 
+        <!-- Audio / Vorlesen Option -->
         <div class="rounded-xl t-sub p-3 flex items-center justify-between">
           <span class="text-xs font-semibold">🔊 Sprachausgabe (Firefox & Browser)</span>
           <input id="settingTtsEnabled" type="checkbox" onchange="updateAppSetting('ttsEnabled', this.checked)" class="w-4 h-4 accent-sky-500 rounded cursor-pointer" />
@@ -614,6 +636,7 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
+        <!-- SCHALTER: SCHLICHT-MODUS -->
         <button
           id="minimalModeToggleBtn"
           type="button"
@@ -624,6 +647,7 @@
           <span id="minimalModeLabel">Schlicht-Modus: AUS</span>
         </button>
 
+        <!-- Undo / Redo -->
         <div class="inline-flex items-center rounded-xl t-sub overflow-hidden">
           <button id="undoBtn" type="button" onclick="undoAction()" title="Rückgängig (Strg+Z)" class="p-2 hover:opacity-75 transition disabled:opacity-30 cursor-pointer">
             <i data-lucide="undo-2" class="w-3.5 h-3.5"></i>
@@ -633,11 +657,13 @@
           </button>
         </div>
 
+        <!-- Direkt-Button zum Speicher/Import-Menü -->
         <button type="button" onclick="openDrawerTab('vault')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-sub text-xs font-bold hover:border-sky-500/40 transition cursor-pointer">
           <i data-lucide="archive-restore" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span>Speicher & Import</span>
         </button>
 
+        <!-- Neue Spule -->
         <button type="button" onclick="openSpoolModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-extrabold transition shadow-sm cursor-pointer">
           <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
           <span>Neue Spule</span>
@@ -648,59 +674,38 @@
     <!-- HAUPT-DASHBOARD -->
     <main class="flex-1 w-full px-4 sm:px-6 py-4 space-y-4">
 
-      <!-- SCHNELL-EINGABE MIT MODUS-AUSWAHL (DIKTIEREN & SOFORT EINTRAGEN vs. SELBST BEARBEITEN) -->
-      <section id="quickScannerSection" class="t-panel rounded-2xl p-3.5 space-y-2.5">
-        <div class="flex flex-wrap items-center justify-between gap-2">
+      <!-- SCHNELL-EINGABE (WIRD IM SCHLICHT-MODUS AUSGEBLENDET) -->
+      <section id="quickScannerSection" class="t-panel rounded-2xl p-3.5">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div>
-            <h2 class="text-xs sm:text-sm font-bold">Filament diktieren, Link einfügen oder manuell anlegen</h2>
-            <p class="text-[11px] t-muted">Wähle rechts, ob ich dein Diktat / deinen Text <strong>sofort automatisch eintragen</strong> soll oder ob du es <strong>selbst im Formular prüfen</strong> willst.</p>
+            <h2 class="text-xs sm:text-sm font-bold">Schnell-Eintrag (Link, Text oder 🎙️ Spracheingabe)</h2>
+            <p class="text-[11px] t-muted">Erkennt Marke, Material, Farbe, „im eBOS Beutel“, „einvakuumiert“ oder „ohne Spule“</p>
           </div>
 
-          <!-- AUSWAHL-SCHALTER: AUTOMATISCH EINTRAGEN vs. SELBST IM FORMULAR BEARBEITEN -->
-          <div class="inline-flex rounded-xl t-sub p-1 text-[11px] font-bold">
-            <button
-              id="modeBtnAuto"
-              type="button"
-              onclick="setEntryMode('auto')"
-              class="px-2.5 py-1 rounded-lg transition cursor-pointer"
-            >
-              ⚡ Diktieren & Sofort eintragen
+          <div class="flex-1 max-w-2xl flex gap-2">
+            <button id="micBtnQuick" type="button" onclick="startVoiceRecognition('quickLinkInput', 'micBtnQuick', false)" class="px-3 py-2 rounded-xl t-sub text-sky-400 flex items-center gap-1.5 shrink-0 text-xs font-semibold cursor-pointer">
+              <i data-lucide="mic" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Diktieren</span>
             </button>
+            <input
+              id="quickLinkInput"
+              type="text"
+              placeholder="z.B. 'Bambu Lab PETG Basic Blau im eBOS Beutel' oder Shop-Link..."
+              class="w-full px-3.5 py-2 rounded-xl t-input text-xs sm:text-sm outline-none focus:border-sky-500"
+              onkeydown="if(event.key==='Enter'){ handleQuickLinkImport(); }"
+            />
             <button
-              id="modeBtnManual"
               type="button"
-              onclick="setEntryMode('manual')"
-              class="px-2.5 py-1 rounded-lg transition cursor-pointer"
+              onclick="handleQuickLinkImport()"
+              class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs sm:text-sm transition whitespace-nowrap cursor-pointer"
             >
-              ✍️ Selbst im Formular prüfen
+              Anlegen
             </button>
           </div>
-        </div>
-
-        <div class="flex flex-col sm:flex-row gap-2">
-          <button id="micBtnQuick" type="button" onclick="startVoiceRecognition('quickLinkInput', 'micBtnQuick', false, false, true)" class="px-3.5 py-2.5 rounded-xl t-sub text-sky-400 flex items-center justify-center gap-1.5 shrink-0 text-xs font-bold cursor-pointer hover:border-sky-500/40">
-            <i data-lucide="mic" class="w-4 h-4"></i>
-            <span>🎙️ Jetzt einsprechen</span>
-          </button>
-          <input
-            id="quickLinkInput"
-            type="text"
-            placeholder="z.B. 'Bambu Lab PLA Dunkelgrün im eBOS Beutel 476g getrocknet' oder Shop-Link..."
-            class="w-full px-3.5 py-2.5 rounded-xl t-input text-xs sm:text-sm outline-none focus:border-sky-500"
-            onkeydown="if(event.key==='Enter'){ handleQuickLinkImport(); }"
-          />
-          <button
-            id="quickSubmitBtn"
-            type="button"
-            onclick="handleQuickLinkImport()"
-            class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs sm:text-sm transition whitespace-nowrap cursor-pointer"
-          >
-            Ausführen
-          </button>
         </div>
       </section>
 
-      <!-- KPI-LEISTE -->
+      <!-- KPI-LEISTE (BLEIBT AUCH IM SCHLICHT-MODUS SICHTBAR) -->
       <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div class="t-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
@@ -729,9 +734,9 @@
         <div class="t-panel rounded-2xl p-3.5 flex items-center justify-between">
           <div>
             <p class="text-xs t-muted">Trocknung fällig</p>
-            <p id="statDryingDue" class="text-xl sm:text-2xl font-extrabold text-rose-500 font-mono-num mt-0.5">0</p>
+            <p id="statDryingDue" class="text-xl sm:text-2xl font-extrabold text-amber-500 font-mono-num mt-0.5">0</p>
           </div>
-          <i data-lucide="flame" class="w-5 h-5 text-rose-500"></i>
+          <i data-lucide="flame" class="w-5 h-5 text-amber-500"></i>
         </div>
       </section>
 
@@ -774,19 +779,19 @@
 
   <!-- ================= MODAL: SPULE BEARBEITEN / NEU ================= -->
   <div id="spoolModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
-    <div class="t-panel rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl my-8 max-h-[94vh] overflow-y-auto">
+    <div class="t-panel rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl my-8">
       <div class="flex items-center justify-between border-b border-slate-500/15 pb-3">
         <div>
           <h3 id="modalTitle" class="text-base font-extrabold">Spule bearbeiten</h3>
-          <p class="text-[11px] t-muted">Alle Werte inkl. Trocknungs-Timer & Shop-Link anpassbar</p>
+          <p class="text-[11px] t-muted">Zieht automatisch deine eingestellten Standardwerte</p>
         </div>
         <button type="button" onclick="closeSpoolModal()" class="p-1.5 rounded-lg t-sub cursor-pointer">✕</button>
       </div>
 
-      <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-3.5">
+      <form id="spoolForm" onsubmit="saveSpool(event)" class="space-y-4">
         <input type="hidden" id="fId" />
+        <input type="hidden" id="fLastDried" />
 
-        <!-- 1. Marke (Nur reine Namen!) & Bezeichnung -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold mb-1">Marke / Hersteller *</label>
@@ -796,11 +801,10 @@
 
           <div>
             <label class="block text-xs font-semibold mb-1">Beschreibung / Serie *</label>
-            <input id="fName" type="text" required placeholder="z.B. PLA Basic Weiß" class="w-full px-3 py-2 rounded-xl t-input text-xs sm:text-sm outline-none" />
+            <input id="fName" type="text" required placeholder="z.B. PETG Basic" class="w-full px-3 py-2 rounded-xl t-input text-xs sm:text-sm outline-none" />
           </div>
         </div>
 
-        <!-- 2. Material, Farbe & Preis -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-semibold mb-1">Material *</label>
@@ -831,7 +835,6 @@
           </div>
         </div>
 
-        <!-- 3. Verpackung / eBOS Vakuum-Beutel -->
         <div class="rounded-xl t-sub border border-sky-500/25 p-3 space-y-2">
           <div class="flex items-center justify-between">
             <label class="text-xs font-bold">Verpackung / eBOS Vakuum-Beutel</label>
@@ -849,9 +852,9 @@
               <input id="fBagWeight" type="number" min="0" max="200" value="0" oninput="applyModalScale()" class="w-full px-2.5 py-2 rounded-lg t-input text-xs font-mono-num text-sky-400 font-bold outline-none" title="Beutel-Tara in Gramm" />
             </div>
           </div>
+          <p id="modalMaterialStorageInfo" class="text-[11px] t-muted"></p>
         </div>
 
-        <!-- 4. Gewicht & Waagen-Rechner -->
         <div class="rounded-xl t-sub p-3 space-y-2.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold">Gewicht & Waagen-Rechner</span>
@@ -877,69 +880,35 @@
           <p id="fScaleHint" class="text-[10px] t-muted"></p>
         </div>
 
-        <!-- 5. NEU: TROCKNUNGS-MANAGEMENT (LETZTES MAL GETROCKNET, TIMER & HAKEN "SOFORT TROCKNEN") -->
-        <div class="rounded-xl t-sub border border-amber-500/30 p-3 space-y-2.5">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <span class="text-xs font-bold flex items-center gap-1.5">
-              <i data-lucide="flame" class="w-4 h-4 text-amber-400"></i>
-              <span>Trocknungs-Timer & Letzte Trocknung</span>
-            </span>
-            <button type="button" onclick="setModalDriedNow()" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-[11px] font-bold cursor-pointer">
-              🔥 Jetzt getrocknet (Timer starten)
-            </button>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[10px] t-muted mb-1">Shop-Link (leer = automatisch)</label>
+            <input id="fProductUrl" type="text" placeholder="https://..." class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs outline-none" />
           </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div class="grid grid-cols-3 gap-1.5">
             <div>
-              <label class="block text-[10px] t-muted mb-1">Zuletzt getrocknet am</label>
-              <input id="fLastDried" type="datetime-local" class="w-full px-2.5 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
+              <label class="block text-[10px] t-muted mb-1">Tage</label>
+              <input id="fDryIntervalDays" type="number" value="30" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
             </div>
-            <div class="grid grid-cols-3 gap-1.5">
-              <div>
-                <label class="block text-[10px] t-muted mb-1">Timer (Tage)</label>
-                <input id="fDryIntervalDays" type="number" min="1" max="999" value="30" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num font-bold text-amber-400 outline-none" />
-              </div>
-              <div>
-                <label class="block text-[10px] t-muted mb-1">Temp °C</label>
-                <input id="fDryTemp" type="number" value="50" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
-              </div>
-              <div>
-                <label class="block text-[10px] t-muted mb-1">Dauer h</label>
-                <input id="fDryHours" type="number" value="5" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
-              </div>
+            <div>
+              <label class="block text-[10px] t-muted mb-1">°C</label>
+              <input id="fDryTemp" type="number" value="50" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
+            </div>
+            <div>
+              <label class="block text-[10px] t-muted mb-1">Std.</label>
+              <input id="fDryHours" type="number" value="5" class="w-full px-2 py-1.5 rounded-lg t-input text-xs font-mono-num outline-none" />
             </div>
           </div>
-
-          <!-- HAKEN: SOFORT TROCKNEN NÖTIG -->
-          <label class="flex items-center justify-between p-2 rounded-lg bg-rose-500/10 border border-rose-500/25 cursor-pointer">
-            <span class="text-xs font-bold text-rose-400">⚠️ Sofort trocknen nötig (Als überfällig markieren)</span>
-            <input id="fForceDryNow" type="checkbox" class="w-4 h-4 accent-rose-500 rounded cursor-pointer" />
-          </label>
         </div>
 
-        <!-- 6. SHOP-LINK UNTEN (ÜBERSCHREIBT BEIM AUSLESEN NIEMALS DAS GEWICHT!) -->
-        <div class="rounded-xl t-sub border border-sky-500/25 p-3 space-y-1.5">
-          <div class="flex items-center justify-between">
-            <label class="text-[11px] font-bold text-sky-400">Shop-Link (zieht Farbe & Shop, behält dein Gewicht!)</label>
-          </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-500/15">
+          <button type="button" onclick="document.getElementById('fLastDried').value = new Date().toISOString(); showToast('Auf heute getrocknet gesetzt!');" class="text-xs text-sky-400 hover:underline font-semibold cursor-pointer">
+            🔥 Als „Heute getrocknet“ markieren
+          </button>
           <div class="flex gap-2">
-            <input
-              id="fProductUrl"
-              type="text"
-              placeholder="Link einfügen (leer = Auto-Link zu Bambu/SUNLU/Amazon)..."
-              onpaste="setTimeout(() => extractUrlInModalKeepWeight(), 80)"
-              class="flex-1 px-2.5 py-1.5 rounded-lg t-input text-xs outline-none focus:border-sky-500"
-            />
-            <button type="button" onclick="extractUrlInModalKeepWeight()" class="px-3 py-1.5 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-400 border border-sky-500/30 text-[11px] font-bold whitespace-nowrap cursor-pointer">
-              🎨 Farbe aus Link ziehen
-            </button>
+            <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl t-sub text-xs font-semibold cursor-pointer">Abbrechen</button>
+            <button type="submit" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-extrabold cursor-pointer">Speichern</button>
           </div>
-          <p id="modalUrlStatus" class="text-[10px] text-emerald-400 hidden"></p>
-        </div>
-
-        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-500/15">
-          <button type="button" onclick="closeSpoolModal()" class="px-4 py-2 rounded-xl t-sub text-xs font-semibold cursor-pointer">Abbrechen</button>
-          <button type="submit" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-extrabold cursor-pointer">Spule speichern</button>
         </div>
       </form>
     </div>
@@ -962,20 +931,20 @@
   <!-- FESTE VERSIONS-ANZEIGE UNTEN RECHTS -->
   <div class="fixed bottom-3 right-3 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full t-panel shadow-xl text-[11px] backdrop-blur-md">
     <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span class="font-mono-num font-bold text-sky-400">v20.0</span>
+    <span class="font-mono-num font-bold text-sky-400">v19.0</span>
     <span class="t-muted">|</span>
-    <span class="font-mono-num">19.10.2026, 20:05 Uhr</span>
+    <span class="font-mono-num">19.10.2026, 19:35 Uhr</span>
     <span class="t-muted">|</span>
     <span id="syncStatusLabel" class="text-emerald-400 font-semibold">Synchron</span>
   </div>
 
   <script>
     // =========================================================================
-    // 1. BEREINIGTE HERSTELLER-DATENBANK (NUR REINE NAMEN IM DROPDOWN)
+    // 1. ANPASSBARE STANDARDWERTE (SPULEN-TARA, BEUTEL & FILAMENT-HALTBARKEIT)
     // =========================================================================
-    const SETTINGS_KEY = 'filamenthub_settings_v20';
-    const CUSTOM_BRANDS_KEY = 'filamenthub_custom_brands_v20';
-    const CUSTOM_MATS_KEY = 'filamenthub_custom_mats_v20';
+    const SETTINGS_KEY = 'filamenthub_settings_v19';
+    const CUSTOM_BRANDS_KEY = 'filamenthub_custom_brands_v19';
+    const CUSTOM_MATS_KEY = 'filamenthub_custom_mats_v19';
 
     let appSettings = {
       theme: 'obsidian',
@@ -985,7 +954,6 @@
       ttsEnabled: true,
       ebosWeight: 25,
       ovpWeight: 18,
-      entryMode: 'auto', // 'auto' = Direkt eintragen, 'manual' = Erst im Formular prüfen
       browserRescueUsed: false
     };
 
@@ -994,19 +962,24 @@
       appSettings = { ...appSettings, ...saved };
     } catch (e) {}
 
-    // Bereinigte Hersteller-Liste: Eibos, BQ, Das Filament, Jayo, Anycubic, Extrudr, 3DJake wurden entfernt!
     let BRAND_DATABASE = [
       { keys: ['bambulab', 'bambu lab', 'bambu'], name: 'Bambu Lab', tara: 250, basePrice: 19.99 },
+      { keys: ['eibos', 'eyebrows', 'ebos'], name: 'Eibos', tara: 200, basePrice: 18.99 },
+      { keys: ['bq'], name: 'BQ', tara: 250, basePrice: 17.99 },
+      { keys: ['eryone'], name: 'Eryone', tara: 151, basePrice: 18.99 },
       { keys: ['sunlu', 'sunluu'], name: 'SUNLU', tara: 195, basePrice: 14.99 },
       { keys: ['elegoo'], name: 'ELEGOO', tara: 160, basePrice: 16.99 },
       { keys: ['esun', 'e-sun'], name: 'eSUN', tara: 220, basePrice: 17.99 },
-      { keys: ['prusament', 'prusa', 'pruscha'], name: 'Prusament', tara: 200, basePrice: 29.99 },
-      { keys: ['polymaker', 'polyterra', 'polylite', 'yx polier', 'yxpolyer'], name: 'Polymaker', tara: 200, basePrice: 21.99 },
+      { keys: ['3djake'], name: '3DJake', tara: 215, basePrice: 19.99 },
+      { keys: ['prusament', 'prusa'], name: 'Prusament', tara: 200, basePrice: 29.99 },
+      { keys: ['extrudr'], name: 'Extrudr', tara: 240, basePrice: 26.99 },
+      { keys: ['polymaker', 'polyterra', 'polylite'], name: 'Polymaker', tara: 140, basePrice: 21.99 },
+      { keys: ['anycubic'], name: 'Anycubic', tara: 190, basePrice: 15.99 },
       { keys: ['creality', 'ender', 'hyper pla'], name: 'Creality', tara: 180, basePrice: 16.99 },
-      { keys: ['eryone', 'everyone'], name: 'Eryone', tara: 151, basePrice: 18.99 },
       { keys: ['overture'], name: 'Overture', tara: 145, basePrice: 18.99 },
+      { keys: ['jayo'], name: 'Jayo', tara: 195, basePrice: 13.99 },
       { keys: ['geeetech'], name: 'Geeetech', tara: 195, basePrice: 14.99 },
-      { keys: ['eono'], name: 'Eono', tara: 150, basePrice: 17.99 }
+      { keys: ['dasfilament', 'das filament'], name: 'Das Filament', tara: 210, basePrice: 19.95 }
     ];
 
     try {
@@ -1031,24 +1004,16 @@
       if (savedMats && typeof savedMats === 'object') MATERIAL_PRESETS = { ...MATERIAL_PRESETS, ...savedMats };
     } catch (e) {}
 
-    // Deine 16 diktierten Rollen (inkl. exakter Netto-Gewichte, eBOS-Beutel, 15-Tage-Timern und Sofort-Trocknen bei Eryone)
-    const DICTATED_16_SPOOLS = [
-      { id: 'sp-d1', brand: 'Bambu Lab', name: 'PETG Basic Weiß', material: 'PETG', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 866, emptySpoolWeight: 250, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 19.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 120, forceDryNow: false },
-      { id: 'sp-d2', brand: 'Bambu Lab', name: 'PLA Basic Dunkelgrün', material: 'PLA', colorName: 'Dunkelgrün', colorHex: '#166534', initialWeight: 1000, remainingWeight: 201, emptySpoolWeight: 250, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 19.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 180, forceDryNow: false },
-      { id: 'sp-d3', brand: 'Bambu Lab', name: 'PLA Basic Hellgrün (Gedruckte Spule)', material: 'PLA', colorName: 'Hellgrün', colorHex: '#4ade80', initialWeight: 1000, remainingWeight: 1240, emptySpoolWeight: 50, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 19.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 15, forceDryNow: false },
-      { id: 'sp-d4', brand: 'Bambu Lab', name: 'PLA Basic Weiß (OVP Refill 1)', material: 'PLA', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 0, storageMode: 'factory_sealed', bagWeight: 18, pricePerKg: 16.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 365, forceDryNow: false },
-      { id: 'sp-d5', brand: 'Bambu Lab', name: 'PLA Basic Weiß (OVP Refill 2)', material: 'PLA', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 0, storageMode: 'factory_sealed', bagWeight: 18, pricePerKg: 16.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 365, forceDryNow: false },
-      { id: 'sp-d6', brand: 'Bambu Lab', name: 'PLA Basic Weiß (OVP mit Spule)', material: 'PLA', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 250, storageMode: 'factory_sealed', bagWeight: 18, pricePerKg: 19.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 365, forceDryNow: false },
-      { id: 'sp-d7', brand: 'Eryone', name: 'PLA Standard Durchsichtig', material: 'PLA', colorName: 'Durchsichtig', colorHex: '#cbd5e1', initialWeight: 1000, remainingWeight: 819, emptySpoolWeight: 151, storageMode: 'open', bagWeight: 0, pricePerKg: 18.99, lastDried: '2026-09-01T10:00:00.000Z', dryIntervalDays: 30, forceDryNow: true },
-      { id: 'sp-d8', brand: 'Eryone', name: 'PLA Glow in the Dark Blau', material: 'PLA', colorName: 'Glow Blau', colorHex: '#38bdf8', initialWeight: 1000, remainingWeight: 957, emptySpoolWeight: 151, storageMode: 'open', bagWeight: 0, pricePerKg: 21.99, lastDried: '2026-09-01T10:00:00.000Z', dryIntervalDays: 30, forceDryNow: true },
-      { id: 'sp-d9', brand: 'Prusament', name: 'PETG Prusa Galaxy Black', material: 'PETG', colorName: 'Galaxy Black', colorHex: '#27272a', initialWeight: 1000, remainingWeight: 1140, emptySpoolWeight: 200, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 29.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 15, forceDryNow: false },
-      { id: 'sp-d10', brand: 'Bambu Lab', name: 'PLA Basic Schwarz', material: 'PLA', colorName: 'Schwarz', colorHex: '#18181b', initialWeight: 1000, remainingWeight: 525, emptySpoolWeight: 250, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 19.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 15, forceDryNow: false },
-      { id: 'sp-d11', brand: 'Prusament', name: 'PLA Prusament Galaxy Black', material: 'PLA', colorName: 'Galaxy Black', colorHex: '#18181b', initialWeight: 1000, remainingWeight: 394, emptySpoolWeight: 200, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 29.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 180, forceDryNow: false },
-      { id: 'sp-d12', brand: 'Polymaker', name: 'PA6-CF Nylon (YXPOLYER)', material: 'PA / Nylon', colorName: 'Schwarz CF', colorHex: '#27272a', initialWeight: 1000, remainingWeight: 975, emptySpoolWeight: 200, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 34.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 45, forceDryNow: false },
-      { id: 'sp-d13', brand: 'Eono', name: 'Silk PLA Rot', material: 'PLA', colorName: 'Rot Silk', colorHex: '#ef4444', initialWeight: 1000, remainingWeight: 855, emptySpoolWeight: 150, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 17.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 180, forceDryNow: false },
-      { id: 'sp-d14', brand: 'Eono', name: 'Silk PLA Gold', material: 'PLA', colorName: 'Gold Silk', colorHex: '#eab308', initialWeight: 1000, remainingWeight: 855, emptySpoolWeight: 150, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 17.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 180, forceDryNow: false },
-      { id: 'sp-d15', brand: 'Eono', name: 'Silk PLA Blau', material: 'PLA', colorName: 'Blau Silk', colorHex: '#3b82f6', initialWeight: 1000, remainingWeight: 855, emptySpoolWeight: 150, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 17.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 180, forceDryNow: false },
-      { id: 'sp-d16', brand: 'ELEGOO', name: 'PLA Weiß', material: 'PLA', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 585, emptySpoolWeight: 160, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 16.99, lastDried: '2026-10-19T18:00:00.000Z', dryIntervalDays: 180, forceDryNow: false }
+    // Deine 8 diktierten Spulen als eingebaute Sicherung für den Zwischenspeicher
+    const DEFAULT_8_SPOOLS_BACKUP = [
+      { id: 'sp-u1', brand: 'Bambu Lab', name: 'PLA Basic Weiß', material: 'PLA', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 250, storageMode: 'factory_sealed', bagWeight: 18, pricePerKg: 19.99, lastDried: new Date().toISOString(), dryIntervalDays: 365 },
+      { id: 'sp-u2', brand: 'Bambu Lab', name: 'PLA Basic Weiß (Refill)', material: 'PLA', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 0, storageMode: 'factory_sealed', bagWeight: 18, pricePerKg: 16.99, lastDried: new Date().toISOString(), dryIntervalDays: 365 },
+      { id: 'sp-u3', brand: 'Bambu Lab', name: 'PLA Basic Weiß (Refill 2)', material: 'PLA', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 1000, emptySpoolWeight: 0, storageMode: 'factory_sealed', bagWeight: 18, pricePerKg: 16.99, lastDried: new Date().toISOString(), dryIntervalDays: 365 },
+      { id: 'sp-u4', brand: 'BQ', name: 'PLA Basic Grün', material: 'PLA', colorName: 'Grün', colorHex: '#22c55e', initialWeight: 1000, remainingWeight: 416, emptySpoolWeight: 250, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 17.99, lastDried: new Date().toISOString(), dryIntervalDays: 180 },
+      { id: 'sp-u5', brand: 'Bambu Lab', name: 'PLA Basic Hellgrün (Eibos Spule)', material: 'PLA', colorName: 'Grün', colorHex: '#4ade80', initialWeight: 1000, remainingWeight: 1261, emptySpoolWeight: 50, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 19.99, lastDried: new Date().toISOString(), dryIntervalDays: 180 },
+      { id: 'sp-u6', brand: 'Eibos', name: 'PETG Basic Weiß', material: 'PETG', colorName: 'Weiß', colorHex: '#f8fafc', initialWeight: 1000, remainingWeight: 941, emptySpoolWeight: 200, storageMode: 'ebos_bag', bagWeight: 25, pricePerKg: 18.99, lastDried: new Date().toISOString(), dryIntervalDays: 120 },
+      { id: 'sp-u7', brand: 'Eryone', name: 'PLA Glow in the Dark', material: 'PLA', colorName: 'Glow', colorHex: '#a3e635', initialWeight: 1000, remainingWeight: 1108, emptySpoolWeight: 151, storageMode: 'open', bagWeight: 0, pricePerKg: 21.99, lastDried: new Date(Date.now() - 40 * 86400000).toISOString(), dryIntervalDays: 30 },
+      { id: 'sp-u8', brand: 'Eryone', name: 'PLA Standard Durchsichtig (Blau)', material: 'PLA', colorName: 'Transparent', colorHex: '#38bdf8', initialWeight: 1000, remainingWeight: 970, emptySpoolWeight: 151, storageMode: 'open', bagWeight: 0, pricePerKg: 19.99, lastDried: new Date().toISOString(), dryIntervalDays: 30 }
     ];
 
     function getStorageModes() {
@@ -1070,15 +1035,13 @@
     const COLOR_MAP = [
       { keys: ['weiss', 'weiß', 'white', 'ivory', 'jade white'], name: 'Weiß', en: 'white', hex: '#f8fafc' },
       { keys: ['marmor', 'marble', 'stein', 'granit'], name: 'Marmor', en: 'marble', hex: '#e2e8f0' },
-      { keys: ['galaxy black', 'galaxy-black', 'anthrazit', 'dunkelgrau', 'ash grey'], name: 'Galaxy Black', en: 'black', hex: '#27272a' },
+      { keys: ['anthrazit', 'dunkelgrau', 'ash grey'], name: 'Anthrazit', en: 'grey', hex: '#3f3f46' },
       { keys: ['schwarz', 'black', 'jet-black', 'onyx'], name: 'Schwarz', en: 'black', hex: '#18181b' },
       { keys: ['silber', 'silver', 'grau', 'grey', 'gray', 'titanium'], name: 'Grau / Silber', en: 'grey', hex: '#94a3b8' },
       { keys: ['rot', 'red', 'crimson', 'weinrot'], name: 'Rot', en: 'red', hex: '#ef4444' },
       { keys: ['türkis', 'tuerkis', 'turquoise', 'cyan', 'mint', 'teal'], name: 'Türkis / Cyan', en: 'cyan', hex: '#06b6d4' },
       { keys: ['blau', 'blue', 'navy', 'cobalt', 'eisblau', 'hellblau'], name: 'Blau', en: 'blue', hex: '#3b82f6' },
-      { keys: ['dunkelgrün', 'dark green', 'forest'], name: 'Dunkelgrün', en: 'green', hex: '#166534' },
-      { keys: ['hellgrün', 'light green', 'lime', 'glow'], name: 'Hellgrün', en: 'green', hex: '#4ade80' },
-      { keys: ['grün', 'gruen', 'green', 'olive', 'emerald', 'bambusgrün'], name: 'Grün', en: 'green', hex: '#22c55e' },
+      { keys: ['grün', 'gruen', 'green', 'olive', 'emerald', 'lime', 'hellgrün', 'glow'], name: 'Grün', en: 'green', hex: '#22c55e' },
       { keys: ['gelb', 'yellow', 'lemon', 'sunflower'], name: 'Gelb', en: 'yellow', hex: '#eab308' },
       { keys: ['orange', 'mandarin', 'pumpkin', 'amber'], name: 'Orange', en: 'orange', hex: '#f97316' },
       { keys: ['lila', 'purple', 'violet', 'violett', 'lavender'], name: 'Lila', en: 'purple', hex: '#a855f7' },
@@ -1086,7 +1049,7 @@
       { keys: ['gold', 'messing', 'brass'], name: 'Gold', en: 'gold', hex: '#eab308' },
       { keys: ['kupfer', 'copper', 'bronze'], name: 'Kupfer / Bronze', en: 'copper', hex: '#d97706' },
       { keys: ['braun', 'brown', 'wood', 'holz', 'beige', 'sand'], name: 'Braun / Holz', en: 'brown', hex: '#a16207' },
-      { keys: ['transparent', 'clear', 'translucent', 'natur', 'durchsichtig'], name: 'Durchsichtig', en: 'transparent', hex: '#cbd5e1' }
+      { keys: ['transparent', 'clear', 'translucent', 'natur', 'durchsichtig'], name: 'Transparent', en: 'transparent', hex: '#38bdf8' }
     ];
 
     function getDefaultPriceForSpool(brand, material) {
@@ -1138,18 +1101,18 @@
       const backdrop = document.getElementById('drawerBackdrop');
       const chevron = document.getElementById('drawerChevronIcon');
 
-      if (activeDrawerTab === tabName && !drawer.classList.contains('-translate-x-[430px]')) {
+      if (activeDrawerTab === tabName && !drawer.classList.contains('-translate-x-[420px]')) {
         closeSideDrawer();
         return;
       }
 
       activeDrawerTab = tabName;
-      drawer.classList.remove('-translate-x-[430px]');
+      drawer.classList.remove('-translate-x-[420px]');
       if (window.innerWidth < 1024) backdrop.classList.remove('hidden');
       if (chevron) chevron.setAttribute('data-lucide', 'chevrons-left');
 
       const titles = {
-        ai: '🤖 KI-Agent & Diktat',
+        ai: '🤖 KI-Agent & Sprache',
         gcode: '📂 G-Code Direkt-Abzug',
         calc: '🧮 Druck-Kostenrechner',
         vault: '🛡️ Zwischenspeicher & Import',
@@ -1188,7 +1151,7 @@
       const drawer = document.getElementById('sideDrawer');
       const backdrop = document.getElementById('drawerBackdrop');
       const chevron = document.getElementById('drawerChevronIcon');
-      drawer.classList.add('-translate-x-[430px]');
+      drawer.classList.add('-translate-x-[420px]');
       backdrop.classList.add('hidden');
       activeDrawerTab = null;
       if (chevron) chevron.setAttribute('data-lucide', 'chevrons-right');
@@ -1201,7 +1164,7 @@
 
     function toggleSideDrawer() {
       const drawer = document.getElementById('sideDrawer');
-      if (drawer.classList.contains('-translate-x-[430px]')) {
+      if (drawer.classList.contains('-translate-x-[420px]')) {
         openDrawerTab(activeDrawerTab || 'vault');
       } else {
         closeSideDrawer();
@@ -1218,25 +1181,27 @@
     }
 
     // =========================================================================
-    // 3. ZWISCHENSPEICHER & CLOUD-SPEICHER
+    // 3. ZWISCHENSPEICHER (AUSFAHRBAR, JETZT LADEN, JETZT LÖSCHEN & 1X-RETTUNG)
     // =========================================================================
-    const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v20';
-    const PERMANENT_HISTORY_KEY = 'filamenthub_history_v20';
-    const BUFFER_STORAGE_KEY = 'filamenthub_buffer_spools_v20';
-    const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v20';
-    const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v20';
+    const PERMANENT_SPOOLS_KEY = 'filamenthub_spools_v19';
+    const PERMANENT_HISTORY_KEY = 'filamenthub_history_v19';
+    const BUFFER_STORAGE_KEY = 'filamenthub_buffer_spools_v19';
+    const DELETED_TOMBSTONES_KEY = 'filamenthub_deleted_ids_v19';
+    const LOCAL_UPDATED_AT_KEY = 'filamenthub_updated_at_v19';
     const CLOUD_ID_STORAGE_KEY = 'filamenthub_cloud_id';
 
     const ALL_LEGACY_STORAGE_KEYS = [
-      'filamenthub_spools_v19', 'filamenthub_spools_v18', 'filamenthub_spools_v17',
-      'filamenthub_spools_v16', 'filamenthub_spools_v15', 'filamenthub_spools_permanent'
+      'filamenthub_spools_v18', 'filamenthub_spools_v17', 'filamenthub_spools_v16',
+      'filamenthub_spools_v15', 'filamenthub_spools_permanent', 'filamenthub_spools_v13',
+      'filamenthub_spools_v9', 'filamenthub_spools_v8', 'filamenthub_spools_v7',
+      'filamenthub_spools_v6', 'filamenthub_spools_v5'
     ];
 
     let currentCloudId = localStorage.getItem(CLOUD_ID_STORAGE_KEY) || '2a75ad089c77e7c35f98';
     function getCloudDbUrl() { return `https://api.npoint.io/${currentCloudId}`; }
 
     let spools = [];
-    let bufferSpools = [];
+    let bufferSpools = []; // Der gezielte Zwischenspeicher (z.B. deine 8 Spulen)
     let printHistory = [];
     let deletedIds = JSON.parse(localStorage.getItem(DELETED_TOMBSTONES_KEY) || '[]');
     let localUpdatedAt = Number(localStorage.getItem(LOCAL_UPDATED_AT_KEY) || 0);
@@ -1251,11 +1216,11 @@
       if (Array.isArray(savedBuf) && savedBuf.length > 0) {
         bufferSpools = savedBuf;
       } else {
-        bufferSpools = JSON.parse(JSON.stringify(DICTATED_16_SPOOLS));
+        bufferSpools = JSON.parse(JSON.stringify(DEFAULT_8_SPOOLS_BACKUP));
         localStorage.setItem(BUFFER_STORAGE_KEY, JSON.stringify(bufferSpools));
       }
     } catch (e) {
-      bufferSpools = JSON.parse(JSON.stringify(DICTATED_16_SPOOLS));
+      bufferSpools = JSON.parse(JSON.stringify(DEFAULT_8_SPOOLS_BACKUP));
     }
 
     function saveBufferSpools(newList) {
@@ -1330,11 +1295,13 @@
       appSettings.browserRescueUsed = false;
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
       renderBufferUI();
-      showToast('🗑️ Zwischenspeicher geleert!');
+      showToast('🗑️ Zwischenspeicher gelöscht! Du kannst den Browserspeicher bei Bedarf jetzt wieder neu durchsuchen.');
     }
 
+    // Darf nur 1x gedrückt werden, bis der Zwischenspeicher gelöscht wird!
     function rescueAllBrowserStorageOnce() {
       if (appSettings.browserRescueUsed) return;
+
       let rescued = [];
       const seenKeys = new Set();
 
@@ -1358,16 +1325,23 @@
         }
       });
 
-      DICTATED_16_SPOOLS.forEach(addUnique);
+      if (!rescued.length) {
+        DEFAULT_8_SPOOLS_BACKUP.forEach(addUnique);
+      }
 
       saveBufferSpools(rescued);
       appSettings.browserRescueUsed = true;
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
       renderBufferUI();
+
+      // Öffnet automatisch die Vorschau, damit man sieht, was gerettet wurde
       document.getElementById('bufferSpoolDetailsList')?.classList.remove('hidden');
-      showToast(`✓ ${rescued.length} Spulen im Zwischenspeicher bereit!`);
+      showToast(`✓ ${rescued.length} Spulen in den Zwischenspeicher geladen! Klicke auf „Jetzt laden“, um sie zu übernehmen.`);
     }
 
+    // =========================================================================
+    // 4. CLOUD- & LOKAL-SPEICHER
+    // =========================================================================
     ['keydown', 'mousedown', 'touchstart', 'input'].forEach(evt => {
       window.addEventListener(evt, () => { lastUserInteractionTime = Date.now(); }, { passive: true });
     });
@@ -1411,7 +1385,6 @@
         if (s.bagWeight === undefined || isNaN(Number(s.bagWeight))) {
           s.bagWeight = modes[s.storageMode].bagWeight;
         }
-        if (!s.lastDried) s.lastDried = new Date().toISOString();
         if (!s.productUrl) {
           s.productUrl = buildVendorUrl(s.brand, s.material, s.colorName || '', s.name || '', Number(s.emptySpoolWeight) === 0);
         }
@@ -1455,6 +1428,22 @@
         if (rawCurrent) {
           try { spools = JSON.parse(rawCurrent).filter(s => !isUnwantedDefaultCharcoal(s)); } catch (e) {}
         }
+        if (spools.length === 0) {
+          for (const k of ALL_LEGACY_STORAGE_KEYS) {
+            const raw = localStorage.getItem(k);
+            if (raw) {
+              try {
+                const parsed = JSON.parse(raw);
+                const arr = Array.isArray(parsed) ? parsed : (parsed.spools || []);
+                const cleaned = arr.filter(s => !isUnwantedDefaultCharcoal(s));
+                if (cleaned.length > 0) {
+                  spools = cleaned;
+                  break;
+                }
+              } catch (e) {}
+            }
+          }
+        }
       }
 
       try {
@@ -1468,22 +1457,21 @@
             const cloudCleaned = data.spools.filter(s => !isUnwantedDefaultCharcoal(s));
             const cloudTime = Number(data.updatedAt || 0);
 
-            if ((manual || cloudTime > localUpdatedAt || spools.length === 0) && cloudCleaned.length > 0) {
+            if ((manual || cloudTime > localUpdatedAt || spools.length === 0) && (cloudCleaned.length > 0 || spools.length === 0)) {
               spools = cloudCleaned;
               printHistory = Array.isArray(data.printHistory) ? data.printHistory : printHistory;
               saveLocalBackup(cloudTime || Date.now());
               renderSpools(true);
               populateCalcSpoolDropdown();
               setSyncStatus('Synchron', true);
-              return;
             }
+            return;
           }
         }
       } catch (e) {}
 
-      if (spools.length === 0) {
-        spools = JSON.parse(JSON.stringify(DICTATED_16_SPOOLS));
-        saveLocalBackup();
+      if (spools.length === 0 && bufferSpools.length > 0) {
+        spools = JSON.parse(JSON.stringify(bufferSpools));
       }
 
       renderSpools(true);
@@ -1544,22 +1532,21 @@
     }
 
     // =========================================================================
-    // 4. OPTIONEN & REINE HERSTELLER-NAMEN IM DROPDOWN
+    // 5. OPTIONEN: HERSTELLER-SPULEN & FILAMENT-HALTBARKEIT PER DROPDOWN ANPASSEN
     // =========================================================================
     function populateBrandSelects() {
       const modalSel = document.getElementById('fBrandSelect');
       const setSel = document.getElementById('settingBrandSelect');
 
-      // NUR die reinen Herstellernamen im Dropdown anzeigen (ohne "250g Spule" und ohne Preis!)
-      const cleanOptsHtml = BRAND_DATABASE.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+      const optsHtml = BRAND_DATABASE.map(b => `<option value="${b.name}">${b.name} (${b.tara}g Spule • ${Number(b.basePrice).toFixed(2).replace('.', ',')} €)</option>`).join('');
       if (modalSel) {
         const cur = modalSel.value;
-        modalSel.innerHTML = cleanOptsHtml + `<option value="OTHER">➕ Anderer Hersteller...</option>`;
+        modalSel.innerHTML = optsHtml + `<option value="OTHER">➕ Anderer Hersteller...</option>`;
         if (cur) modalSel.value = cur;
       }
       if (setSel) {
         const cur = setSel.value || BRAND_DATABASE[0].name;
-        setSel.innerHTML = cleanOptsHtml;
+        setSel.innerHTML = BRAND_DATABASE.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
         setSel.value = cur;
       }
     }
@@ -1601,14 +1588,17 @@
       MATERIAL_PRESETS[mat].temp = parseInt(document.getElementById('settingMatTemp').value) || 50;
       MATERIAL_PRESETS[mat].hours = parseInt(document.getElementById('settingMatHours').value) || 5;
       localStorage.setItem(CUSTOM_MATS_KEY, JSON.stringify(MATERIAL_PRESETS));
+
+      // Aktualisiert bestehende Spulen dieses Materials automatisch mit der neuen Haltbarkeit
+      spools.forEach(s => {
+        if (s.material === mat) {
+          s.dryIntervalDays = getRecommendedDays(mat, s.storageMode || 'open');
+          s.dryTemp = MATERIAL_PRESETS[mat].temp;
+          s.dryHours = MATERIAL_PRESETS[mat].hours;
+        }
+      });
       saveLocalBackup();
       renderSpools(true);
-    }
-
-    function setEntryMode(mode) {
-      appSettings.entryMode = mode;
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
-      applySettingsToUI();
     }
 
     function toggleMinimalMode(forceVal = null) {
@@ -1626,6 +1616,7 @@
     }
 
     function applySettingsToUI() {
+      // Theme auf Body anwenden (inkl. Heller Hintergrund!)
       document.body.classList.remove('theme-obsidian', 'theme-midnight', 'theme-light', 'theme-soft');
       document.body.classList.add(`theme-${appSettings.theme || 'obsidian'}`);
 
@@ -1643,25 +1634,6 @@
           : 'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl t-sub text-xs font-bold transition cursor-pointer';
       }
       if (scannerSec) scannerSec.classList.toggle('hidden', isMin);
-
-      // Modus-Umschalter oben (Diktieren & Sofort eintragen vs. Selbst prüfen)
-      const isAuto = appSettings.entryMode !== 'manual';
-      const btnAuto = document.getElementById('modeBtnAuto');
-      const btnManual = document.getElementById('modeBtnManual');
-      const submitBtn = document.getElementById('quickSubmitBtn');
-      if (btnAuto) {
-        btnAuto.className = isAuto
-          ? 'px-2.5 py-1 rounded-lg bg-sky-500 text-slate-950 font-extrabold transition cursor-pointer'
-          : 'px-2.5 py-1 rounded-lg t-muted hover:opacity-100 transition cursor-pointer';
-      }
-      if (btnManual) {
-        btnManual.className = !isAuto
-          ? 'px-2.5 py-1 rounded-lg bg-sky-500 text-slate-950 font-extrabold transition cursor-pointer'
-          : 'px-2.5 py-1 rounded-lg t-muted hover:opacity-100 transition cursor-pointer';
-      }
-      if (submitBtn) {
-        submitBtn.textContent = isAuto ? '⚡ Sofort eintragen' : '✍️ Im Formular öffnen';
-      }
 
       const themeSel = document.getElementById('settingTheme');
       if (themeSel) themeSel.value = appSettings.theme || 'obsidian';
@@ -1685,14 +1657,15 @@
       }
     }
 
+    // Liefert das CSS-Inline-Styling für den Fortschrittsbalken (damit Dynamisch & alle Verläufe zu 100% funktionieren!)
     function getBarInlineStyle(pct) {
       const style = appSettings.barStyle || 'blue_green';
-      let bg = 'linear-gradient(90deg, #0ea5e9 0%, #10b981 100%)';
+      let bg = 'linear-gradient(90deg, #0ea5e9 0%, #10b981 100%)'; // Blau-Türkis-Verlauf (Standard)
 
       if (style === 'dynamic') {
-        if (pct <= 20) bg = 'linear-gradient(90deg, #e11d48 0%, #fb7185 100%)';
-        else if (pct <= 45) bg = 'linear-gradient(90deg, #d97706 0%, #facc15 100%)';
-        else bg = 'linear-gradient(90deg, #059669 0%, #34d399 100%)';
+        if (pct <= 20) bg = 'linear-gradient(90deg, #e11d48 0%, #fb7185 100%)'; // Rot
+        else if (pct <= 45) bg = 'linear-gradient(90deg, #d97706 0%, #facc15 100%)'; // Orange-Gelb
+        else bg = 'linear-gradient(90deg, #059669 0%, #34d399 100%)'; // Grün
       } else if (style === 'cyber') {
         bg = 'linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%)';
       } else if (style === 'sunset') {
@@ -1707,7 +1680,7 @@
     }
 
     // =========================================================================
-    // 5. SPRACHAUSGABE & SPRACHEINGABE (INKL. DIREKT-EINTRAG BEIM DIKTIEREN)
+    // 6. SPRACHAUSGABE & SPRACHEINGABE
     // =========================================================================
     function speakText(text) {
       if (!appSettings.ttsEnabled || !('speechSynthesis' in window)) return;
@@ -1723,7 +1696,7 @@
 
     let activeRecognition = null;
 
-    function startVoiceRecognition(targetInputId, btnId, autoSendAi = false, appendNewLine = false, triggerQuickAction = false) {
+    function startVoiceRecognition(targetInputId, btnId, autoSendAi = false, appendNewLine = false) {
       const inputEl = document.getElementById(targetInputId);
       const btn = document.getElementById(btnId);
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1738,8 +1711,8 @@
             } else {
               inputEl.value = spoken.trim();
             }
+            speakText(`Erkannt: ${spoken}`);
             if (autoSendAi) sendAiMessage();
-            else if (triggerQuickAction) handleQuickLinkImport();
           }
         }
         return;
@@ -1770,7 +1743,6 @@
         }
         showToast(`✓ Erkannt: „${transcript}“`);
         if (autoSendAi) sendAiMessage();
-        else if (triggerQuickAction) handleQuickLinkImport();
       };
 
       rec.onerror = function() {
@@ -1784,203 +1756,6 @@
       };
 
       rec.start();
-    }
-
-    // =========================================================================
-    // 6. SMART PARSER & LINK-FARBERKENNUNG (OHNE GEWICHT ZU ÜBERSCHREIBEN!)
-    // =========================================================================
-    function extractEuroPriceFromText(rawText) {
-      if (!rawText) return null;
-      const matches = [...rawText.matchAll(/(?:€|EUR)?\s*(\d{1,2}[,.]\d{2})\s*(?:€|EUR)?/gi)];
-      for (const m of matches) {
-        const num = parseFloat(m[1].replace(',', '.'));
-        if (num >= 8.50 && num <= 89.99) return num;
-      }
-      return null;
-    }
-
-    function autoMatchHexFromColorInput(val) {
-      const lower = (val || '').toLowerCase();
-      for (const c of COLOR_MAP) {
-        if (c.keys.some(k => lower.includes(k)) || c.name.toLowerCase().includes(lower)) {
-          const hexEl = document.getElementById('fColorHex');
-          if (hexEl) hexEl.value = c.hex;
-          break;
-        }
-      }
-    }
-
-    function parseFilamentQueryOrUrl(inputStr, rawPageText = '') {
-      const trimmed = inputStr.trim();
-      const isUrl = /^https?:\/\//i.test(trimmed);
-      const extractedPrice = extractEuroPriceFromText(`${trimmed} ${rawPageText}`);
-      const combined = `${trimmed} ${rawPageText}`.toLowerCase();
-      const modes = getStorageModes();
-
-      let detectedBrand = 'Bambu Lab';
-      let detectedTara = 250;
-      for (const b of BRAND_DATABASE) {
-        if (b.keys.some(k => combined.includes(k))) {
-          detectedBrand = b.name;
-          detectedTara = b.tara;
-          break;
-        }
-      }
-
-      // Eigene Spulen-Tara erkennen (z.B. "Spule wiegt 50g" oder "Spule 151g")
-      const customTaraMatch = combined.match(/spule\s*(?:wiegt)?\s*(\d{2,3})\s*g/i);
-      if (customTaraMatch) {
-        detectedTara = parseInt(customTaraMatch[1]);
-      }
-
-      const isRefill = combined.includes('ohne spule') || combined.includes('refill');
-      if (isRefill) detectedTara = 0;
-
-      let detectedStorageMode = 'open';
-      if (combined.includes('ebos') || combined.includes('eibos') || combined.includes('eyebrow') || combined.includes('bag') || combined.includes('beutel')) {
-        detectedStorageMode = 'ebos_bag';
-      } else if (combined.includes('verschweißt') || combined.includes('eingeschweißt') || combined.includes('ovp') || combined.includes('original verpackt')) {
-        detectedStorageMode = 'factory_sealed';
-      }
-      const detectedBagWeight = modes[detectedStorageMode].bagWeight;
-
-      let detectedMaterial = 'PLA';
-      if (combined.includes('pla+') || combined.includes('pla plus')) detectedMaterial = 'PLA+';
-      else if (combined.includes('petg') || combined.includes('ptg')) detectedMaterial = 'PETG';
-      else if (combined.includes('tpu')) detectedMaterial = 'TPU';
-      else if (combined.includes('asa')) detectedMaterial = 'ASA';
-      else if (combined.includes('abs')) detectedMaterial = 'ABS';
-      else if (combined.includes('nylon') || combined.includes('pa6') || combined.includes('pa ')) detectedMaterial = 'PA / Nylon';
-      else if (combined.includes('pc')) detectedMaterial = 'PC';
-      else if (combined.includes('cf') || combined.includes('carbon')) detectedMaterial = 'PET-CF / PA-CF';
-
-      let detectedColorName = 'Weiß';
-      let detectedColorHex = '#f8fafc';
-      for (const c of COLOR_MAP) {
-        if (c.keys.some(k => combined.includes(k))) {
-          detectedColorName = c.name;
-          detectedColorHex = c.hex;
-          break;
-        }
-      }
-
-      // Gewicht erkennen (falls im Diktat/Text genannt, z.B. "1141g" oder "800g")
-      let remWeight = 1000;
-      const weightMatches = [...combined.matchAll(/(\d{3,4})\s*g/gi)].map(m => parseInt(m[1]));
-      if (weightMatches.length > 0) {
-        const biggestG = Math.max(...weightMatches);
-        // Falls "mit Spule" oder "mit Beutel" gesagt wurde, Tara automatisch abziehen
-        if (combined.includes('mit spule') || combined.includes('zusammen') || combined.includes('mit eibos') || combined.includes('mit allem')) {
-          remWeight = Math.max(0, biggestG - detectedTara - detectedBagWeight);
-        } else {
-          remWeight = biggestG;
-        }
-      }
-
-      // Trocknungs-Befehle aus Diktat erkennen ("sofort trocknen", "muss getrocknet werden", "in 15 Tagen")
-      const forceDryNow = combined.includes('sofort trocknen') || combined.includes('unbedingt trocknen') || combined.includes('sofortfällig') || combined.includes('muss getrocknet werden');
-      let dryIntervalDays = getRecommendedDays(detectedMaterial, detectedStorageMode);
-      const inDaysMatch = combined.match(/in\s*(\d{1,3})\s*tagen/i);
-      if (inDaysMatch) {
-        dryIntervalDays = parseInt(inDaysMatch[1]);
-      }
-
-      let variantAdd = 'Basic ';
-      if (combined.includes('matte') || combined.includes('matt')) variantAdd = 'Matte ';
-      else if (combined.includes('silk')) variantAdd = 'Silk ';
-      else if (combined.includes('glow')) variantAdd = 'Glow in the Dark ';
-      else if (combined.includes('galaxy')) variantAdd = '';
-
-      const refillSuffix = isRefill ? ' (Refill)' : '';
-      const cleanTitle = `${detectedMaterial} ${variantAdd}${detectedColorName}${refillSuffix}`.replace(/\s+/g, ' ').trim();
-      const finalUrl = isUrl ? trimmed : buildVendorUrl(detectedBrand, detectedMaterial, detectedColorName, trimmed, isRefill);
-      const preset = MATERIAL_PRESETS[detectedMaterial] || MATERIAL_PRESETS['PLA'];
-      const finalPrice = extractedPrice || getDefaultPriceForSpool(detectedBrand, detectedMaterial);
-
-      return {
-        brand: detectedBrand,
-        material: detectedMaterial,
-        colorName: detectedColorName,
-        colorHex: detectedColorHex,
-        name: cleanTitle,
-        initialWeight: 1000,
-        remainingWeight: remWeight,
-        emptySpoolWeight: detectedTara,
-        storageMode: detectedStorageMode,
-        bagWeight: detectedBagWeight,
-        pricePerKg: finalPrice,
-        dryIntervalDays,
-        dryTemp: preset.temp,
-        dryHours: preset.hours,
-        lastDried: new Date().toISOString(),
-        forceDryNow,
-        productUrl: finalUrl
-      };
-    }
-
-    // WICHTIG: Zieht im geöffneten Formular NUR Farbe, Marke/Material und Link – ÜBERSCHREIBT NIEMALS DAS GEWICHT!
-    async function extractUrlInModalKeepWeight() {
-      const urlInput = document.getElementById('fProductUrl');
-      const statusEl = document.getElementById('modalUrlStatus');
-      const urlStr = urlInput?.value.trim();
-      if (!urlStr) return;
-
-      if (statusEl) {
-        statusEl.textContent = 'Lese Farbe & Infos aus Link (Gewicht bleibt erhalten)...';
-        statusEl.classList.remove('hidden');
-      }
-
-      let pageText = '';
-      if (/^https?:\/\//i.test(urlStr)) {
-        try {
-          const res = await fetch(`https://r.jina.ai/${urlStr}`, { headers: { 'Accept': 'text/plain' } });
-          if (res.ok) pageText = (await res.text()).slice(0, 3000);
-        } catch (e) {}
-      }
-
-      const info = parseFilamentQueryOrUrl(urlStr, pageText);
-
-      // Nur Farbe, Hex und (falls Name noch leer ist) Name/Marke setzen – Gewicht & Tara NICHT anfassen!
-      if (info.colorName) document.getElementById('fColorName').value = info.colorName;
-      if (info.colorHex) document.getElementById('fColorHex').value = info.colorHex;
-      if (!document.getElementById('fName').value.trim()) {
-        document.getElementById('fName').value = info.name;
-      }
-
-      if (statusEl) {
-        statusEl.textContent = `✓ Farbe „${info.colorName}“ & Link übernommen (Gewicht unverändert!)`;
-      }
-      showToast(`✓ Farbe „${info.colorName}“ aus Link übernommen – dein Gewicht blieb unangetastet!`);
-    }
-
-    async function handleQuickLinkImport() {
-      const input = document.getElementById('quickLinkInput');
-      const val = input.value.trim();
-      if (!val) return;
-
-      let pageText = '';
-      if (/^https?:\/\//i.test(val)) {
-        try {
-          const res = await fetch(`https://r.jina.ai/${val}`, { headers: { 'Accept': 'text/plain' } });
-          if (res.ok) pageText = (await res.text()).slice(0, 3000);
-        } catch (e) {}
-      }
-
-      const data = parseFilamentQueryOrUrl(val, pageText);
-      input.value = '';
-
-      // Je nach gewähltem Modus: Entweder SOFORT eintragen oder erst im Formular öffnen!
-      if (appSettings.entryMode !== 'manual') {
-        pushUndo();
-        const newSpool = { id: 'sp-' + Date.now(), ...data };
-        spools.unshift(newSpool);
-        saveState();
-        const msg = `✓ Sofort eingetragen: ${newSpool.brand} – ${newSpool.name} (${newSpool.remainingWeight}g Netto)`;
-        showToast(msg);
-        speakText(msg);
-      } else {
-        openSpoolModal(null, data);
-      }
     }
 
     // =========================================================================
@@ -2024,8 +1799,7 @@
             lastDried: s.lastDried || new Date().toISOString(),
             dryIntervalDays: Number(s.dryIntervalDays) || getRecommendedDays(s.material || 'PLA', s.storageMode || 'open'),
             dryTemp: Number(s.dryTemp) || 50,
-            dryHours: Number(s.dryHours) || 5,
-            forceDryNow: !!s.forceDryNow
+            dryHours: Number(s.dryHours) || 5
           }));
         } catch (e) {}
       }
@@ -2083,14 +1857,22 @@
             pricePerKg: price, productUrl: url,
             lastDried: new Date().toISOString(),
             dryIntervalDays: getRecommendedDays(material, storageMode),
-            dryTemp: preset.temp, dryHours: preset.hours,
-            forceDryNow: false
+            dryTemp: preset.temp, dryHours: preset.hours
           });
         } else {
           const auto = parseFilamentQueryOrUrl(clean, '');
+          const weightMatches = [...clean.matchAll(/(\d{2,4})\s*g/gi)].map(m => parseInt(m[1]));
+          if (weightMatches.length === 1) {
+            auto.remainingWeight = weightMatches[0];
+            auto.initialWeight = Math.max(1000, weightMatches[0]);
+          } else if (weightMatches.length >= 2) {
+            auto.remainingWeight = weightMatches[0];
+            auto.initialWeight = weightMatches[1];
+          }
           result.push({
             id: 'sp-imp-' + Date.now() + '-' + idx,
-            ...auto
+            ...auto,
+            lastDried: new Date().toISOString()
           });
         }
       });
@@ -2158,8 +1940,116 @@
     }
 
     // =========================================================================
-    // 8. G-CODE, RECHNER & KI-AGENT
+    // 8. SMART SCANNER & G-CODE / RECHNER / KI
     // =========================================================================
+    function extractEuroPriceFromText(rawText) {
+      if (!rawText) return null;
+      const matches = [...rawText.matchAll(/(?:€|EUR)?\s*(\d{1,2}[,.]\d{2})\s*(?:€|EUR)?/gi)];
+      for (const m of matches) {
+        const num = parseFloat(m[1].replace(',', '.'));
+        if (num >= 8.50 && num <= 89.99) return num;
+      }
+      return null;
+    }
+
+    function autoMatchHexFromColorInput(val) {
+      const lower = (val || '').toLowerCase();
+      for (const c of COLOR_MAP) {
+        if (c.keys.some(k => lower.includes(k)) || c.name.toLowerCase().includes(lower)) {
+          const hexEl = document.getElementById('fColorHex');
+          if (hexEl) hexEl.value = c.hex;
+          break;
+        }
+      }
+    }
+
+    function parseFilamentQueryOrUrl(inputStr, rawPageText = '') {
+      const trimmed = inputStr.trim();
+      const isUrl = /^https?:\/\//i.test(trimmed);
+      const extractedPrice = extractEuroPriceFromText(`${trimmed} ${rawPageText}`);
+      const combined = `${trimmed} ${rawPageText}`.toLowerCase();
+      const modes = getStorageModes();
+
+      let detectedBrand = 'Bambu Lab';
+      let detectedTara = 250;
+      for (const b of BRAND_DATABASE) {
+        if (b.keys.some(k => combined.includes(k))) {
+          detectedBrand = b.name;
+          detectedTara = b.tara;
+          break;
+        }
+      }
+
+      const isRefill = combined.includes('ohne spule') || combined.includes('refill');
+      if (isRefill) detectedTara = 0;
+
+      let detectedStorageMode = 'open';
+      if (combined.includes('ebos') || combined.includes('eibos') || combined.includes('eyebrow') || combined.includes('bag') || combined.includes('beutel') || combined.includes('bq')) {
+        detectedStorageMode = 'ebos_bag';
+      } else if (combined.includes('vakuum') || combined.includes('vakum') || combined.includes('ovp') || combined.includes('eingeschweißt')) {
+        detectedStorageMode = 'factory_sealed';
+      }
+      const detectedBagWeight = modes[detectedStorageMode].bagWeight;
+
+      let detectedMaterial = 'PLA';
+      if (combined.includes('pla+') || combined.includes('pla plus')) detectedMaterial = 'PLA+';
+      else if (combined.includes('petg') || combined.includes('ptg')) detectedMaterial = 'PETG';
+      else if (combined.includes('tpu')) detectedMaterial = 'TPU';
+      else if (combined.includes('asa')) detectedMaterial = 'ASA';
+      else if (combined.includes('abs')) detectedMaterial = 'ABS';
+      else if (combined.includes('nylon') || combined.includes('pa')) detectedMaterial = 'PA / Nylon';
+      else if (combined.includes('pc')) detectedMaterial = 'PC';
+      else if (combined.includes('cf') || combined.includes('carbon')) detectedMaterial = 'PET-CF / PA-CF';
+
+      let detectedColorName = 'Weiß';
+      let detectedColorHex = '#f8fafc';
+      for (const c of COLOR_MAP) {
+        if (c.keys.some(k => combined.includes(k))) {
+          detectedColorName = c.name;
+          detectedColorHex = c.hex;
+          break;
+        }
+      }
+
+      let variantAdd = 'Basic ';
+      if (combined.includes('matte') || combined.includes('matt')) variantAdd = 'Matte ';
+      else if (combined.includes('silk')) variantAdd = 'Silk ';
+      else if (combined.includes('hf')) variantAdd = 'HF ';
+
+      const refillSuffix = isRefill ? ' (Refill)' : '';
+      const cleanTitle = `${detectedMaterial} ${variantAdd}${detectedColorName}${refillSuffix}`.replace(/\s+/g, ' ').trim();
+      const finalUrl = isUrl ? trimmed : buildVendorUrl(detectedBrand, detectedMaterial, detectedColorName, trimmed, isRefill);
+      const preset = MATERIAL_PRESETS[detectedMaterial] || MATERIAL_PRESETS['PLA'];
+      const finalPrice = extractedPrice || getDefaultPriceForSpool(detectedBrand, detectedMaterial);
+
+      return {
+        brand: detectedBrand,
+        material: detectedMaterial,
+        colorName: detectedColorName,
+        colorHex: detectedColorHex,
+        name: cleanTitle,
+        initialWeight: 1000,
+        remainingWeight: 1000,
+        emptySpoolWeight: detectedTara,
+        storageMode: detectedStorageMode,
+        bagWeight: detectedBagWeight,
+        pricePerKg: finalPrice,
+        dryIntervalDays: getRecommendedDays(detectedMaterial, detectedStorageMode),
+        dryTemp: preset.temp,
+        dryHours: preset.hours,
+        productUrl: finalUrl
+      };
+    }
+
+    async function handleQuickLinkImport() {
+      const input = document.getElementById('quickLinkInput');
+      const val = input.value.trim();
+      if (!val) return;
+      const data = parseFilamentQueryOrUrl(val, '');
+      input.value = '';
+      openSpoolModal(null, data);
+    }
+
     let lastParsedGcode = { grams: 0, hours: 0, fileName: '' };
 
     function parseGcodeContent(text, fileName) {
@@ -2271,7 +2161,7 @@
       const sel = document.getElementById('calcSpoolSelect');
       if (!sel) return;
       const cur = sel.value;
-      sel.innerHTML = spools.map(s => `<option value="${s.id}">${s.brand} – ${s.name}</option>`).join('');
+      sel.innerHTML = spools.map(s => `<option value="${s.id}">${s.brand} ${s.name} (${(Number(s.pricePerKg) || 17.99).toFixed(2).replace('.', ',')} €/kg)</option>`).join('');
       if (cur && spools.some(s => s.id === cur)) sel.value = cur;
       onCalcSpoolChange();
     }
@@ -2310,7 +2200,7 @@
     let aiMessages = [
       {
         role: 'assistant',
-        text: 'Hallo! Diktiere oder schreibe mir einfach deine Spulen – ich trage sie sofort ein, inkl. Trocknungs-Timer oder „Sofort trocknen“-Markierung!'
+        text: 'Hallo! Ich bin dein **FilamentHub KI-Agent**.\nSchreib oder diktiere z. B.:\n• *"Neue Spule Bambu Lab PETG Basic im eBOS Beutel"*\n• *"Ziehe 45g von Weiß ab"*\n• *"Wechsle auf hellen Hintergrund"*'
       }
     ];
 
@@ -2332,11 +2222,11 @@
 
       if (lower.includes('hell') || lower.includes('light')) {
         updateAppSetting('theme', 'light');
-        return '☀️ Ich habe auf den **hellen Hintergrund** umgestellt.';
+        return '☀️ Ich habe die Darstellung auf den **hellen Hintergrund** umgestellt.';
       }
       if (lower.includes('dunkel') || lower.includes('dark')) {
         updateAppSetting('theme', 'obsidian');
-        return '🌑 Ich habe auf den **dunklen Hintergrund** umgestellt.';
+        return '🌑 Ich habe wieder auf den **dunklen Hintergrund** gewechselt.';
       }
       if (lower.includes('schlicht') || lower.includes('minimal')) {
         toggleMinimalMode();
@@ -2350,18 +2240,20 @@
         const spool = spools.find(s => `${s.brand} ${s.name} ${s.colorName}`.toLowerCase().includes(target)) || spools[0];
         if (spool && g > 0) {
           deductWeight(spool.id, g);
-          return `✅ ${g}g von **${spool.brand} ${spool.name}** abgezogen! Rest: **${spool.remainingWeight}g**.`;
+          return `✅ ${g} Gramm von ${spool.brand} ${spool.name} abgezogen. Restgewicht: ${spool.remainingWeight} Gramm.`;
         }
       }
 
       const cleaned = input.replace(/neue spule|füge|hinzufügen/gi, '').trim();
       const parsed = parseFilamentQueryOrUrl(cleaned, '');
+      const weightM = cleaned.match(/(\d{2,4})\s*g/i);
+      if (weightM) parsed.remainingWeight = parseInt(weightM[1]);
 
       pushUndo();
-      const newSpool = { id: 'sp-' + Date.now(), ...parsed };
+      const newSpool = { id: 'sp-' + Date.now(), ...parsed, lastDried: new Date().toISOString() };
       spools.unshift(newSpool);
       saveState();
-      return `✅ Eingetragen: **${newSpool.brand} – ${newSpool.name}** (${newSpool.remainingWeight}g Netto${newSpool.forceDryNow ? ' • ⚠️ Sofort trocknen aktiv' : ` • Timer: ${newSpool.dryIntervalDays} Tage`}).`;
+      return `✅ Neue Spule eingetragen: ${newSpool.brand} ${newSpool.name} (${newSpool.remainingWeight}g).`;
     }
 
     async function sendAiMessage() {
@@ -2378,31 +2270,22 @@
     }
 
     // =========================================================================
-    // 9. TROCKNUNGS-LOGIK & KARTEN-RENDERING (INKL. "ZULETZT GETROCKNET" & "SOFORT TROCKNEN")
+    // 9. KARTEN-RENDERING (INKL. DYNAMIK-BAR, SCHLICHT-MODUS & 3 ICONS)
     // =========================================================================
     function getDryingStatus(spool) {
       const lastDriedMs = new Date(spool.lastDried || Date.now()).getTime();
       const intervalDays = Number(spool.dryIntervalDays) || getRecommendedDays(spool.material, spool.storageMode || 'open');
       const intervalMs = intervalDays * 86400000;
       const diffMs = (lastDriedMs + intervalMs) - Date.now();
-      const isOverdue = !!spool.forceDryNow || diffMs <= 0;
+      const isOverdue = diffMs <= 0;
       const absMs = Math.abs(diffMs);
 
       let statusLevel = 'ok';
       if (isOverdue) statusLevel = 'overdue';
       else if (diffMs < 2 * 86400000) statusLevel = 'soon';
 
-      const lastDriedDateStr = new Date(lastDriedMs).toLocaleDateString('de-DE', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      });
-
       return {
-        diffMs: spool.forceDryNow ? -999999999 : diffMs,
-        isOverdue,
-        statusLevel,
-        lastDriedDateStr,
+        diffMs, isOverdue, statusLevel,
         days: Math.floor(absMs / 86400000),
         hours: Math.floor((absMs % 86400000) / 3600000)
       };
@@ -2422,18 +2305,9 @@
       spool.storageMode = newMode;
       spool.bagWeight = modes[newMode].bagWeight;
       spool.dryIntervalDays = getRecommendedDays(spool.material, newMode);
+      spool.lastDried = new Date().toISOString();
       saveState();
-      showToast(`${spool.brand} ${spool.name}: ${modes[newMode].label}`);
-    }
-
-    // Schaltet direkt auf der Karte den Haken "Sofort trocknen nötig" ein/aus
-    function toggleForceDryOnCard(spoolId) {
-      const spool = spools.find(s => s.id === spoolId);
-      if (!spool) return;
-      pushUndo();
-      spool.forceDryNow = !spool.forceDryNow;
-      saveState();
-      showToast(spool.forceDryNow ? '⚠️ Als „Sofort trocknen nötig“ markiert!' : '✓ Trocknungs-Warnung aufgehoben.');
+      showToast(`${spool.brand} ${spool.name}: ${modes[newMode].label} (${spool.dryIntervalDays}d Haltbarkeit)`);
     }
 
     function renderSpools(force = false) {
@@ -2486,7 +2360,7 @@
       if (!grid) return;
 
       if (!filtered.length) {
-        grid.innerHTML = `<div class="col-span-full t-panel rounded-2xl p-10 text-center text-xs t-muted">Keine Spulen gefunden. Klicke links auf <strong>„Speicher“</strong> und dort auf <strong>„Jetzt laden“</strong>!</div>`;
+        grid.innerHTML = `<div class="col-span-full t-panel rounded-2xl p-10 text-center text-xs t-muted">Keine Spulen angezeigt. Klicke links auf <strong>„Speicher“</strong> und dort auf <strong>„Jetzt laden“</strong>!</div>`;
         return;
       }
 
@@ -2522,7 +2396,6 @@
                   </div>
                 </div>
 
-                <!-- 3 ICONS: LINK, BEARBEITEN, LÖSCHEN -->
                 <div class="flex items-center gap-1 shrink-0">
                   <a href="${shopUrl}" target="_blank" rel="noopener" title="Shop-Link öffnen" class="p-1.5 rounded-lg t-sub text-sky-500 hover:opacity-80 transition">
                     <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
@@ -2549,7 +2422,7 @@
               ${dry.statusLevel !== 'ok' ? `
                 <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-[11px]">
                   <span class="text-rose-500 font-bold">⚠️ Muss getrocknet werden</span>
-                  <button type="button" onclick="markDried('${spool.id}')" class="text-sky-500 hover:underline font-semibold cursor-pointer">Jetzt getrocknet</button>
+                  <button type="button" onclick="markDried('${spool.id}')" class="text-sky-500 hover:underline font-semibold cursor-pointer">Erledigt</button>
                 </div>
               ` : ''}
             </div>
@@ -2573,7 +2446,6 @@
                 </div>
               </div>
 
-              <!-- 3 ICONS: LINK, BEARBEITEN, LÖSCHEN -->
               <div class="flex items-center gap-1 shrink-0">
                 <a href="${shopUrl}" target="_blank" rel="noopener" title="Produkt-Link öffnen" class="p-1.5 rounded-lg t-sub text-sky-500 hover:opacity-80 transition">
                   <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
@@ -2628,35 +2500,19 @@
               <button type="button" onclick="deductWeight('${spool.id}', 50)" class="px-2 py-1.5 rounded-lg t-sub hover:opacity-80 text-[10px] font-mono-num cursor-pointer">-50g</button>
             </div>
 
-            <!-- TROCKNUNGS-BEREICH MIT "ZULETZT GETROCKNET AM", "SOFORT TROCKNEN"-SCHALTER & "JETZT GETROCKNET" -->
-            <div class="pt-2 border-t border-slate-500/15 space-y-1.5 text-[11px]">
-              <div class="flex items-center justify-between">
-                <span class="font-mono-num ${dry.isOverdue ? 'text-rose-500 font-extrabold' : (mode !== 'open' ? 'text-sky-500 font-semibold' : 't-muted')}">
-                  ${dry.isOverdue
-                    ? `⚠️ Muss getrocknet werden!`
-                    : `🔥 Trocknen in: ${dry.days}d${dry.hours}h`}
-                </span>
-                <span class="text-[10px] t-muted">Zuletzt: <strong>${dry.lastDriedDateStr}</strong></span>
-              </div>
-
-              <div class="flex items-center justify-between gap-1.5 pt-0.5">
-                <button
-                  type="button"
-                  onclick="toggleForceDryOnCard('${spool.id}')"
-                  class="px-2 py-1 rounded-lg text-[10px] font-bold transition cursor-pointer ${spool.forceDryNow ? 'bg-rose-500 text-white' : 't-sub text-rose-400 hover:bg-rose-500/15'}"
-                  title="Haken setzen für: Sofort trocknen nötig"
-                >
-                  ${spool.forceDryNow ? '✓ Sofort trocknen aktiv' : '⚠️ Sofort trocknen'}
-                </button>
-
-                <button
-                  type="button"
-                  onclick="markDried('${spool.id}')"
-                  class="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-[10px] font-bold transition cursor-pointer"
-                >
-                  🔥 Jetzt getrocknet
-                </button>
-              </div>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-500/15 text-[11px]">
+              <span class="font-mono-num ${dry.isOverdue ? 'text-rose-500 font-bold' : (mode !== 'open' ? 'text-sky-500' : 't-muted')}">
+                ${dry.isOverdue
+                  ? `⚠️ Muss getrocknet werden (seit ${dry.days}d)`
+                  : (mode === 'factory_sealed'
+                      ? `📦 OVP geschützt (${dry.days}d)`
+                      : (mode === 'ebos_bag'
+                          ? `🛡️ Im eBOS-Beutel (${dry.days}d)`
+                          : `🔥 Offen haltbar: ${dry.days}d${dry.hours}h`))}
+              </span>
+              <button type="button" onclick="markDried('${spool.id}')" class="text-sky-500 hover:underline font-semibold cursor-pointer">
+                Getrocknet
+              </button>
             </div>
 
           </div>
@@ -2766,21 +2622,8 @@
       if (!spool) return;
       pushUndo();
       spool.lastDried = new Date().toISOString();
-      spool.forceDryNow = false;
       saveState();
-      showToast('🔥 Als frisch getrocknet markiert & Timer neu gestartet!');
-    }
-
-    function toLocalInputDate(isoStr) {
-      const d = isoStr ? new Date(isoStr) : new Date();
-      const pad = n => String(n).padStart(2, '0');
-      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
-
-    function setModalDriedNow() {
-      document.getElementById('fLastDried').value = toLocalInputDate(new Date().toISOString());
-      document.getElementById('fForceDryNow').checked = false;
-      showToast('🔥 Datum auf „Jetzt getrocknet“ gesetzt!');
+      showToast('Als frisch getrocknet markiert!');
     }
 
     const QR_URL_KEY = 'filamenthub_qr_url';
@@ -2811,7 +2654,7 @@
       renderSidebarQr();
     }
 
-    function onMaterialOrStorageChangeInModal(keepCustomBagWeight = false, keepCustomInterval = false) {
+    function onMaterialOrStorageChangeInModal(keepCustomBagWeight = false) {
       const modes = getStorageModes();
       const mat = document.getElementById('fMaterial')?.value || 'PLA';
       const mode = document.getElementById('fStorageMode')?.value || 'open';
@@ -2823,16 +2666,18 @@
         bagInput.value = modeInfo.bagWeight;
       }
 
-      if (!keepCustomInterval) {
-        const recDays = getRecommendedDays(mat, mode);
-        const intEl = document.getElementById('fDryIntervalDays');
-        if (intEl) intEl.value = recDays;
-      }
-
+      const recDays = getRecommendedDays(mat, mode);
+      const intEl = document.getElementById('fDryIntervalDays');
       const tempEl = document.getElementById('fDryTemp');
       const hrsEl = document.getElementById('fDryHours');
+      if (intEl) intEl.value = recDays;
       if (tempEl) tempEl.value = preset.temp;
       if (hrsEl) hrsEl.value = preset.hours;
+
+      const infoEl = document.getElementById('modalMaterialStorageInfo');
+      if (infoEl) {
+        infoEl.innerHTML = `Standard für <strong>${mat}</strong>: Offen <strong>${preset.openDays}d</strong> • eBOS <strong>${preset.ebosBagDays}d</strong> • OVP <strong>${preset.factorySealedDays}d</strong> (anpassbar in den Optionen).`;
+      }
 
       applyModalScale();
     }
@@ -2900,10 +2745,7 @@
       setVal('fDryIntervalDays', data.dryIntervalDays ?? 30);
       setVal('fDryTemp', data.dryTemp ?? 50);
       setVal('fDryHours', data.dryHours ?? 5);
-      setVal('fLastDried', toLocalInputDate(data.lastDried));
-
-      const forceChk = document.getElementById('fForceDryNow');
-      if (forceChk) forceChk.checked = !!data.forceDryNow;
+      setVal('fLastDried', data.lastDried || new Date().toISOString());
 
       if (data.brand) {
         const select = document.getElementById('fBrandSelect');
@@ -2920,13 +2762,12 @@
           }
         }
       }
-      onMaterialOrStorageChangeInModal(data.bagWeight !== undefined, data.dryIntervalDays !== undefined);
+      onMaterialOrStorageChangeInModal(data.bagWeight !== undefined);
     }
 
     function openSpoolModal(spoolId = null, prefill = null) {
       const scaleGross = document.getElementById('fScaleGross');
       if (scaleGross) scaleGross.value = '';
-      document.getElementById('modalUrlStatus')?.classList.add('hidden');
 
       if (spoolId) {
         const existing = spools.find(s => String(s.id) === String(spoolId));
@@ -2945,7 +2786,6 @@
           storageMode: 'open', bagWeight: 0,
           dryIntervalDays: getRecommendedDays('PLA', 'open'), dryTemp: 50, dryHours: 5,
           lastDried: new Date().toISOString(),
-          forceDryNow: false,
           ...(prefill || {})
         });
       }
@@ -2970,8 +2810,6 @@
       const emptyW = parseInt(document.getElementById('fEmptySpoolWeight').value);
       const storageMode = document.getElementById('fStorageMode').value || 'open';
       const bagW = parseInt(document.getElementById('fBagWeight').value);
-      const lastDriedVal = document.getElementById('fLastDried').value;
-      const forceDryNow = !!document.getElementById('fForceDryNow').checked;
 
       let urlVal = document.getElementById('fProductUrl').value.trim();
       if (!urlVal || !/^https?:\/\//i.test(urlVal)) {
@@ -2990,11 +2828,10 @@
         storageMode,
         bagWeight: isNaN(bagW) ? modes[storageMode].bagWeight : bagW,
         productUrl: urlVal,
-        lastDried: lastDriedVal ? new Date(lastDriedVal).toISOString() : new Date().toISOString(),
+        lastDried: document.getElementById('fLastDried').value || new Date().toISOString(),
         dryIntervalDays: parseInt(document.getElementById('fDryIntervalDays').value) || getRecommendedDays(mat, storageMode),
         dryTemp: parseInt(document.getElementById('fDryTemp').value) || preset.temp,
-        dryHours: parseInt(document.getElementById('fDryHours').value) || preset.hours,
-        forceDryNow
+        dryHours: parseInt(document.getElementById('fDryHours').value) || preset.hours
       };
 
       pushUndo();
